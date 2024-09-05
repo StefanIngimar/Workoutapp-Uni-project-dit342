@@ -31,7 +31,7 @@ app.use(cors());
 
 // Import routes
 app.get('/api', function(req, res) {
-    res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
+    res.json({'message': 'Welcome to your DIT342 backend ExpressJS project! testytest'});
 });
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
