@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+var Schema   = mongoose.Schema;
 
 // Create a exercise using mongoose schema.
 var exerciseSchema = new Schema({
