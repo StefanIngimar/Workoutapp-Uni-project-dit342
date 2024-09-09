@@ -62,12 +62,57 @@ Open the `server` and `client` in separate VSCode workspaces or open the combine
 
 ### Purpose
 
-2-5 sentences describing what the system does
+This project is a workout tracking application that allows users to log their exercises and track progress. Users can define their own exercises or choose from already
+predefined ones. The project also features a leaderbord and achievement system to encourage user engagement.
+
+
+**Key features**
+
+- Use management (userID, username, email, password, profile picture)
+- Predefined custom exercises
+- Daily workout session tracking
+- Achiement system based on performance and attendance
+- Leaderbord displaying top users by strength
+- Workout log with calender for past sessions
+
+
+**ER description**
+
+**User attributes**
+  - userID: Unique identifier for each user
+  - Username: Users displayname
+  - Email: Email address of user
+  - Password: Users encrypted password
+  - Profile picture: Users optional profile picture
+  **User Functionality**
+  - Able to add predefined exercises to workout regimen
+  - Able to add custom exercises to workout regimen
+  - Track daily session
+  - Monitor progress over time
+
+
+
+
 
 ### Pages
 
-- Home: 1-3 sentences describing what the page displays and what a user can do
-- Shopping cart: ...
+- **Login Page**
+  - **Description**: Users can log in with their email and password
+- **Home Page**
+  - **Description**: Contains paths (buttons) for all other pages.
+- **Profile Page**
+  - **Desription**: Users can change information and upload a profile picture.
+- **Exercise Page**
+  - **Description**: Users can browse and create new exercises.
+- **Sessions Page**
+  - **Description**: Users can browse and create new sessions.
+- **Workout log page**
+  - **Description**: Users can browse a calendar of sessions and edit past sessions.
+- **Achievement page**
+  - **Description**: Users can browse achievements and requirements.
+- **Leaderbord page**
+  - **Description**: Users can see the top strongest users.
+
 
 ### Entity-Relationship (ER) Diagram
 
