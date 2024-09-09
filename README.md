@@ -66,7 +66,7 @@ This project is a workout tracking application that allows users to log their ex
 predefined ones. The project also features a leaderbord and achievement system to encourage user engagement.
 
 
-**Key features**
+#### Key features
 
 - Use management (userID, username, email, password, profile picture)
 - Predefined custom exercises
@@ -76,19 +76,71 @@ predefined ones. The project also features a leaderbord and achievement system t
 - Workout log with calender for past sessions
 
 
-**ER description**
+#### ER description
 
-**User attributes**
+##### User attributes
   - userID: Unique identifier for each user
-  - Username: Users displayname
-  - Email: Email address of user
-  - Password: Users encrypted password
-  - Profile picture: Users optional profile picture
-  **User Functionality**
+  - username: Users displayname
+  - email: Email address of user
+  - password: Users encrypted password
+  - profilePic: Users optional profile picture
+**User Functionality**:
   - Able to add predefined exercises to workout regimen
   - Able to add custom exercises to workout regimen
   - Track daily session
   - Monitor progress over time
+
+##### Exercises attributes
+  - exerciseID: Unique identifier for each exercise
+  - exerciseName: Name of exercise
+  - hasWeight: Boolean indicating if weight is used
+  - bodyPart: The bodypart the exercise primarily focuses on
+  - isCustom: Boolean indicating if it is a custom exercise
+  - reps: Number of repetitions
+  - sets: Number of sets
+**Exercise functionality**
+  - A user can browse predefined exercises
+  - A user can create their own custom exercise
+  - A user can add an exercise to a daily session
+
+##### Daily sessions attributes
+  - sessionID: Unique identifier for a session
+  - exerciseID: Foreign key linking the exercise        (Moved exercise ID to daily session instead of workout log)
+  - userID: Foreign key linking user
+  - sessionName: Name of the session
+  - duaration: Total time that the session took
+  - isCompleted: Boolean indicating if the session was completed
+  - notesOrComments: Additional details about the session
+**Daily session functionality**
+  - A user can create, update and track a daily session
+  - A session is stored in the users log for future reference
+
+##### Workout log attributes 
+  - logID: Unique identifier for a workout log
+  - sessionID: Foreign key linking the session
+  - calendar: A visual representation of the workout history
+  - weightLifted: Displays the total weight lifted            (total weight lifter in a set of exercises maybe?)                              
+**Workout log functionality**
+  - Stores a users sessions in a log
+  - A user can view, update and edit past, current and future sessions
+  - The log will be represeted in a calendar format where the sessionName will be displayed as an overview in the calendar
+
+##### Achievement attributes
+  - achievementID: Unique identifier for an achievement
+  - userID: Foreign key linking an achievement to a user                                (linking with userID instead of username?)
+  - numOfTimesInGym: Foreign key linking workout log and the number of entries there to achievements
+  - exerciseMilestone: Foreign key pointing to a milestone in a certain exercise       (changed from weightGOal to exerciseMilestone maybe?)
+  - description: Achievement details 
+**Achievement functionality**
+  - A user can earn achievements based on personal performance such as a new personal record in a given exercise
+  - A user can earn achievements based on reaching a gym visit milestone
+
+##### Leaderbord attributes
+  - userID: Foreign key linking to a user
+  - weightLifted: Foreign key linking to the workoutlog
+**Leaderbord functionality**
+  - Displays the strongest user
+  - Retrieves data from the workout log to update user ranks
 
 
 
