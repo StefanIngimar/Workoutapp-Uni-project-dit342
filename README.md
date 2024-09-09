@@ -105,7 +105,7 @@ predefined ones. The project also features a leaderbord and achievement system t
 
 ##### Daily sessions attributes
   - sessionID: Unique identifier for a session
-  - exerciseID: Foreign key linking the exercise        (Moved exercise ID to daily session instead of workout log)
+  - exerciseID: Foreign key linking the exercise        
   - userID: Foreign key linking user
   - sessionName: Name of the session
   - duaration: Total time that the session took
@@ -127,9 +127,9 @@ predefined ones. The project also features a leaderbord and achievement system t
 
 ##### Achievement attributes
   - achievementID: Unique identifier for an achievement
-  - userID: Foreign key linking an achievement to a user                                (linking with userID instead of username?)
+  - userID: Foreign key linking an achievement to a user                                
   - numOfTimesInGym: Foreign key linking workout log and the number of entries there to achievements
-  - exerciseMilestone: Foreign key pointing to a milestone in a certain exercise       (changed from weightGOal to exerciseMilestone maybe?)
+  - exerciseMilestone: Foreign key pointing to a milestone in a certain exercise       
   - description: Achievement details 
 ###### Achievement functionality
   - A user can earn achievements based on personal performance such as a new personal record in a given exercise
