@@ -84,7 +84,7 @@ predefined ones. The project also features a leaderbord and achievement system t
   - email: Email address of user
   - password: Users encrypted password
   - profilePic: Users optional profile picture
-**User Functionality**:
+###### User Functionality
   - Able to add predefined exercises to workout regimen
   - Able to add custom exercises to workout regimen
   - Track daily session
