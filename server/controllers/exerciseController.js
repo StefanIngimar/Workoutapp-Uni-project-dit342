@@ -25,6 +25,16 @@ router.get('/api/exercises/:id', async function(req, res){
     }
 });
 
+router.delete('/api/exercises/:id', async function(req, res) {
+    var id = req.params.id;
+    try{
+        const exercise = await Exercise.findByIdAndDelete(id);
+        res.status(200).send({message: "Exercise successfully deleted"});
+    } catch(err){
+        res.status(500).send(err);
+    }
+});
+
 // Posts a new exercise to the database.
 router.post('/api/exercises/newexercise', async function(req, res){ // TODO: Add error handling.
     // var name = req.params.name;
