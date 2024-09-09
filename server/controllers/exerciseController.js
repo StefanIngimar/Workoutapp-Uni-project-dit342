@@ -25,6 +25,7 @@ router.get('/api/exercises/:id', async function(req, res){
     }
 });
 
+// Deletes exercise from database by id.
 router.delete('/api/exercises/:id', async function(req, res) {
     var id = req.params.id;
     try{
