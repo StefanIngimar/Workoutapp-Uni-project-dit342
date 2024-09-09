@@ -168,28 +168,9 @@ predefined ones. The project also features a leaderbord and achievement system t
 
 ### Entity-Relationship (ER) Diagram
 
-![ER Diagram](./images/er_diagram.png)
+![ER Diagram](./images/ERDiagram.png)
 
 ## Teaser (MS3)
 
 ![Teaser](./images/teaser.png)
 
-A few sentences
-In the diagram we have defined the user. The user has an ID, username, email, password and a profile picture. The user has a list of predefined exercises that they can add to their workout regiment. The user will also have the choice to add their own exercises if they are not already listed. Each exercise has their own ID, name, a boolean that tells if the user uses weights or not for the exercise, how many reps and how many sets the user performs, which body part the exercise targets, and a boolean that tells whether the user has added the exercise themselves or if it's a predefined exercise.
-
-Each desired exercise can be added to a daily session. The user will be able to create different sessions for different days, e.g. chest day, back day etc. The daily session has a foreign key userID, session name, duration, boolean isCompleted, notes/comments, and the session ID. The sessions will be stored in the users log, where the user will be able to look back at previous exercises. The log will contain a calendar and a log ID.
-
-The user will also be able to get achievements based on their efforts in the gym. The achievements have an ID, description, and foreign key username that points to the user, foreign key weightGoal that points to how much weight the user can lift, and foreign key numOfTimesInGym which points at the workout logs and the number of entries there. The achievement will be triggered once the user sets a new personal record in weightlifting and when the user has visited the gym a substantial amount of times.
-
-The leaderboard will display the top strongest users. We will fetch the weights from the workout log, and the userID from the users.
-
-Pages:
-
-Login page: Users can log in using email and password.
-Home page: Contains paths (buttons) for all other pages.
-Profile page: Users can change information and upload a profile picture.
-Exercise page: Users can browse and create new exercises.
-Sessions page: Users can browse and create new sessions.
-Workout log page: Users can browse a calendar of sessions and edit past sessions.
-Achievement page: Users can browse achievements and requirements.  
-Leaderboard page: Users can see the top strongest users.
