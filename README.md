@@ -98,7 +98,7 @@ predefined ones. The project also features a leaderbord and achievement system t
   - isCustom: Boolean indicating if it is a custom exercise
   - reps: Number of repetitions
   - sets: Number of sets
-**Exercise functionality**
+###### Exercise functionality
   - A user can browse predefined exercises
   - A user can create their own custom exercise
   - A user can add an exercise to a daily session
@@ -111,7 +111,7 @@ predefined ones. The project also features a leaderbord and achievement system t
   - duaration: Total time that the session took
   - isCompleted: Boolean indicating if the session was completed
   - notesOrComments: Additional details about the session
-**Daily session functionality**
+###### Daily session functionality
   - A user can create, update and track a daily session
   - A session is stored in the users log for future reference
 
@@ -119,8 +119,8 @@ predefined ones. The project also features a leaderbord and achievement system t
   - logID: Unique identifier for a workout log
   - sessionID: Foreign key linking the session
   - calendar: A visual representation of the workout history
-  - weightLifted: Displays the total weight lifted            (total weight lifter in a set of exercises maybe?)                              
-**Workout log functionality**
+  - weightLifted: Displays the total weight lifted                              
+###### Workout log functionality
   - Stores a users sessions in a log
   - A user can view, update and edit past, current and future sessions
   - The log will be represeted in a calendar format where the sessionName will be displayed as an overview in the calendar
@@ -131,14 +131,14 @@ predefined ones. The project also features a leaderbord and achievement system t
   - numOfTimesInGym: Foreign key linking workout log and the number of entries there to achievements
   - exerciseMilestone: Foreign key pointing to a milestone in a certain exercise       (changed from weightGOal to exerciseMilestone maybe?)
   - description: Achievement details 
-**Achievement functionality**
+###### Achievement functionality
   - A user can earn achievements based on personal performance such as a new personal record in a given exercise
   - A user can earn achievements based on reaching a gym visit milestone
 
 ##### Leaderbord attributes
   - userID: Foreign key linking to a user
   - weightLifted: Foreign key linking to the workoutlog
-**Leaderbord functionality**
+###### Leaderbord functionality
   - Displays the strongest user
   - Retrieves data from the workout log to update user ranks
 
