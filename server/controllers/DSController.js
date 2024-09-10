@@ -47,12 +47,36 @@ router.delete('/api/dailysessions/:id', async function(req, res) {
     }
 });
 
+// Removes single execise from session by id.
+router.patch('/api/dailysessions/:sessionID/:exerciseID', async function(req, res) {
+    var sessionID = req.params.sessionID;
+    var exerciseID = req.params.exerciseID;
+    try{
+        const exercise = await Exercise.findById(exerciseID);
+        if(!exercise){
+            res.status(404).send({message: "Exercise not found!"});
+        }
 
+        const session = await DailySession.findByIdAndUpdate(
+            sessionID,
+            {$pull: {exercises : exercise}}
+        );
+
+        if(!session){
+            res.status(404).send({message: "Daily session not found!"});
+        }
+        
+        res.status(200).send({message: "Exercise deleted successfully!", session});
+
+    } catch(err){
+        res.status(500).send(err);
+    }
+});
 
 // Creates and stores a new daily session.
 router.post('/api/dailysessions', async function(req, res){ // TODO: Add error handling.
     var dailySession = new DailySession({
-        'userID' : 'getUserSomehow',
+        'userID' : 'getUserSomehow', // TODO: When user is implemented.
         'sessionName' : 'Push Day',
         'duration' : '60',
         'isCompleted' : false,
@@ -69,7 +93,7 @@ router.post('/api/dailysessions', async function(req, res){ // TODO: Add error h
 });
 
 // Adds an exercise by id to a session by id.
-router.post('/api/dailysessions/:sessionID/:exerciseID', async function(req, res){ // TODO: Add error handling.
+router.post('/api/dailysessions/:sessionID/:exerciseID', async function(req, res){ // TODO: Check for duplicates.
     var exerciseID = req.params.exerciseID;
     var sessionID = req.params.sessionID;
 
@@ -79,22 +103,20 @@ router.post('/api/dailysessions/:sessionID/:exerciseID', async function(req, res
         return res.status(404).send({message: "Exercise not found!"});
        }
 
-       const dailySession = await DailySession.findByIdAndUpdate(
+       const session = await DailySession.findByIdAndUpdate(
         sessionID,
         {$push: {exercises : exercise}}
        );
 
-       if(!dailySession){
+       if(!session){
         return res.status(404).send({message: "Daily session not found!"});
        }
-       res.status(200).send({message: "Exercise added", dailySession});
+       res.status(200).send({message: "Exercise added", session});
 
       } catch (err) {
         res.status(500).send(err);
       }
 });
-
-
 
 // Updates an attribute in a daily session.
 router.patch('/api/dailysessions/:id', async function(req, res){
