@@ -15,22 +15,22 @@ router.get('/api/exercises', async function(req, res){
 });
 
 // Returns a single item stored in the database by id.
-router.get('/api/exercises/:id', async function(req, res){
+router.get('/api/exercises/:id', async function(req, res, next){
     var id = req.params.id; // Extract id from param of the GET request. 
     try {
-        const exercise = await Exercise.findById(id);
+        var exercise = await Exercise.findById(id);
         res.status(200).json(exercise)
     } catch(err) {
-        res.status(404).send(err);
+        next();
     }
 });
 
-// Returns a single item stored in the database by id.
+// Returns a all item stored in the database by bodyPart.
 router.get('/api/exercises/:bodyPart', async function(req, res){
     var bodyPart = req.params.bodyPart; // Extract id from param of the GET request. 
     try {
-        const exercise = await Exercise.findOne({bodyPart: bodyPart})
-        res.status(200).json(exercise)
+        const exercise = await Exercise.find({bodyPart: bodyPart});
+        res.status(200).json(exercise);
     } catch(err) {
         res.status(404).send(err);
     }
@@ -73,6 +73,17 @@ router.post('/api/exercises', async function(req, res){ // TODO: Add error handl
       } catch (err) {
         res.status(500).send(err);
       }
+});
+
+// Updates a single attribute of item by id.
+router.patch('/api/exercises/:id', async function(req, res){
+    var id = req.params.id;
+    try{
+        const exercise = await Exercise.findByIdAndUpdate(id,{ $set: { sets: 3 }} );
+        res.status(201).send(exercise);
+    } catch(err){
+        res.status(500).send(err);
+    }
 });
 
 module.exports = router;
