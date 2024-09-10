@@ -3,11 +3,11 @@ var Schema   = mongoose.Schema;
 
 var achievementSchema = new Schema({
     userID: {
-        type : Schema.Types.ObjectId,
-        ref  : 'users',
+        type     : Schema.Types.ObjectId,
+        ref      : 'users',
         required : true
     },
-    description : {type: String},
+    description       : {type: String},
     exerciseMileStone : {
         type : Schema.Types.ObjectId,
         ref  : 'exercises'
