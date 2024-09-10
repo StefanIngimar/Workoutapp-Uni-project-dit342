@@ -6,6 +6,7 @@ var cors = require('cors');
 var history = require('connect-history-api-fallback');
 
 var exerciseController = require('./controllers/exerciseController');
+var DSController = require('./controllers/DSController');
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/animalDevelopmentDB';
@@ -38,6 +39,9 @@ app.get('/api', function(req, res) {
 
 // Use the controller-routes
 app.use(exerciseController);
+
+// Use the controller-routes
+app.use(DSController);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {
