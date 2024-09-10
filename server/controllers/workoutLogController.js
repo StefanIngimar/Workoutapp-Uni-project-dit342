@@ -1,7 +1,6 @@
-var express = require('express');
-var router = express.Router();
-
-var WorkoutLog = require('../models/workoutLogModel');
+const express = require('express');
+const router = express.Router();
+const WorkoutLog = require('../models/workoutLogModel.js');
 
 router.get('/api/workoutlogs', async function(req, res){
     try {
@@ -21,7 +20,7 @@ router.delete('/api/workoutlogs/:id', async function(req, res) {
     var id = req.params.id;
     try{
         const workoutLog = await WorkoutLog.findByIdAndDelete(id);
-        res.status(200).send({message: "Workout log successfully deleted"});}
+        res.status(200).send({workoutLog, message: "Workout log successfully deleted"});}
     catch(err){
         res.status(500).send(err);}});
 
@@ -33,15 +32,14 @@ router.put('/api/workoutlogs/:id', async function(req, res){
         res.status(500).send(err);}});
 
 router.post('/api/workoutlogs/newworkoutlog', async function(req, res){
-    
-    var workoutLog = new WorkoutLog({
-        'date' : req.body.date,
-        'exercises' : req.body.exercises});
     try {
+        var workoutLog = new WorkoutLog({
+            'date' : req.body.date,
+            'exercises' : req.body.exercises});
         const savedWorkoutLog = await workoutLog.save();
         res.status(200).send(savedWorkoutLog);}
     catch(err){
         res.status(500).send(err);}});
     
 
-module.exports = router;
+exports = module.exports = router;
