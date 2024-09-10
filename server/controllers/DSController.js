@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var DailySession = require('../models/dailySessionModel');
+const DailySession = require('../models/dailySessionModel');
+const Exercise = require('../models/exerciseModel'); 
 
 // Returns all items stored in the database.
 router.get('/api/dailysessions', async function(req, res){
@@ -46,6 +47,8 @@ router.delete('/api/dailysessions/:id', async function(req, res) {
     }
 });
 
+
+
 // Creates and stores a new daily session.
 router.post('/api/dailysessions', async function(req, res){ // TODO: Add error handling.
     var dailySession = new DailySession({
@@ -65,6 +68,35 @@ router.post('/api/dailysessions', async function(req, res){ // TODO: Add error h
       }
 });
 
+// Adds an exercise by id to a session by id.
+router.post('/api/dailysessions/:sessionID/:exerciseID', async function(req, res){ // TODO: Add error handling.
+    var exerciseID = req.params.exerciseID;
+    var sessionID = req.params.sessionID;
+
+    try {
+       const exercise = await Exercise.findById(exerciseID);
+       if(!exercise){
+        return res.status(404).send({message: "Exercise not found!"});
+       }
+
+       const dailySession = await DailySession.findByIdAndUpdate(
+        sessionID,
+        {$push: {exercises : exercise}}
+       );
+
+       if(!dailySession){
+        return res.status(404).send({message: "Daily session not found!"});
+       }
+       res.status(200).send({message: "Exercise added", dailySession});
+
+      } catch (err) {
+        res.status(500).send(err);
+      }
+});
+
+
+
+// Updates an attribute in a daily session.
 router.patch('/api/dailysessions/:id', async function(req, res){
     var id = req.params.id;
     try{
