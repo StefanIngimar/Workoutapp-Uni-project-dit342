@@ -9,6 +9,6 @@ var exerciseSchema = new Schema({
     isCustom : {type: Boolean},
     reps : {type: Number}, // Perhaps just have number be 0.
     sets : {type: Number} // Perhaps just have number be 0.
-})
+});
 
 module.exports = mongoose.model('exercises', exerciseSchema);
