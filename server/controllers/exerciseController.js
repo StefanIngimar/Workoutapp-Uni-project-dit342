@@ -49,22 +49,13 @@ router.delete('/api/exercises/:id', async function(req, res) {
 
 // Posts a new exercise to the database.
 router.post('/api/exercises', async function(req, res){ // TODO: Add error handling.
-    // var name = req.params.name;
-    // try {
-    //     const exercise = await Exercise.findOne({name : name});
-    //     if(exercise)
-    //     {
-    //         res.status(409).send("Exercise already exists!");
-    //     }
-    // }
-    
     var exercise = new Exercise({
-        'name' : 'Barbell Benchpress',
-        'hasWeights' : true,
-        'bodyPart' : 'Chest',
-        'isCustom' : false,
-        'reps' : 10,
-        'sets' : 4
+        'name' : req.body.name,
+        'hasWeights' : req.body.hasWeights,
+        'bodyPart' : req.body.bodyPart,
+        'isCustom' : req.body.isCustom,
+        'reps' : req.body.reps,
+        'sets' : req.body.sets
     });
 
     try {
@@ -75,11 +66,20 @@ router.post('/api/exercises', async function(req, res){ // TODO: Add error handl
       }
 });
 
-// Updates a single attribute of item by id.
+// Updates attributes of item by id.
 router.patch('/api/exercises/:id', async function(req, res){
     var id = req.params.id;
     try{
-        const exercise = await Exercise.findByIdAndUpdate(id,{ $set: { sets: 3 }} );
+        const exercise = await Exercise.findByIdAndUpdate(id,{ 
+            $set: { 
+            name: req.body.name,
+            hasWeights: req.body.hasWeights,
+            reps: req.body.bodyPart,
+            isCustom: req.body.isCustom,
+            reps: req.body.reps,
+            sets: req.body.sets}
+        },
+        {new: true}); // return new version
         res.status(201).send(exercise);
     } catch(err){
         res.status(500).send(err);
