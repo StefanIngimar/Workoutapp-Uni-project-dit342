@@ -25,11 +25,13 @@ router.get('/api/users/:id', async function(req, res, next){
     }
 });
 
-// Return all Users in database by Username
+// Return user in database by Username
+// Maybe not necessary?
 router.get('/api/users/:userName', async function(req, res){
     var userName = req.params.userName;
     try{
-        const User = await User.find({userName: userName});
+        const aUser = await User.find({userName: userName});
+        res.status(200).json(aUser);
     }catch(err){
         res.status(404).send(err);
     }
@@ -46,6 +48,8 @@ router.delete('/api/users/:id', async function(req, res){
         res.status(500).send(err);
     }
 });
+
+
 
 // Creation of a new User
 router.post('/api/users', async function(req, res){
@@ -64,18 +68,24 @@ router.post('/api/users', async function(req, res){
 });
 
 
-// TODO
+// Updates a certain field
 router.patch('/api/users/:id', async function(req, res){
     var id = req.params.id;
     try{
-        const user = await User.findByIdAndUpdate(id,{ $set: {
-            password : "as"
-        }});
+        const user = await User.findByIdAndUpdate(id, { 
+            $set: { 
+                password: req.body.password,
+                email: req.body.email,
+                profilePic: req.body.profilePic},
+            },
+        {new: true});
         res.status(201).send(user);
-    } catch {err}{
+    } catch(err){
         res.status(500).send(err);
     }
 });
+
+
 
 
 module.exports = router;
