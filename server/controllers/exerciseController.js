@@ -70,17 +70,28 @@ router.post('/api/exercises', async function(req, res){ // TODO: Add error handl
 router.patch('/api/exercises/:id', async function(req, res){
     var id = req.params.id;
     try{
-        const exercise = await Exercise.findByIdAndUpdate(id,{ 
-            $set: { 
-            name: req.body.name,
-            hasWeights: req.body.hasWeights,
-            reps: req.body.bodyPart,
-            isCustom: req.body.isCustom,
-            reps: req.body.reps,
-            sets: req.body.sets}
-        },
-        {new: true}); // return new version
-        res.status(201).send(exercise);
+        if(req.body.isCustom){
+            const exercise = await Exercise.findByIdAndUpdate(id,{ 
+                $set: { 
+                name: req.body.name,
+                hasWeights: req.body.hasWeights,
+                reps: req.body.bodyPart,
+                isCustom: req.body.isCustom,
+                reps: req.body.reps,
+                sets: req.body.sets}
+            },
+            {new: true}); // return new version
+            res.status(201).send(exercise);
+        } else {
+            const exercise = await Exercise.findByIdAndUpdate(id,{ // Ugly but works.
+                $set: { 
+                    reps: req.body.reps,
+                    sets: req.body.sets}
+            },
+            {new: true}); // return new version
+            res.status(201).send(exercise);
+        }
+
     } catch(err){
         res.status(500).send(err);
     }
