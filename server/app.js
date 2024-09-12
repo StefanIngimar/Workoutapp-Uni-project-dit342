@@ -8,6 +8,7 @@ var workoutLogController = require('./controllers/workoutLogController');
 var exerciseController = require('./controllers/exerciseController');
 var DSController = require('./controllers/DSController');
 var userController = require('./controllers/userController');
+var leaderboardController = require('./controllers/leaderboardController');
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/animalDevelopmentDB';
@@ -41,6 +42,9 @@ app.get('/api', function(req, res) {
 // Use the controller-routes
 app.use(exerciseController);
 app.use(workoutLogController);
+app.use(DSController);
+app.use(userController);
+app.use(leaderboardController);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {
