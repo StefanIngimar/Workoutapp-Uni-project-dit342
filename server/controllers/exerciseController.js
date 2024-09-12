@@ -26,10 +26,21 @@ router.get('/api/exercises/:id', async function(req, res, next){
 });
 
 // Returns a all item stored in the database by bodyPart.
-router.get('/api/exercises/:bodyPart', async function(req, res){
+router.get('/api/exercises/:bodyPart', async function(req, res, next){
     var bodyPart = req.params.bodyPart; // Extract id from param of the GET request. 
     try {
         const exercise = await Exercise.find({bodyPart: bodyPart});
+        res.status(200).json(exercise);
+    } catch(err) {
+        next();
+    }
+});
+
+// Returns a all item stored in the database by name.
+router.get('/api/exercises/:name', async function(req, res){
+    var name = req.params.name; // Extract id from param of the GET request. 
+    try {
+        const exercise = await Exercise.find({name: name});
         res.status(200).json(exercise);
     } catch(err) {
         res.status(404).send(err);
@@ -76,7 +87,6 @@ router.patch('/api/exercises/:id', async function(req, res){
                 name: req.body.name,
                 hasWeights: req.body.hasWeights,
                 reps: req.body.bodyPart,
-                isCustom: req.body.isCustom,
                 reps: req.body.reps,
                 sets: req.body.sets}
             },
