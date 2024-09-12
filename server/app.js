@@ -4,8 +4,7 @@ var morgan = require('morgan');
 var path = require('path');
 var cors = require('cors');
 var history = require('connect-history-api-fallback');
-
-// Controllers
+var workoutLogController = require('./controllers/workoutLogController');
 var exerciseController = require('./controllers/exerciseController');
 var DSController = require('./controllers/DSController');
 var userController = require('./controllers/userController');
@@ -41,8 +40,7 @@ app.get('/api', function(req, res) {
 
 // Use the controller-routes
 app.use(exerciseController);
-app.use(DSController);
-app.use(userController);
+app.use(workoutLogController);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {
