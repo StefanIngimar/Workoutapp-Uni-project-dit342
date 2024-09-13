@@ -41,6 +41,9 @@ app.get('/api', function(req, res) {
 // Use the controller-routes
 app.use(exerciseController);
 app.use(workoutLogController);
+app.use(userController);
+app.use(DSController);
+
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {

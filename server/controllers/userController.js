@@ -22,13 +22,13 @@ router.get('/api/users', async function(req, res){
 
 
 // Return single User from database
-router.get('/api/users/:id', async function(req, res, next){
+router.get('/api/users/:id', async function(req, res){
     var id = req.params.id;
     try{
         const aUser = await User.findById(id);
         res.status(200).json(aUser);
     } catch(err){
-        next();
+        res.status(404).send(err);
     }
 });
 
