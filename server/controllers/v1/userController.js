@@ -6,9 +6,14 @@ Express validator to verify email from:
 "https://express-validator.github.io/docs/guides/getting-started/"
 */ 
 const {body, validationResult} = require('express-validator');
+const {checkDuplicateUserOrEmail} = require('../../helpers/helperFunctions');
 
 // Uses user model
 var User = require('../../models/userModel');
+
+
+//TODO: look over RESTful API codes that are returned to client
+//TODO: Add password hashing for POST and PATCH perhaps through a good library(bcrypt?)
 
 // Return all Users from database
 router.get('/api/v1/users', async function(req, res){
@@ -58,13 +63,20 @@ router.delete('/api/v1/users/:id', async function(req, res){
 });
 
 
-
 // Creation of a new User
 router.post('/api/v1/users',
-    [
-        body('email').isEmail().withMessage('Enter a valid email in the format xxx@xxx.xxx')
+    [   
+        body('userName').notEmpty().withMessage('Username is required'),
+        body('email').isEmail().withMessage('Enter a valid email in the format xxx@xxx.xxx'),
+        body('password').isLength({min: 8}).withMessage('Password must be at least 8 characters long')
     ], 
     async function(req, res){
+        // Call helper to check username and email
+        const duplicateUserOrEmail = await checkDuplicateUserOrEmail(req.body.userName, req.body.email);
+        if (duplicateUserOrEmail){
+            return res.status(400).json({error: duplicateUserOrEmail.error});
+        }
+        // If the email and username are not taken, proceed with user creation
         const queryResult = validationResult(req);
         if (queryResult.isEmpty()){
             var user = new User({
@@ -75,7 +87,6 @@ router.post('/api/v1/users',
             });
         } else {
             return res.status(400).json({errors: queryResult.array()});
-
         }
     try{
         const savedUser = await user.save();
@@ -87,23 +98,37 @@ router.post('/api/v1/users',
 
 
 // Updates a certain field
-router.patch('/api/v1/users/:id', async function(req, res){
-    var id = req.params.id;
-    try{
-        const user = await User.findByIdAndUpdate(id, { 
-            $set: { 
-                password: req.body.password,
-                email: req.body.email,
-                profilePic: req.body.profilePic},
-            },
-        {new: true});
-        res.status(201).send(user);
-    } catch(err){
-        res.status(500).send(err);
-    }
+router.patch('/api/v1/users/:id',
+    [
+        body('userName').notEmpty().withMessage('If you wish to change username, enter a new non empty username'),
+        body('email').isEmail().withMessage('Enter a valid email in the format xxx@xxx.xxx'),
+        body('password').isLength({min: 8}).withMessage('Password must be at least 8 characters long')
+    ], 
+    async function(req, res){
+        const queryResult = validationResult(req);
+        if (!queryResult.isEmpty()){
+            return res.status(400).json({errors: queryResult.array()});
+        }
+        try{
+            // Calling helper to check email and username
+            const duplicateUserOrEmail = await checkDuplicateUserOrEmail(req.body.userName, req.body.email);
+            if(duplicateUserOrEmail){
+                return res.status(400).json({error: duplicateUserOrEmail.error});
+            }
+            var id = req.params.id;
+            const user = await User.findByIdAndUpdate(id, { 
+                $set: { 
+                    userName: req.body.userName,
+                    password: req.body.password,
+                    email: req.body.email,
+                    profilePic: req.body.profilePic
+                }
+            }, {new: true});
+            res.status(201).send(user);
+        } catch (err){
+            res.status(500).send(err);
+        }
 });
-
-
 
 
 module.exports = router;
