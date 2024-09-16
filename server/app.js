@@ -7,7 +7,8 @@ var history = require('connect-history-api-fallback');
 var workoutLogController = require('./controllers/workoutLogController');
 var exerciseController = require('./controllers/exerciseController');
 var DSController = require('./controllers/DSController');
-var userController = require('./controllers/userController');
+var userControllerV1 = require('./controllers/v1/userController');
+var achievementControllerV1 = require('./controllers/v1/achievementController');
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/animalDevelopmentDB';
@@ -41,7 +42,8 @@ app.get('/api', function(req, res) {
 // Use the controller-routes
 app.use(exerciseController);
 app.use(workoutLogController);
-app.use(userController);
+app.use(userControllerV1);
+app.use(achievementControllerV1);
 app.use(DSController);
 
 

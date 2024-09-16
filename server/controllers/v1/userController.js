@@ -8,10 +8,10 @@ Express validator to verify email from:
 const {body, validationResult} = require('express-validator');
 
 // Uses user model
-var User = require('../models/userModel');
+var User = require('../../models/userModel');
 
 // Return all Users from database
-router.get('/api/users', async function(req, res){
+router.get('/api/v1/users', async function(req, res){
     try {
         const allUsers = await User.find({});
         res.status(200).json(allUsers);
@@ -22,7 +22,7 @@ router.get('/api/users', async function(req, res){
 
 
 // Return single User from database
-router.get('/api/users/:id', async function(req, res){
+router.get('/api/v1/users/:id', async function(req, res){
     var id = req.params.id;
     try{
         const aUser = await User.findById(id);
@@ -33,7 +33,7 @@ router.get('/api/users/:id', async function(req, res){
 });
 
 // Return user in database by Username
-router.get('/api/users/:userName', async function(req, res){
+router.get('/api/v1/users/:userName', async function(req, res){
     var userName = req.params.userName; //extract userName from URL parameter
     try{
         // Queries database for user that matches URL
@@ -47,7 +47,7 @@ router.get('/api/users/:userName', async function(req, res){
 
 
 // Delete a User by id
-router.delete('/api/users/:id', async function(req, res){
+router.delete('/api/v1/users/:id', async function(req, res){
     var id = req.params.id;
     try{
         var aUser = await User.findByIdAndDelete(id);
@@ -60,7 +60,7 @@ router.delete('/api/users/:id', async function(req, res){
 
 
 // Creation of a new User
-router.post('/api/users',
+router.post('/api/v1/users',
     [
         body('email').isEmail().withMessage('Enter a valid email in the format xxx@xxx.xxx')
     ], 
@@ -87,7 +87,7 @@ router.post('/api/users',
 
 
 // Updates a certain field
-router.patch('/api/users/:id', async function(req, res){
+router.patch('/api/v1/users/:id', async function(req, res){
     var id = req.params.id;
     try{
         const user = await User.findByIdAndUpdate(id, { 
