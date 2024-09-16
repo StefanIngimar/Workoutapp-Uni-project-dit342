@@ -5,6 +5,7 @@ var Schema   = mongoose.Schema;
 var exerciseSchema = new Schema({
     name : {type: String},
     hasWeights : {type: Boolean},
+    weight : {type: Number},
     bodyPart : {type: String}, // Might have to create an enum.
     isCustom : {type: Boolean},
     reps : {type: Number}, // Perhaps just have number be 0.
