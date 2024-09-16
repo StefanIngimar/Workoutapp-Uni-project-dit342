@@ -68,14 +68,26 @@ router.delete('/api/exercises/:id', async function(req, res) {
 
 // Posts a new exercise to the database.
 router.post('/api/exercises', async function(req, res){ // TODO: Add error handling.
-    var exercise = new Exercise({
-        'name' : req.body.name,
-        'hasWeights' : req.body.hasWeights,
-        'bodyPart' : req.body.bodyPart,
-        'isCustom' : req.body.isCustom,
-        'reps' : req.body.reps,
-        'sets' : req.body.sets
-    });
+    if(req.body.hasWeights){
+        var exercise = new Exercise({
+            'name' : req.body.name,
+            'hasWeights' : req.body.hasWeights,
+            'weight' : req.body.weight,
+            'bodyPart' : req.body.bodyPart,
+            'isCustom' : req.body.isCustom,
+            'reps' : req.body.reps,
+            'sets' : req.body.sets
+        });
+    } else{
+        var exercise = new Exercise({
+            'name' : req.body.name,
+            'hasWeights' : req.body.hasWeights,
+            'bodyPart' : req.body.bodyPart,
+            'isCustom' : req.body.isCustom,
+            'reps' : req.body.reps,
+            'sets' : req.body.sets
+        });
+    }
 
     try {
         const savedExercise = await exercise.save();
@@ -95,6 +107,7 @@ router.patch('/api/exercises/:id', async function(req, res){
                 name: req.body.name,
                 bodyPart: req.body.bodyPart,
                 hasWeights: req.body.hasWeights,
+                weight: req.body.weight,
                 reps: req.body.bodyPart,
                 reps: req.body.reps,
                 sets: req.body.sets}
@@ -104,6 +117,7 @@ router.patch('/api/exercises/:id', async function(req, res){
         } else {
             const exercise = await Exercise.findByIdAndUpdate(id,{ // Ugly but works.
                 $set: { 
+                    weight: req.body.weight,
                     reps: req.body.reps,
                     sets: req.body.sets}
             },
