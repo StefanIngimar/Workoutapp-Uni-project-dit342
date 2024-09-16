@@ -30,6 +30,11 @@ router.get('/api/exercises/:bodyPart', async function(req, res, next){
     var bodyPart = req.params.bodyPart; // Extract id from param of the GET request. 
     try {
         const exercise = await Exercise.find({bodyPart: bodyPart});
+
+        if(exercise.length === 0){
+            return next();
+        }
+
         res.status(200).json(exercise);
     } catch(err) {
         next();
@@ -41,6 +46,9 @@ router.get('/api/exercises/:name', async function(req, res){
     var name = req.params.name; // Extract id from param of the GET request. 
     try {
         const exercise = await Exercise.find({name: name});
+        if(exercise.length === 0){
+            return res.status(404).send({message: "Not found!"});
+        }
         res.status(200).json(exercise);
     } catch(err) {
         res.status(404).send(err);
@@ -85,6 +93,7 @@ router.patch('/api/exercises/:id', async function(req, res){
             const exercise = await Exercise.findByIdAndUpdate(id,{ 
                 $set: { 
                 name: req.body.name,
+                bodyPart: req.body.bodyPart,
                 hasWeights: req.body.hasWeights,
                 reps: req.body.bodyPart,
                 reps: req.body.reps,
