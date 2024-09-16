@@ -48,7 +48,7 @@ router.delete('/api/dailysessions/:id', async function(req, res) {
 });
 
 // Removes single execise from session by id.
-router.patch('/api/dailysessions/:sessionID', async function(req, res, next) {
+router.patch('/api/dailysessions/:sessionID', async function(req, res, next) { // Perhaps should be delete instead of patch?
     var sessionID = req.params.sessionID;
     var exerciseID = req.body.exerciseID;
     try{
@@ -113,7 +113,7 @@ router.post('/api/dailysessions', async function(req, res){ // TODO: Add error h
 });
 
 // Adds an exercise by id to a session by id.
-router.post('/api/dailysessions/:sessionID', async function(req, res){ // TODO: Check for duplicates. Also might be patch instead of post..
+router.put('/api/dailysessions/:sessionID', async function(req, res){ // TODO: Check for duplicates. Also might be post instead of put..
     var exerciseID = req.body.exerciseID;
     var sessionID = req.params.sessionID;
 
