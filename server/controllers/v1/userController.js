@@ -6,13 +6,15 @@ Express validator to verify email from:
 "https://express-validator.github.io/docs/guides/getting-started/"
 */ 
 const {body, validationResult} = require('express-validator');
+
+// Import helper functions
 const {checkDuplicateUserOrEmail} = require('../../helpers/helperFunctions');
 
 // Uses user model
 var User = require('../../models/userModel');
 
 
-//TODO: look over RESTful API codes that are returned to client
+//TODO: Implement something for the profile pic.
 //TODO: Add password hashing for POST and PATCH perhaps through a good library(bcrypt?)
 
 // Return all Users from database
@@ -66,6 +68,7 @@ router.delete('/api/v1/users/:id', async function(req, res){
 // Creation of a new User
 router.post('/api/v1/users',
     [   
+        // Express validator to check if the username, email, and password are valid
         body('userName').notEmpty().withMessage('Username is required'),
         body('email').isEmail().withMessage('Enter a valid email in the format xxx@xxx.xxx'),
         body('password').isLength({min: 8}).withMessage('Password must be at least 8 characters long')
@@ -100,35 +103,39 @@ router.post('/api/v1/users',
 // Updates a certain field
 router.patch('/api/v1/users/:id',
     [
-        body('userName').notEmpty().withMessage('If you wish to change username, enter a new non empty username'),
-        body('email').isEmail().withMessage('Enter a valid email in the format xxx@xxx.xxx'),
-        body('password').isLength({min: 8}).withMessage('Password must be at least 8 characters long')
-    ], 
-    async function(req, res){
+        // Express validator to check if the username, email, and password are valid
+        body('userName').optional().notEmpty().withMessage('If you wish to change username, enter a new non empty username'),
+        body('email').optional().isEmail().withMessage('Enter a valid email in the format xxx@xxx.xxx'),
+        body('password').optional().isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
+    ],
+    async function (req, res) {
         const queryResult = validationResult(req);
-        if (!queryResult.isEmpty()){
-            return res.status(400).json({errors: queryResult.array()});
+        if (!queryResult.isEmpty()) {
+            return res.status(400).json({ errors: queryResult.array() });
         }
-        try{
-            // Calling helper to check email and username
-            const duplicateUserOrEmail = await checkDuplicateUserOrEmail(req.body.userName, req.body.email);
-            if(duplicateUserOrEmail){
-                return res.status(400).json({error: duplicateUserOrEmail.error});
-            }
-            var id = req.params.id;
-            const user = await User.findByIdAndUpdate(id, { 
-                $set: { 
-                    userName: req.body.userName,
-                    password: req.body.password,
-                    email: req.body.email,
-                    profilePic: req.body.profilePic
+        try {
+            // Calling helper to check email and username if they are provided
+            if (req.body.userName || req.body.email) {
+                const duplicateUserOrEmail = await checkDuplicateUserOrEmail(req.body.userName, req.body.email);
+                if (duplicateUserOrEmail) {
+                    return res.status(400).json({ error: duplicateUserOrEmail.error });
                 }
-            }, {new: true});
+            }
+
+            var id = req.params.id;
+            let updateFields = {};
+
+            if (req.body.userName) updateFields.userName = req.body.userName;
+            if (req.body.password) updateFields.password = req.body.password;
+            if (req.body.email) updateFields.email = req.body.email;
+            if (req.file) updateFields.profilePic = req.file.filename;
+
+            const user = await User.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
             res.status(201).send(user);
-        } catch (err){
+        } catch (err) {
             res.status(500).send(err);
         }
-});
+    });
 
 
 module.exports = router;

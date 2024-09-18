@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 
 var Achievement = require('../../models/achievementModel');
+var User = require('../../models/userModel');
 
 // Return all achievements
 router.get('/api/v1/achievements', async function(req, res) {
@@ -74,6 +75,11 @@ router.post('/api/v1/achievements', async function(req, res){
 router.patch('/api/v1/achievements/:id', async function(req, res){
     var id = req.params.id;
     try{
+        // Error handling for a user
+        const user = await User.findById(req.body.userID);
+        if(!user){
+            return res.status(404).send({message: "User not found"});
+        }
         const achievement = await Achievement.findByIdAndUpdate(id, {
             $set: {
                 exerciseMilestone: req.body.exerciseMilestone,
