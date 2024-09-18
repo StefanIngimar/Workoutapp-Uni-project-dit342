@@ -121,7 +121,7 @@ router.put('/api/v1/dailysessions/:sessionID', async function (req, res) { // TO
     try {
         const exercise = await Exercise.findById(exerciseID);
         if (!exercise) {
-            return res.status(403).send({ message: "Exercise not found!" });
+            return res.status(404).send({ message: "Exercise not found!" });
         }
 
         const session = await DailySession.findByIdAndUpdate(
