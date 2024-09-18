@@ -20,7 +20,7 @@
 							"var jsonData = pm.response.json();\r",
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
 							"\r",
-							"pm.environment.set(\"exerciseID\", jsonData.data._id);\r",
+							"pm.environment.set(\"exerciseId\", jsonData.data._id);\r",
 							"\r",
 							"pm.test(\"Correct exercise response data\", function() {\r",
 							"    Object.keys(sentData).forEach(key => {\r",
@@ -288,7 +288,7 @@
 							"var jsonData = pm.response.json();\r",
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
 							"\r",
-							"pm.environment.set(\"sessionID\", jsonData.data._id);\r",
+							"pm.environment.set(\"sessionId\", jsonData.data._id);\r",
 							"\r",
 							"pm.test(\"Correct exercise response data\", function() {\r",
 							"    Object.keys(sentData).forEach(key => {\r",
@@ -469,7 +469,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/api/v1/dailysessions/{{sessionID}}",
+					"raw": "{{host}}/api/v1/dailysessions/{{sessionId}}",
 					"host": [
 						"{{host}}"
 					],
@@ -477,7 +477,7 @@
 						"api",
 						"v1",
 						"dailysessions",
-						"{{sessionID}}"
+						"{{sessionId}}"
 					]
 				}
 			},
