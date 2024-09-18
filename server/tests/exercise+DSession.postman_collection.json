@@ -20,6 +20,8 @@
 							"var jsonData = pm.response.json();\r",
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
 							"\r",
+							"pm.environment.set(\"exerciseID\", jsonData.data._id);\r",
+							"\r",
 							"pm.test(\"Correct exercise response data\", function() {\r",
 							"    Object.keys(sentData).forEach(key => {\r",
 							"        pm.test(`Correct response data: ${key}`, function() {\r",
@@ -143,7 +145,7 @@
 						"api",
 						"v1",
 						"exercises",
-						"65deeb33f05caf2f308e0d09"
+						"65deeb33f05caf2f308e0d02"
 					]
 				}
 			},
@@ -285,6 +287,8 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"pm.environment.set(\"sessionID\", jsonData.data._id);\r",
 							"\r",
 							"pm.test(\"Correct exercise response data\", function() {\r",
 							"    Object.keys(sentData).forEach(key => {\r",
@@ -440,6 +444,16 @@
 						"type": "text/javascript",
 						"packages": {}
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
 				}
 			],
 			"request": {
@@ -447,7 +461,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"exerciseID\": \"66deeb33f05caf2f308e0d02\"\r\n}\r\n\r\n\r\n",
+					"raw": "{\r\n    \"exerciseID\": \"{{exerciseID}}\"\r\n}\r\n\r\n\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -455,7 +469,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/api/v1/dailysessions/66e04057e98132852cd611f6",
+					"raw": "{{host}}/api/v1/dailysessions/{{sessionID}}",
 					"host": [
 						"{{host}}"
 					],
@@ -463,7 +477,7 @@
 						"api",
 						"v1",
 						"dailysessions",
-						"66e04057e98132852cd611f6"
+						"{{sessionID}}"
 					]
 				}
 			},
