@@ -447,7 +447,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"exerciseID\": \"66e8159b68c81db258c38d51\"\r\n}\r\n\r\n\r\n",
+					"raw": "{\r\n    \"exerciseID\": \"66deeb33f05caf2f308e0d02\"\r\n}\r\n\r\n\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -455,7 +455,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/api/v1/dailysessions/66e04670546a9ddaa56b1d7a",
+					"raw": "{{host}}/api/v1/dailysessions/66e04057e98132852cd611f6",
 					"host": [
 						"{{host}}"
 					],
@@ -463,7 +463,7 @@
 						"api",
 						"v1",
 						"dailysessions",
-						"66e04670546a9ddaa56b1d7a"
+						"66e04057e98132852cd611f6"
 					]
 				}
 			},
