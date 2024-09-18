@@ -20,7 +20,7 @@
 							"var jsonData = pm.response.json();\r",
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
 							"\r",
-							"pm.environment.set(\"exerciseId\", jsonData.data._id);\r",
+							"pm.globals.set(\"exerciseId\", jsonData.data._id);\r",
 							"\r",
 							"pm.test(\"Correct exercise response data\", function() {\r",
 							"    Object.keys(sentData).forEach(key => {\r",
@@ -288,7 +288,7 @@
 							"var jsonData = pm.response.json();\r",
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
 							"\r",
-							"pm.environment.set(\"sessionId\", jsonData.data._id);\r",
+							"pm.globals.set(\"sessionId\", jsonData.data._id);\r",
 							"\r",
 							"pm.test(\"Correct exercise response data\", function() {\r",
 							"    Object.keys(sentData).forEach(key => {\r",
@@ -461,7 +461,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"exerciseID\": \"{{exerciseID}}\"\r\n}\r\n\r\n\r\n",
+					"raw": "{\r\n    \"exerciseID\": \"{{exerciseId}}\"\r\n}\r\n\r\n\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
