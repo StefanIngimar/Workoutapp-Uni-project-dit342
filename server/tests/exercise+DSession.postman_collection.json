@@ -20,7 +20,7 @@
 							"var jsonData = pm.response.json();\r",
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
 							"\r",
-							"pm.globals.set(\"exerciseId\", jsonData.data._id);\r",
+							"pm.globals.set(\"exerciseId\", jsonData._id);\r",
 							"\r",
 							"pm.test(\"Correct exercise response data\", function() {\r",
 							"    Object.keys(sentData).forEach(key => {\r",
@@ -59,10 +59,11 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/api/v1/exercises",
+					"raw": "localhost:3000/api/v1/exercises",
 					"host": [
-						"{{host}}"
+						"localhost"
 					],
+					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -288,7 +289,7 @@
 							"var jsonData = pm.response.json();\r",
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
 							"\r",
-							"pm.globals.set(\"sessionId\", jsonData.data._id);\r",
+							"pm.globals.set(\"sessionId\", jsonData._id);\r",
 							"\r",
 							"pm.test(\"Correct exercise response data\", function() {\r",
 							"    Object.keys(sentData).forEach(key => {\r",
@@ -603,24 +604,5 @@
 			},
 			"response": []
 		}
-	],
-	"id": "3e7e069a-c28d-4c9f-9a7f-0f348ea9f836",
-	"name": "New Environment",
-	"values": [
-		{
-			"key": "sessionId",
-			"value": "",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "exerciseId",
-			"value": "",
-			"type": "default",
-			"enabled": true
-		}
-	],
-	"_postman_variable_scope": "environment",
-	"_postman_exported_at": "2024-09-18T14:56:34.395Z",
-	"_postman_exported_using": "Postman/11.13.0"
+	]
 }
