@@ -4,11 +4,13 @@ var Schema = mongoose.Schema;
 var workoutLogSchema = new Schema({
     date: { type: Date, required: true },
     session: [{
-        //exercise: { type: Schema.Types.ObjectId, ref: 'exercises' },
-        exercise: { type: String},
+        user: { type: Schema.Types.ObjectId, ref: 'users' },
+        exercises:[{
+        exercise: { type: Schema.Types.ObjectId, ref: 'exercises' },
         sets: { type: Number },
         reps: { type: Number },
         weight: { type: Number }
+    }]
     }]
 });
 
