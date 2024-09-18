@@ -133,7 +133,7 @@ router.put('/api/dailysessions/:sessionID', async function (req, res) { // TODO:
         if (!session) {
             return res.status(404).send({ message: "Daily session not found!" });
         }
-        res.status(201).send({ message: "Exercise added", session });
+        res.status(200).send({ message: "Exercise added", session });
 
     } catch (err) {
         res.status(500).send(err);
