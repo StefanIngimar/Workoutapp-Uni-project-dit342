@@ -57,47 +57,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/api/v1/exercises",
+					"raw": "{{host}}/api/v1/exercises",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
 						"exercises"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:3000/api",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Correct status code\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:3000/api",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api"
 					]
 				}
 			},
@@ -135,11 +102,10 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/api/v1/exercises",
+					"raw": "{{host}}/api/v1/exercises",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -180,11 +146,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/api/v1/exercises/66deeb33f05caf2f308e0d02",
+					"raw": "{{host}}/api/v1/exercises/66deeb33f05caf2f308e0d02",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -227,11 +192,10 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/api/v1/exercises/",
+					"raw": "{{host}}/api/v1/exercises/",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -282,11 +246,10 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/api/v1/exercises/66e1724af912228e2c880aeb",
+					"raw": "{{host}}/api/v1/exercises/66e1724af912228e2c880aeb",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -317,11 +280,10 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/api/v1/exercises/66e171e6f912228e2c880ae9",
+					"raw": "{{host}}/api/v1/exercises/66e171e6f912228e2c880ae9",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -372,11 +334,10 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/api/v1/dailysessions",
+					"raw": "{{host}}/api/v1/dailysessions",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -406,11 +367,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/api/v1/dailysessions",
+					"raw": "{{host}}/api/v1/dailysessions",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -440,11 +400,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/api/v1/dailysessions/66e04057e98132852cd611f6",
+					"raw": "{{host}}/api/v1/dailysessions/66e04057e98132852cd611f6",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -475,11 +434,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/api/v1/dailysessions/Mega day",
+					"raw": "{{host}}/api/v1/dailysessions/Mega day",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -519,11 +477,10 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/api/v1/dailysessions/66e04670546a9ddaa56b1d7a",
+					"raw": "{{host}}/api/v1/dailysessions/66e04670546a9ddaa56b1d7a",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -574,11 +531,10 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/api/v1/dailysessions/66e04670546a9ddaa56b1d7a",
+					"raw": "{{host}}/api/v1/dailysessions/66e04670546a9ddaa56b1d7a",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -618,11 +574,10 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/api/v1/dailysessions/66e04670546a9ddaa56b1d7a",
+					"raw": "{{host}}/api/v1/dailysessions/66e04670546a9ddaa56b1d7a",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -653,11 +608,10 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/api/v1/dailysessions/66e173bc5f6f3ebf098c032e",
+					"raw": "{{host}}/api/v1/dailysessions/66e173bc5f6f3ebf098c032e",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
