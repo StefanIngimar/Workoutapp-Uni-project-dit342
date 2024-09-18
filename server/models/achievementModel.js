@@ -10,12 +10,14 @@ var achievementSchema = new Schema({
     description       : {type: String},
     exerciseMileStone : {
         type : Schema.Types.ObjectId,
+        // Stores object id of the exercise
         ref  : 'exercises'
     },
-    numOfTimesInGym : {
+    numOfTimesInGym : [{
         type : Schema.Types.ObjectId,
+        // Stores object id of the workout log
         ref  : 'workoutlog',
-    }
+    }]
 
 })
 
