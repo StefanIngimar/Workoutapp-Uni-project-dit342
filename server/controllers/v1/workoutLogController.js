@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const WorkoutLog = require('../models/workoutLogModel.js');
+const WorkoutLog = require('../../models/workoutLogModel.js');
 
 router.get('/api/v1/workoutlogs', async function(req, res){
     try {

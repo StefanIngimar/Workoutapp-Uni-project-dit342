@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
 
-const DailySession = require('../models/dailySessionModel');
-const Exercise = require('../models/exerciseModel');
+const DailySession = require('../../models/dailySessionModel');
+const Exercise = require('../../models/exerciseModel');
 
 // Returns all items stored in the database.
-router.get('/api/dailysessions', async function (req, res) {
+router.get('/api/v1/dailysessions', async function (req, res) {
     try {
         const allSessions = await DailySession.find({});
         res.status(200).json(allSessions)
@@ -15,7 +15,7 @@ router.get('/api/dailysessions', async function (req, res) {
 });
 
 // Returns a single item stored in the database by id.
-router.get('/api/dailysessions/:id', async function (req, res, next) {
+router.get('/api/v1/dailysessions/:id', async function (req, res, next) {
     var id = req.params.id;
     try {
         var session = await DailySession.findById(id);
@@ -26,7 +26,7 @@ router.get('/api/dailysessions/:id', async function (req, res, next) {
 });
 
 // Returns a all item stored in the database by sessionName.
-router.get('/api/dailysessions/:sessionName', async function (req, res) {
+router.get('/api/v1/dailysessions/:sessionName', async function (req, res) {
     var sessionName = req.params.sessionName;
     try {
         const session = await DailySession.find({ sessionName: sessionName });
@@ -37,7 +37,7 @@ router.get('/api/dailysessions/:sessionName', async function (req, res) {
 });
 
 // Deletes single item by id.
-router.delete('/api/dailysessions/:id', async function (req, res) {
+router.delete('/api/v1/dailysessions/:id', async function (req, res) {
     var id = req.params.id;
     try {
         const session = await DailySession.findByIdAndDelete(id);
@@ -48,7 +48,7 @@ router.delete('/api/dailysessions/:id', async function (req, res) {
 });
 
 // Removes single execise from session by id.
-router.patch('/api/dailysessions/:sessionID', async function (req, res, next) { // Perhaps should be delete instead of patch?
+router.patch('/api/v1/dailysessions/:sessionID', async function (req, res, next) { // Perhaps should be delete instead of patch?
     var sessionID = req.params.sessionID;
     var exerciseID = req.body.exerciseID;
     try {
@@ -76,7 +76,7 @@ router.patch('/api/dailysessions/:sessionID', async function (req, res, next) { 
 });
 
 // Updates an attribute in a daily session.
-router.patch('/api/dailysessions/:id', async function (req, res) {
+router.patch('/api/v1/dailysessions/:id', async function (req, res) {
     var id = req.params.id;
     try {
         const session = await DailySession.findByIdAndUpdate(id, {
@@ -95,7 +95,7 @@ router.patch('/api/dailysessions/:id', async function (req, res) {
 });
 
 // Creates and stores a new daily session.
-router.post('/api/dailysessions', async function (req, res) { // TODO: Add error handling.
+router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add error handling.
     var dailySession = new DailySession({
         'userID': 'getUserSomehow', // TODO: When user is implemented.
         'sessionName': req.body.sessionName,
@@ -114,7 +114,7 @@ router.post('/api/dailysessions', async function (req, res) { // TODO: Add error
 });
 
 // Adds an exercise by id to a session by id.
-router.put('/api/dailysessions/:sessionID', async function (req, res) { // TODO: Check for duplicates. Also might be post instead of put..
+router.put('/api/v1/dailysessions/:sessionID', async function (req, res) { // TODO: Check for duplicates. Also might be post instead of put..
     var exerciseID = req.body.exerciseID;
     var sessionID = req.params.sessionID;
 

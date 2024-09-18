@@ -2,10 +2,10 @@ var express = require('express');
 var router = express.Router();
 
 // Import the exerciseModel i.e the exercise "object".
-var Exercise = require('../models/exerciseModel');
+var Exercise = require('../../models/exerciseModel');
 
 // Returns all items stored in the database.
-router.get('/api/exercises', async function (req, res) {
+router.get('/api/v1/exercises', async function (req, res) {
     try {
         const allExercises = await Exercise.find({});
         res.status(200).json(allExercises)
@@ -15,7 +15,7 @@ router.get('/api/exercises', async function (req, res) {
 });
 
 // Returns a single item stored in the database by id.
-router.get('/api/exercises/:id', async function (req, res, next) {
+router.get('/api/v1/exercises/:id', async function (req, res, next) {
     var id = req.params.id; // Extract id from param of the GET request. 
     try {
         var exercise = await Exercise.findById(id);
@@ -26,7 +26,7 @@ router.get('/api/exercises/:id', async function (req, res, next) {
 });
 
 // Returns a all item stored in the database by bodyPart.
-router.get('/api/exercises/:bodyPart', async function (req, res, next) {
+router.get('/api/v1/exercises/:bodyPart', async function (req, res, next) {
     var bodyPart = req.params.bodyPart; // Extract id from param of the GET request. 
     try {
         const exercise = await Exercise.find({ bodyPart: bodyPart });
@@ -42,7 +42,7 @@ router.get('/api/exercises/:bodyPart', async function (req, res, next) {
 });
 
 // Returns a all item stored in the database by name.
-router.get('/api/exercises/:name', async function (req, res) {
+router.get('/api/v1/exercises/:name', async function (req, res) {
     var name = req.params.name; // Extract id from param of the GET request. 
     try {
         const exercise = await Exercise.find({ name: name });
@@ -56,7 +56,7 @@ router.get('/api/exercises/:name', async function (req, res) {
 });
 
 // Deletes exercise from database by id.
-router.delete('/api/exercises/:id', async function (req, res) {
+router.delete('/api/v1/exercises/:id', async function (req, res) {
     var id = req.params.id;
     try {
         const exercise = await Exercise.findByIdAndDelete(id);
@@ -67,7 +67,7 @@ router.delete('/api/exercises/:id', async function (req, res) {
 });
 
 // Posts a new exercise to the database.
-router.post('/api/exercises', async function (req, res) { // TODO: Add error handling.
+router.post('/api/v1/exercises', async function (req, res) { // TODO: Add error handling.
     if (req.body.hasWeights) {
         var exercise = new Exercise({
             'name': req.body.name,
@@ -98,7 +98,7 @@ router.post('/api/exercises', async function (req, res) { // TODO: Add error han
 });
 
 // Updates attributes of item by id.
-router.patch('/api/exercises/:id', async function (req, res) {
+router.patch('/api/v1/exercises/:id', async function (req, res) {
     var id = req.params.id;
     try {
         if (req.body.isCustom) {
