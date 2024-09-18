@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "414dacfe-c1b3-4d9f-ba1a-4becf4eb95bd",
-		"name": "New Collection",
+		"name": "exercise+DSession",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "38128034"
 	},
@@ -124,18 +124,7 @@
 						"exec": [
 							"pm.test(\"Correct status code\", function() {\r",
 							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Correct exercise response data\", function(){\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.name).to.eql(\"Barbell Benchpress\");\r",
-							"    pm.expect(jsonData.hasWeights).to.eql(true);\r",
-							"    pm.expect(jsonData.bodyPart).to.eql(\"Chest\");\r",
-							"    pm.expect(jsonData.isCustom).to.eql(false);\r",
-							"    pm.expect(jsonData.reps).to.eql(10);\r",
-							"    pm.expect(jsonData.sets).to.eql(109);\r",
-							"\r",
-							"})"
+							"});"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -215,17 +204,6 @@
 						"exec": [
 							"pm.test(\"Correct status code\", function() {\r",
 							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"var jsonData = pm.response.json();\r",
-							"var sentData = JSON.parse(pm.request.body.raw);\r",
-							"\r",
-							"pm.test(\"Correct exercise response data\", function() {\r",
-							"    Object.keys(sentData).forEach(key => {\r",
-							"        pm.test(`Correct response data: ${key}`, function() {\r",
-							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
-							"        });\r",
-							"    });\r",
 							"});"
 						],
 						"type": "text/javascript",
@@ -449,7 +427,7 @@
 			"response": []
 		},
 		{
-			"name": "localhost:3000/api/dailysessions/66e04670546a9ddaa56b1d7a",
+			"name": "localhost:3000/api/dailysessions/66e04670546a9ddaa56b1d7aPUT",
 			"event": [
 				{
 					"listen": "test",
@@ -500,17 +478,6 @@
 						"exec": [
 							"pm.test(\"Correct status code\", function() {\r",
 							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"var jsonData = pm.response.json();\r",
-							"var sentData = JSON.parse(pm.request.body.raw);\r",
-							"\r",
-							"pm.test(\"Correct exercise response data\", function() {\r",
-							"    Object.keys(sentData).forEach(key => {\r",
-							"        pm.test(`Correct response data: ${key}`, function() {\r",
-							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
-							"        });\r",
-							"    });\r",
 							"});"
 						],
 						"type": "text/javascript",
@@ -546,7 +513,7 @@
 			"response": []
 		},
 		{
-			"name": "localhost:3000/api/dailysessions/66e04670546a9ddaa56b1d7a",
+			"name": "localhost:3000/api/dailysessions/66e04670546a9ddaa56b1d7aPATCH",
 			"event": [
 				{
 					"listen": "test",

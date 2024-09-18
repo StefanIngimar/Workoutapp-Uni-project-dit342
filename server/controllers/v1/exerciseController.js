@@ -114,7 +114,7 @@ router.patch('/api/v1/exercises/:id', async function (req, res) {
                 }
             },
                 { new: true }); // return new version
-            res.status(201).send(exercise);
+            res.status(200).send(exercise);
         } else {
             const exercise = await Exercise.findByIdAndUpdate(id, { // Ugly but works.
                 $set: {
