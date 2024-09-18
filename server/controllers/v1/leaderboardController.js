@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Leaderboard = require('../models/leaderboardModel.js');
+const Leaderboard = require('../../models/leaderboardModel.js');
 
 router.get('/api/v1/leaderboard', async function(req, res){
     try {
