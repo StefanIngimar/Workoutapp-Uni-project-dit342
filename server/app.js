@@ -7,7 +7,8 @@ var history = require('connect-history-api-fallback');
 var workoutLogController = require('./controllers/workoutLogController');
 var exerciseController = require('./controllers/exerciseController');
 var DSController = require('./controllers/DSController');
-var userController = require('./controllers/userController');
+var userControllerV1 = require('./controllers/v1/userController');
+var achievementControllerV1 = require('./controllers/v1/achievementController');
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/animalDevelopmentDB';
@@ -41,7 +42,14 @@ app.get('/api', function(req, res) {
 // Use the controller-routes
 app.use(exerciseController);
 app.use(workoutLogController);
+<<<<<<< HEAD
 app.use(DSController);
+=======
+app.use(userControllerV1);
+app.use(achievementControllerV1);
+app.use(DSController);
+
+>>>>>>> 8af09615d37dd353fe8f0276a42619f173f06a30
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {
