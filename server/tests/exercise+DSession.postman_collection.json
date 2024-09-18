@@ -1,0 +1,672 @@
+{
+	"info": {
+		"_postman_id": "414dacfe-c1b3-4d9f-ba1a-4becf4eb95bd",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38128034"
+	},
+	"item": [
+		{
+			"name": "Post exercise",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"pm.test(\"Correct exercise response data\", function() {\r",
+							"    Object.keys(sentData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Barbell curl\",\r\n    \"hasWeights\": true,\r\n    \"bodyPart\": \"Biceps\",\r\n    \"isCustom\": true,\r\n    \"reps\": 1,\r\n    \"sets\": 33\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/exercises",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/exercises",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/exercises",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/exercises/66deed62a53c0c7a851014df",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct exercise response data\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.name).to.eql(\"Barbell Benchpress\");\r",
+							"    pm.expect(jsonData.hasWeights).to.eql(true);\r",
+							"    pm.expect(jsonData.bodyPart).to.eql(\"Chest\");\r",
+							"    pm.expect(jsonData.isCustom).to.eql(false);\r",
+							"    pm.expect(jsonData.reps).to.eql(10);\r",
+							"    pm.expect(jsonData.sets).to.eql(109);\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/v1/exercises/66deeb33f05caf2f308e0d02",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"exercises",
+						"66deeb33f05caf2f308e0d02"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/exercises/Chest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/exercises/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"exercises",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/exercises/66deeb33f05caf2f308e0d02",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"pm.test(\"Correct exercise response data\", function() {\r",
+							"    Object.keys(sentData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Barbell Benchpress\",\r\n    \"hasWeights\": true,\r\n    \"bodyPart\": \"Chest\",\r\n    \"isCustom\": true,\r\n    \"reps\": 1,\r\n    \"sets\": 109\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/exercises/66e1724af912228e2c880aeb",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"exercises",
+						"66e1724af912228e2c880aeb"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/exercises/66deed27a53c0c7a851014db",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/v1/exercises/66e171e6f912228e2c880ae9",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"exercises",
+						"66e171e6f912228e2c880ae9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/dailysessions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"pm.test(\"Correct exercise response data\", function() {\r",
+							"    Object.keys(sentData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sessionName\" : \"Mega day\",\r\n    \"duration\": 31,\r\n    \"isCompleted\": true,\r\n    \"notes\": \"Exercise light!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/dailysessions",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"dailysessions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/dailysessions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/v1/dailysessions",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"dailysessions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/dailysessions/66e04057e98132852cd611f6",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/v1/dailysessions/66e04057e98132852cd611f6",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"66e04057e98132852cd611f6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/dailysessions/Mega day",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/v1/dailysessions/Mega day",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"Mega day"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/dailysessions/66e04670546a9ddaa56b1d7a",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"exerciseID\": \"66e8159b68c81db258c38d51\"\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/dailysessions/66e04670546a9ddaa56b1d7a",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"66e04670546a9ddaa56b1d7a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/dailysessions/66e04057e98132852cd611f6/66deed0cf05caf2f308e0d04",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"pm.test(\"Correct exercise response data\", function() {\r",
+							"    Object.keys(sentData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sessionName\" : \"push\",\r\n    \"duration\": 31,\r\n    \"isCompleted\": false,\r\n    \"notes\": \"Exercise heavy!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/dailysessions/66e04670546a9ddaa56b1d7a",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"66e04670546a9ddaa56b1d7a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/dailysessions/66e04670546a9ddaa56b1d7a",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"exerciseID\" : \"66e8159b68c81db258c38d51\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/dailysessions/66e04670546a9ddaa56b1d7a",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"66e04670546a9ddaa56b1d7a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/dailysessions/66e173bc5f6f3ebf098c032e",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/v1/dailysessions/66e173bc5f6f3ebf098c032e",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"66e173bc5f6f3ebf098c032e"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
