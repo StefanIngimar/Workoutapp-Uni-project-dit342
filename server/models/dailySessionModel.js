@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 
 // Create a exercise using mongoose schema.
 var dailySessionSchema = new Schema({
-    userID      : {type: String},
+    userID      : {type: String}, // Not sure if this is really needed?
     sessionName : {type: String},
     duration    : {type: Number}, 
     isCompleted : {type: Boolean},

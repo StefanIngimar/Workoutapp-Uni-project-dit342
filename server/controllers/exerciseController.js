@@ -62,7 +62,7 @@ router.delete('/api/exercises/:id', async function (req, res) {
         const exercise = await Exercise.findByIdAndDelete(id);
         res.status(200).send({ message: "Exercise successfully deleted" });
     } catch (err) {
-        res.status(500).send(err);
+        res.status(404).send(err);
     }
 });
 
@@ -74,7 +74,7 @@ router.post('/api/exercises', async function (req, res) { // TODO: Add error han
             'hasWeights': req.body.hasWeights,
             'weight': req.body.weight,
             'bodyPart': req.body.bodyPart,
-            'isCustom': req.body.isCustom,
+            'isCustom': req.body.isCustom, // By default (for users) should be true?
             'reps': req.body.reps,
             'sets': req.body.sets
         });
@@ -124,7 +124,7 @@ router.patch('/api/exercises/:id', async function (req, res) {
                 }
             },
                 { new: true }); // return new version
-            res.status(201).send(exercise);
+            res.status(200).send(exercise);
         }
 
     } catch (err) {

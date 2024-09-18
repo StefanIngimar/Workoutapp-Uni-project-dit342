@@ -43,7 +43,7 @@ router.delete('/api/dailysessions/:id', async function (req, res) {
         const session = await DailySession.findByIdAndDelete(id);
         res.status(200).send({ message: "Session successfully deleted" });
     } catch (err) {
-        res.status(500).send(err);
+        res.status(404).send(err);
     }
 });
 
@@ -88,7 +88,7 @@ router.patch('/api/dailysessions/:id', async function (req, res) {
             },
         },
             { new: true }); // returns the updated version.
-        res.status(201).send(session);
+        res.status(200).send(session);
     } catch (err) {
         res.status(500).send(err);
     }
@@ -133,7 +133,7 @@ router.put('/api/dailysessions/:sessionID', async function (req, res) { // TODO:
         if (!session) {
             return res.status(404).send({ message: "Daily session not found!" });
         }
-        res.status(200).send({ message: "Exercise added", session });
+        res.status(201).send({ message: "Exercise added", session });
 
     } catch (err) {
         res.status(500).send(err);
