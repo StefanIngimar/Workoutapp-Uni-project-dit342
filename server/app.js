@@ -9,7 +9,7 @@ var exerciseController = require('./controllers/v1/exerciseController');
 var DSController = require('./controllers/v1/DSController');
 var userControllerV1 = require('./controllers/v1/userController');
 var achievementControllerV1 = require('./controllers/v1/achievementController');
-var leaderboardController = require('./controllers/leaderboardController');
+var leaderboardController = require('./controllers/v1/leaderboardController');
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/animalDevelopmentDB';
