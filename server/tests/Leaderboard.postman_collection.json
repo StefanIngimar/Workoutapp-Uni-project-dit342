@@ -1,0 +1,302 @@
+{
+	"info": {
+		"_postman_id": "139411a8-8355-4747-bb48-52cfe34b83fc",
+		"name": "Leaderboard",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32425632"
+	},
+	"item": [
+		{
+			"name": "POST BOARD",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"expectedResult\", ({\r",
+							"    \"user\": \"66e3107d334983ff003dc045\",\r",
+							"    \"weight\": 800\r",
+							"}));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.globals.set(\"userId\", jsonData._id);\r",
+							"const response = pm.response.json();\r",
+							"delete response._id;\r",
+							"delete response.__v;\r",
+							"\r",
+							"pm.test(\"Response structure is valid(besides _id and __v)\", () =>{\r",
+							"    pm.expect(response).to.eql(pm.globals.get(\"expectedResult\"));\r",
+							"})\r",
+							"var requestBody = request.data;\r",
+							"requestBody = JSON.parse(requestBody);\r",
+							"pm.test(\"Response body is valid\", () =>{\r",
+							"    pm.expect(response).to.eql(requestBody);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\": \"66e3107d334983ff003dc045\",\r\n    \"weight\": 800\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/leaderboard",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"leaderboard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET BOARD",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/leaderboard",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"leaderboard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET BOARD_ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"console.log(\"userId:\", pm.globals.get(\"userId\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/leaderboard/{{userId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"leaderboard",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT BOARD",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"console.log(\"userId:\", pm.globals.get(\"userId\"));\r",
+							"var jsonData = pm.response.json();\r",
+							"console.log(\"Response body:\", jsonData);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\": \"66e3107d334983ff003dc045\",\r\n    \"weight\": 90\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/leaderboard/{{userId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"leaderboard",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE BOARD",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"console.log(\"Response body:\", jsonData);\r",
+							"\r",
+							"if (pm.response.status === 200) {\r",
+							"    pm.test(\"Success\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Leaderboard entry successfully deleted\");\r",
+							"    });\r",
+							"\r",
+							"if (pm.response.status === 404) {\r",
+							"    pm.test(\"User entry not found\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Leaderboard entry not found\");\r",
+							"    });\r",
+							"}}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: pm.variables.get(\"host\") + \"/api/v1/leaderboard/\" + pm.globals.get(\"userId\"),\r",
+							"    method: 'GET'\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.log(\"Error fetching entry:\", err);\r",
+							"    } else {\r",
+							"        var jsonData = res.json();\r",
+							"        console.log(\"Pre-delete entry check:\", jsonData);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/leaderboard/{{userId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"leaderboard",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
