@@ -16,7 +16,7 @@ router.get('/api/v1/achievements', async function(req, res) {
 });
 
 //Return all achievements for a single user
-router.get('/api/v1/achievements/userName', async function(req, res) {
+router.get('/api/v1/achievements/users', async function(req, res) {
     try{
         const allAchievements = await Achievement.find({
             username: req.params.username
@@ -27,8 +27,8 @@ router.get('/api/v1/achievements/userName', async function(req, res) {
     }
 });
 
-// Return a single achievement
-router.get('/api/v1/achievements/:id', async function(req, res){
+// Return a single achievement that all users have
+router.get('/api/v1/achievements/:id/users', async function(req, res){
     var id = req.params.id;
     try{
         const achievement = await Achievement.findById(id);

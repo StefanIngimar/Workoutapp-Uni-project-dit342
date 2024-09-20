@@ -25,7 +25,7 @@ const {checkDuplicateUserOrEmail} = require('../../helpers/helperFunctions');
 var User = require('../../models/userModel');
 
 
-//TODO: Implement something for the profile pic.
+
 //TODO: Add password hashing for POST and PATCH perhaps through a good library(bcrypt?)
 
 // Multer configuration to store profile pictures in uploads folder
@@ -111,6 +111,7 @@ router.post('/api/v1/users', upload.single('profilePic'),
                 'userName'   : req.body.userName,
                 'email'      : req.body.email,
                 'password'   : req.body.password,
+                'isAdmin'    : req.body.isAdmin,
                 'profilePic' : req.file ? req.file.filename : null
             });
         } else {
@@ -125,7 +126,7 @@ router.post('/api/v1/users', upload.single('profilePic'),
 });
 
 
-// Updates a certain field
+// Updates a certain field, should only be partial
 router.patch('/api/v1/users/:id', upload.single('profilePic'),
     [
         // Express validator to check if the username, email, and password are valid
@@ -165,6 +166,8 @@ router.patch('/api/v1/users/:id', upload.single('profilePic'),
             res.status(500).send(err);
         }
     });
+
+// TODO: Should replace the entire resource.
 
 
 module.exports = router;
