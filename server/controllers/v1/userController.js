@@ -1,21 +1,46 @@
 //Dependencies
 var express = require('express');
 var router = express.Router();
+
+// Imported external libraries
 /*
-Express validator to verify email from: 
+Express validator to verify email.
+Documentation on methods from:
 "https://express-validator.github.io/docs/guides/getting-started/"
 */ 
 const {body, validationResult} = require('express-validator');
 
-// Import helper functions
+/*
+ Multer to handle file uplods.
+ Documentation on methods from:
+ https://www.npmjs.com/package/multer
+*/
+const multer = require('multer');
+const path = require('path');
+
+// Imported helper functions
 const {checkDuplicateUserOrEmail} = require('../../helpers/helperFunctions');
 
-// Uses user model
+// Imported models
 var User = require('../../models/userModel');
 
 
 //TODO: Implement something for the profile pic.
 //TODO: Add password hashing for POST and PATCH perhaps through a good library(bcrypt?)
+
+// Multer configuration to store profile pictures in uploads folder
+const storage = multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, 'uploads/');
+    },
+    filename: function(req, file, cb){
+        cb(null, file.originalname);
+    }
+});
+
+const upload = multer({storage: storage});
+
+
 
 // Return all Users from database
 router.get('/api/v1/users', async function(req, res){
@@ -66,7 +91,7 @@ router.delete('/api/v1/users/:id', async function(req, res){
 
 
 // Creation of a new User
-router.post('/api/v1/users',
+router.post('/api/v1/users', upload.single('profilePic'),
     [   
         // Express validator to check if the username, email, and password are valid
         body('userName').notEmpty().withMessage('Username is required'),
@@ -86,7 +111,7 @@ router.post('/api/v1/users',
                 'userName'   : req.body.userName,
                 'email'      : req.body.email,
                 'password'   : req.body.password,
-                'profilePic' : req.body.profilePic
+                'profilePic' : req.file ? req.file.filename : null
             });
         } else {
             return res.status(400).json({errors: queryResult.array()});
@@ -101,7 +126,7 @@ router.post('/api/v1/users',
 
 
 // Updates a certain field
-router.patch('/api/v1/users/:id',
+router.patch('/api/v1/users/:id', upload.single('profilePic'),
     [
         // Express validator to check if the username, email, and password are valid
         body('userName').optional().notEmpty().withMessage('If you wish to change username, enter a new non empty username'),
@@ -131,7 +156,11 @@ router.patch('/api/v1/users/:id',
             if (req.file) updateFields.profilePic = req.file.filename;
 
             const user = await User.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
-            res.status(201).send(user);
+            if (user){
+                res.status(200).json(user);
+            } else {
+                res.status(404).send('User not found');
+            }
         } catch (err) {
             res.status(500).send(err);
         }
