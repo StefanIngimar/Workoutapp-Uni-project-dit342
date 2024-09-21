@@ -523,7 +523,7 @@
 				}
 			],
 			"request": {
-				"method": "PUT",
+				"method": "PATCH",
 				"header": [],
 				"body": {
 					"mode": "raw",
@@ -535,7 +535,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/api/v1/dailysessions/{{sessionId}}",
+					"raw": "{{host}}/api/v1/dailysessions/{{sessionId}}/exercises",
 					"host": [
 						"{{host}}"
 					],
@@ -543,7 +543,8 @@
 						"api",
 						"v1",
 						"dailysessions",
-						"{{sessionId}}"
+						"{{sessionId}}",
+						"exercises"
 					]
 				}
 			},

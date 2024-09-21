@@ -90,7 +90,7 @@ router.patch('/api/v1/dailysessions/:sessionID', async function (req, res, next)
 });
 
 // Updates an attribute in a daily session.
-router.patch('/api/v1/dailysessions/:id', async function (req, res) {
+router.patch('/api/v1/dailysessions/:id', async function (req, res, next) { 
     var id = req.params.id;
     try {
         const session = await DailySession.findByIdAndUpdate(id, {
@@ -103,6 +103,33 @@ router.patch('/api/v1/dailysessions/:id', async function (req, res) {
         },
             { new: true }); // returns the updated version.
         res.status(200).send(session);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+// Adds an exercise by id to a session by id.
+router.patch('/api/v1/dailysessions/:sessionID/exercises', async function (req, res) { // Perhaps should be POST.
+    var exerciseID = req.body.exerciseID;
+    var sessionID = req.params.sessionID;
+
+    try {
+        const exercise = await Exercise.findById(exerciseID);
+        if (!exercise) {
+            return res.status(404).send({ message: "Exercise not found!" });
+        }
+
+        const session = await DailySession.findByIdAndUpdate(
+            sessionID,
+            { $push: { exercises: exercise } },
+            { new: true }
+        );
+
+        if (!session) {
+            return res.status(404).send({ message: "Daily session not found!" });
+        }
+        res.status(200).send({ message: "Exercise added", session });
+
     } catch (err) {
         res.status(500).send(err);
     }
