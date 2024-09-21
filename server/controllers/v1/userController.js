@@ -167,8 +167,6 @@ router.patch('/api/v1/users/:id', upload.single('profilePic'),
         }
     });
 
-// TODO: Should replace the entire resource.
-
 
 module.exports = router;
 

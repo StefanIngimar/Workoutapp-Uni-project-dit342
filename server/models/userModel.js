@@ -6,6 +6,7 @@ var userSchema = new Schema({
     email      : {type: String, required: true},
     password   : {type: String, required: true},
     profilePic : {type: String},
+    achievements : [{type: Schema.Types.ObjectId, ref: 'achievements'}],
     isAdmin    : {type: Boolean, default: false}
 })
 

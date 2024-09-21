@@ -5,6 +5,8 @@ var router = express.Router();
 var Achievement = require('../../models/achievementModel');
 var User = require('../../models/userModel');
 
+
+
 // Return all achievements
 router.get('/api/v1/achievements', async function(req, res) {
     try{
@@ -28,11 +30,11 @@ router.get('/api/v1/achievements/users', async function(req, res) {
 });
 
 // Return a single achievement that all users have
-router.get('/api/v1/achievements/:id/users', async function(req, res){
-    var id = req.params.id;
+router.get('/api/v1/achievements/:achievementID/users', async function(req, res){
+    var achievementID = req.params.achievementID;
     try{
-        const achievement = await Achievement.findById(id);
-        res.status(200).json(achievement);
+        const usersWithAchievement = await User.find({achievements: achievementID});
+        res.status(200).json(usersWithAchievement);
     } catch(err){
         res.status(404).send;
     }
