@@ -335,115 +335,6 @@
 			"response": []
 		},
 		{
-			"name": "{{host}}/api/v1/exercises/",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Correct status code\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"isAdmin\" : true\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{host}}/api/v1/exercises/",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"exercises",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Post exercise Copy",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Correct status code\", function() {\r",
-							"    pm.response.to.have.status(201);\r",
-							"});\r",
-							"\r",
-							"var jsonData = pm.response.json();\r",
-							"var sentData = JSON.parse(pm.request.body.raw);\r",
-							"\r",
-							"pm.globals.set(\"exerciseId\", jsonData._id);\r",
-							"\r",
-							"pm.test(\"Correct exercise response data\", function() {\r",
-							"    Object.keys(sentData).forEach(key => {\r",
-							"        pm.test(`Correct response data: ${key}`, function() {\r",
-							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
-							"        });\r",
-							"    });\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Barbell curl\",\r\n    \"hasWeights\": true,\r\n    \"weight\" : 35,\r\n    \"bodyPart\": \"Biceps\",\r\n    \"isCustom\": true,\r\n    \"reps\": 1,\r\n    \"sets\": 33\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{host}}/api/v1/exercises",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"exercises"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "localhost:3000/api/dailysessions",
 			"event": [
 				{
@@ -784,6 +675,49 @@
 						"v1",
 						"dailysessions",
 						"{{sessionId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{host}}/api/v1/exercises/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"isAdmin\" : true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/exercises/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"exercises",
+						""
 					]
 				}
 			},
