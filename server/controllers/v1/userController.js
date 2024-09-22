@@ -57,6 +57,9 @@ router.get('/api/v1/users', async function(req, res){
 router.get('/api/v1/users/:id', async function(req, res, next){
     var id = req.params.id;
     try{
+        if (user === null){
+            return res.status(404).send({message: "User not found"});
+        }
         const aUser = await User.findById(id);
         res.status(200).json(aUser);
     } catch(err){

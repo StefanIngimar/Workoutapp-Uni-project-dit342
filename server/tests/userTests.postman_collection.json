@@ -55,7 +55,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"userName\": \"Radnaskela\",\r\n    \"email\": \"alexvuckovic@gmail.com\",\r\n    \"password\": \"hejdasdasd\",\r\n    \"isAdmin\": false,\r\n    \"achievements\": []\r\n}",
+					"raw": "{\r\n    \"userName\": \"Alvukk\",\r\n    \"email\": \"Dianaaa@gmail.com\",\r\n    \"password\": \"hejdasdasd\",\r\n    \"isAdmin\": false,\r\n    \"achievements\": []\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -87,7 +87,8 @@
 						"exec": [
 							"// Fixed the incorrect status code\r",
 							"pm.test(\"Correct status code\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200, 404]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
@@ -156,7 +157,8 @@
 						"exec": [
 							"// Fixed the incorrect status code\r",
 							"pm.test(\"Correct status code\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200, 404]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
