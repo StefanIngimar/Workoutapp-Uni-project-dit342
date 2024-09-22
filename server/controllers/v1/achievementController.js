@@ -18,10 +18,10 @@ router.get('/api/v1/achievements', async function(req, res) {
 });
 
 //Return all achievements for a single user
-router.get('/api/v1/achievements/users', async function(req, res) {
+router.get('/api/v1/achievements/:userName', async function(req, res) {
     try{
         const allAchievements = await Achievement.find({
-            username: req.params.username
+            userName: req.params.userName
         }).populate('exerciseMilestone').populate('numOfTimesInGym');
         res.status(200).json(allAchievements);
     } catch(err){

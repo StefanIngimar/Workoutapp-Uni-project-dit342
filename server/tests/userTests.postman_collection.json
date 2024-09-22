@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "e05434bf-d54d-4952-aa3f-1266c9345f66",
-		"name": "userTests2",
+		"name": "userTests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "38104086"
 	},
@@ -270,11 +270,12 @@
 						"exec": [
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([200, 400]).to.include(statusCode);\r",
+							"    pm.expect([200, 400, 404]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
 							"\r",
 							"if (pm.response.code === 200) {\r",
 							"\r",
@@ -297,7 +298,12 @@
 							"    pm.test(\"Username and email already exist\", function() {\r",
 							"        pm.expect(jsonData.error).to.include(\"Username and email already exist\");\r",
 							"    });\r",
-							"}"
+							"} \r",
+							"else if (pm.response.code === 404) {\r",
+							"    pm.test(\"User not found\", function() {\r",
+							"        pm.expect(jsonData.error).to.include(\"User not found\");\r",
+							"    });\r",
+							"} "
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -317,11 +323,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/v1/users/{{userId3}}",
+					"raw": "{{host}}/api/v1/users/{{userId3}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
+						"api",
 						"v1",
 						"users",
 						"{{userId3}}"
@@ -339,7 +346,7 @@
 						"exec": [
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([200, 404, 500]).to.include(statusCode);\r",
+							"    pm.expect([200, 404]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
@@ -371,11 +378,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/v1/users/{{userId3}}",
+					"raw": "{{host}}/api/v1/users/{{userId3}}",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
+						"api",
 						"v1",
 						"users",
 						"{{userId3}}"

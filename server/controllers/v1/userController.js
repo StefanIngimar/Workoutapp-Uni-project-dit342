@@ -15,30 +15,31 @@ const {body, validationResult} = require('express-validator');
  Documentation on methods from:
  https://www.npmjs.com/package/multer
 */
-const multer = require('multer');
-const path = require('path');
+// const multer = require('multer');
+// const path = require('path');
 
 // Imported helper functions
 const {checkDuplicateUserOrEmail} = require('../../helpers/helperFunctions');
 
 // Imported models
 var User = require('../../models/userModel');
+const { error } = require('console');
 
 
 
 //TODO: Add password hashing for POST and PATCH perhaps through a good library(bcrypt?)
 
 // Multer configuration to store profile pictures in uploads folder
-const storage = multer.diskStorage({
-    destination: function(req, file, cb){
-        cb(null, 'uploads/');
-    },
-    filename: function(req, file, cb){
-        cb(null, file.originalname);
-    }
-});
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb){
+//         cb(null, 'uploads/');
+//     },
+//     filename: function(req, file, cb){
+//         cb(null, file.originalname);
+//     }
+// });
 
-const upload = multer({storage: storage});
+// const upload = multer({storage: storage});
 
 
 
@@ -48,7 +49,7 @@ router.get('/api/v1/users', async function(req, res){
         const allUsers = await User.find({});
         res.status(200).json(allUsers);
     } catch(err){
-        res.status(404).send(err);
+        res.status(404).json({error: err.message});
     }
 });
 
@@ -57,10 +58,10 @@ router.get('/api/v1/users', async function(req, res){
 router.get('/api/v1/users/:id', async function(req, res, next){
     var id = req.params.id;
     try{
-        if (user === null){
+        const aUser = await User.findById(id);
+        if (!aUser){
             return res.status(404).send({message: "User not found"});
         }
-        const aUser = await User.findById(id);
         res.status(200).json(aUser);
     } catch(err){
         next();
@@ -76,7 +77,7 @@ router.get('/api/v1/users/:userName', async function(req, res){
         // If query is succesful respond to client with status code 200 and send back requested user as JSON
         res.status(200).json(aUser);
     }catch(err){
-        res.status(404).send(err);
+        res.status(404).json({error: err.message});
     }
 });
 
@@ -87,18 +88,18 @@ router.delete('/api/v1/users/:id', async function(req, res){
     try{
         var aUser = await User.findByIdAndDelete(id);
         if (aUser){
-            res.status(200).send({message: "User successfully deleted"}); 
+            res.status(200).json({message: "User successfully deleted"}); 
         } else {
-            res.status(404).send({message: "User not found"});
+            res.status(404).json({message: "User not found"});
         }
     } catch(err){
-        res.status(500).send(err);
+        res.status(500).json({error: err.message});
     }
 });
 
 
 // Creation of a new User
-router.post('/api/v1/users', upload.single('profilePic'),
+router.post('/api/v1/users', //upload.single('profilePic'),
     [   
         // Express validator to check if the username, email, and password are valid
         body('userName').notEmpty().withMessage('Username is required'),
@@ -129,13 +130,13 @@ router.post('/api/v1/users', upload.single('profilePic'),
         const savedUser = await user.save();
         res.status(201).json(savedUser);
     } catch (err) {
-        res.status(500).send(err);
+        res.status(500).json({error: err.message});
     }
 });
 
 
 // Updates a certain field, should only be partial
-router.patch('/api/v1/users/:id', upload.single('profilePic'),
+router.patch('/api/v1/users/:id', //upload.single('profilePic'),
     [
         // Express validator to check if the username, email, and password are valid
         body('userName').optional().notEmpty().withMessage('If you wish to change username, enter a new non empty username'),
@@ -171,10 +172,10 @@ router.patch('/api/v1/users/:id', upload.single('profilePic'),
             if (user){
                 res.status(200).json(user);
             } else {
-                res.status(404).send('User not found');
+                res.status(404).json({message: 'User not found'});
             }
         } catch (err) {
-            res.status(500).send(err);
+            res.status(500).json({error: err.message});
         }
     });
 
