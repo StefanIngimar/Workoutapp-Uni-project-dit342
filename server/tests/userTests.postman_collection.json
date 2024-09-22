@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "4fccbbb6-cccb-4e3c-9f8a-9723a2cfb1c4",
-		"name": "userTests",
+		"_postman_id": "e05434bf-d54d-4952-aa3f-1266c9345f66",
+		"name": "userTests2",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "38104086"
 	},
@@ -63,12 +63,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/v1/users",
-					"protocol": "http",
+					"raw": "{{host}}/api/v1/users",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -133,12 +131,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/v1/users",
-					"protocol": "http",
+					"raw": "{{host}}/api/v1/users",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -193,12 +189,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/v1/users/{{userId3}}",
-					"protocol": "http",
+					"raw": "{{host}}/api/v1/users/{{userId3}}",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -253,12 +247,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/v1/users/Alvuk",
-					"protocol": "http",
+					"raw": "{{host}}/api/v1/users/Alvuk",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
@@ -325,14 +317,11 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/v1/users/{{userId3}}",
-					"protocol": "http",
+					"raw": "{{host}}/v1/users/{{userId3}}",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
-						"api",
 						"v1",
 						"users",
 						"{{userId3}}"
@@ -382,14 +371,11 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/v1/users/{{userId3}}",
-					"protocol": "http",
+					"raw": "{{host}}/v1/users/{{userId3}}",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
-						"api",
 						"v1",
 						"users",
 						"{{userId3}}"
