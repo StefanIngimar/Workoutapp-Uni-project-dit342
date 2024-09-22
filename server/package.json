@@ -16,7 +16,7 @@
     "newman-server": "cross-env-shell PORT=3001 \"npm run dropdb && run-p --race start newman-wait\"",
     "newman-wait": "wait-on http://localhost:3001/api && npm run newman && npm run newman2",
     "newman": "newman run ./tests/server.postman_collection.json --env-var host=http://localhost:3001",
-    "newman2": "newman run ./tests/Leaderboard.postman_collection.json --env-var host=http://localhost:3001",
+    "newman2": "newman run ./tests/Leaderboard.postman_collection.json --env-var host=http://localhost:3001 && newman run ./tests/WorkoutLog.postman_collection.json --env-var host=http://localhost:3001",
     "dropdb": "node ./tests/dropdb.js"
   },
   "repository": {

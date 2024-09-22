@@ -21,9 +21,9 @@ router.delete('/api/v1/workoutlogs/:id', async function(req, res) {
     var id = req.params.id;
     try{
         const workoutLog = await WorkoutLog.findByIdAndDelete(id);
-        res.status(200).send({workoutLog, message: "Workout log successfully deleted"});}
+        res.status(204).send({workoutLog, message: "Workout log successfully deleted"});}
     catch(err){
-        res.status(500).send(err);}});
+        res.status(404).send(err);}});
 
 router.put('/api/v1/workoutlogs/:id', async function(req, res){
     var id = req.params.id;
@@ -40,6 +40,14 @@ router.post('/api/v1/workoutlogs', async function(req, res){
             'exercises' : req.body.exercises});
         const savedWorkoutLog = await workoutLog.save();
         res.status(200).send(savedWorkoutLog);}
+    catch(err){
+        res.status(500).send(err);}});
+
+router.delete('/api/v1/workoutlogs', async function(req, res){
+    //TODO add admin check after merge
+    try{
+        const workoutLogs = await WorkoutLog.deleteMany({});
+        res.status(204).send({workoutLogs, message: "All workout logs successfully deleted"});}
     catch(err){
         res.status(500).send(err);}});
     
