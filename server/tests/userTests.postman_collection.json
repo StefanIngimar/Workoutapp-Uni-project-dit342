@@ -1,0 +1,400 @@
+{
+	"info": {
+		"_postman_id": "4fccbbb6-cccb-4e3c-9f8a-9723a2cfb1c4",
+		"name": "userTests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38104086"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([201, 400]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"if (pm.response.code === 201) {\r",
+							"    pm.globals.set(\"userId3\", jsonData._id);\r",
+							"\r",
+							"    pm.test(\"Correct user response data\", function() {\r",
+							"        Object.keys(sentData).forEach(key => {\r",
+							"            pm.test(`Correct response data: ${key}`, function() {\r",
+							"                pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"            });\r",
+							"        });\r",
+							"    });\r",
+							"} else if (pm.response.code === 400 && jsonData.userName === sentData.userName) {\r",
+							"    pm.test(\"Username already exists\", function() {\r",
+							"        pm.expect(jsonData.error).to.include(\"Username already exists\");\r",
+							"    });\r",
+							"} else if (pm.response.code === 400 && jsonData.email === sentData.email) {\r",
+							"    pm.test(\"Email already in use\", function() {\r",
+							"        pm.expect(jsonData.error).to.include(\"Email already in use\");\r",
+							"    });\r",
+							"}else if (pm.response.code === 400 && jsonData.email === sentData.email && jsonData.userName === sentData.userName) {\r",
+							"    pm.test(\"Username and email already exist\", function() {\r",
+							"        pm.expect(jsonData.error).to.include(\"Username and email already exist\");\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\": \"Radnaskela\",\r\n    \"email\": \"alexvuckovic@gmail.com\",\r\n    \"password\": \"hejdasdasd\",\r\n    \"isAdmin\": false,\r\n    \"achievements\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET all",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the incorrect status code\r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET/:id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the incorrect status code\r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/users/{{userId3}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId3}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET/userName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the incorrect status code\r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/users/Alvuk",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"Alvuk"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Modfiy one",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200, 400]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"if (pm.response.code === 200) {\r",
+							"\r",
+							"    pm.test(\"Correct user response data\", function() {\r",
+							"        Object.keys(sentData).forEach(key => {\r",
+							"            pm.test(`Correct response data: ${key}`, function() {\r",
+							"                pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"            });\r",
+							"        });\r",
+							"    });\r",
+							"} else if (pm.response.code === 400 && jsonData.userName === sentData.userName) {\r",
+							"    pm.test(\"Username already exists\", function() {\r",
+							"        pm.expect(jsonData.error).to.include(\"Username already exists\");\r",
+							"    });\r",
+							"} else if (pm.response.code === 400 && jsonData.email === sentData.email) {\r",
+							"    pm.test(\"Email already in use\", function() {\r",
+							"        pm.expect(jsonData.error).to.include(\"Email already in use\");\r",
+							"    });\r",
+							"}else if (pm.response.code === 400 && jsonData.email === sentData.email && jsonData.userName === sentData.userName) {\r",
+							"    pm.test(\"Username and email already exist\", function() {\r",
+							"        pm.expect(jsonData.error).to.include(\"Username and email already exist\");\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\": \"Alvuk\",\r\n    \"password\": \"hejdasdasd\",\r\n    \"email\": \"alexvuckovic@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/users/{{userId3}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId3}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE one",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200, 404, 500]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/users/{{userId3}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId3}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

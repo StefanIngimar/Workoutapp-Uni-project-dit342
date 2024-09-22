@@ -54,13 +54,13 @@ router.get('/api/v1/users', async function(req, res){
 
 
 // Return single User from database
-router.get('/api/v1/users/:id', async function(req, res){
+router.get('/api/v1/users/:id', async function(req, res, next){
     var id = req.params.id;
     try{
         const aUser = await User.findById(id);
         res.status(200).json(aUser);
     } catch(err){
-        res.status(404).send(err);
+        next();
     }
 });
 
@@ -83,7 +83,11 @@ router.delete('/api/v1/users/:id', async function(req, res){
     var id = req.params.id;
     try{
         var aUser = await User.findByIdAndDelete(id);
-        res.status(200).send({message: "User successfully deleted"}); 
+        if (aUser){
+            res.status(200).send({message: "User successfully deleted"}); 
+        } else {
+            res.status(404).send({message: "User not found"});
+        }
     } catch(err){
         res.status(500).send(err);
     }
@@ -112,7 +116,8 @@ router.post('/api/v1/users', upload.single('profilePic'),
                 'email'      : req.body.email,
                 'password'   : req.body.password,
                 'isAdmin'    : req.body.isAdmin,
-                'profilePic' : req.file ? req.file.filename : null
+                'achievements' : [],
+                // 'profilePic' : req.file ? req.file.filename : null
             });
         } else {
             return res.status(400).json({errors: queryResult.array()});
@@ -154,7 +159,10 @@ router.patch('/api/v1/users/:id', upload.single('profilePic'),
             if (req.body.userName) updateFields.userName = req.body.userName;
             if (req.body.password) updateFields.password = req.body.password;
             if (req.body.email) updateFields.email = req.body.email;
-            if (req.file) updateFields.profilePic = req.file.filename;
+            // if (req.file) updateFields.profilePic = req.file.filename;
+            // if (req.body.isAdmin !== undefined){
+            //     return res.status(400).json({error: "Cannot change isAdmin field"});
+            // }
 
             const user = await User.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
             if (user){
