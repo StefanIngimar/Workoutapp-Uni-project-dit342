@@ -6,11 +6,14 @@ async function checkDuplicateUserOrEmail(userName, email) {
     try{
         // First check if a userName is already taken
         const duplicateUser = await User.findOne({ userName: userName });
+        // Check if the email is already taken
+        const duplicateEmail = await User.findOne({ email: email });
+        if (duplicateUser && duplicateEmail){
+            return { error: 'Username and email already exist' };
+        }
         if (duplicateUser) {
             return { error: 'Username already exists' };
         }
-        // Check if the email is already taken
-        const duplicateEmail = await User.findOne({ email: email });
         if (duplicateEmail) {
             return { error: 'Email already in use' };
         }

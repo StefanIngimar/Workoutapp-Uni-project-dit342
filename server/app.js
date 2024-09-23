@@ -48,6 +48,8 @@ app.use(achievementControllerV1);
 app.use(DSController);
 app.use(leaderboardController);
 
+app.use('./uploads', express.static('uploads'));
+
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {
     res.status(404).json({ 'message': 'Not Found' });

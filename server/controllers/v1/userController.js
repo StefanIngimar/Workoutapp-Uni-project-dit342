@@ -1,21 +1,47 @@
 //Dependencies
 var express = require('express');
 var router = express.Router();
+
+// Imported external libraries
 /*
-Express validator to verify email from: 
+Express validator to verify email.
+Documentation on methods from:
 "https://express-validator.github.io/docs/guides/getting-started/"
 */ 
 const {body, validationResult} = require('express-validator');
 
-// Import helper functions
+/*
+ Multer to handle file uplods.
+ Documentation on methods from:
+ https://www.npmjs.com/package/multer
+*/
+// const multer = require('multer');
+// const path = require('path');
+
+// Imported helper functions
 const {checkDuplicateUserOrEmail} = require('../../helpers/helperFunctions');
 
-// Uses user model
+// Imported models
 var User = require('../../models/userModel');
+const { error } = require('console');
 
 
-//TODO: Implement something for the profile pic.
+
 //TODO: Add password hashing for POST and PATCH perhaps through a good library(bcrypt?)
+
+// Multer configuration to store profile pictures in uploads folder
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb){
+//         cb(null, 'uploads/');
+//     },
+//     filename: function(req, file, cb){
+//         cb(null, file.originalname);
+//     }
+// });
+
+// const upload = multer({storage: storage});
+
+
 
 // Return all Users from database
 router.get('/api/v1/users', async function(req, res){
@@ -23,19 +49,22 @@ router.get('/api/v1/users', async function(req, res){
         const allUsers = await User.find({});
         res.status(200).json(allUsers);
     } catch(err){
-        res.status(404).send(err);
+        res.status(404).json({error: err.message});
     }
 });
 
 
 // Return single User from database
-router.get('/api/v1/users/:id', async function(req, res){
+router.get('/api/v1/users/:id', async function(req, res, next){
     var id = req.params.id;
     try{
         const aUser = await User.findById(id);
+        if (!aUser){
+            return res.status(404).send({message: "User not found"});
+        }
         res.status(200).json(aUser);
     } catch(err){
-        res.status(404).send(err);
+        next();
     }
 });
 
@@ -48,7 +77,7 @@ router.get('/api/v1/users/:userName', async function(req, res){
         // If query is succesful respond to client with status code 200 and send back requested user as JSON
         res.status(200).json(aUser);
     }catch(err){
-        res.status(404).send(err);
+        res.status(404).json({error: err.message});
     }
 });
 
@@ -58,15 +87,19 @@ router.delete('/api/v1/users/:id', async function(req, res){
     var id = req.params.id;
     try{
         var aUser = await User.findByIdAndDelete(id);
-        res.status(200).send({message: "User successfully deleted"}); 
+        if (aUser){
+            res.status(200).json({message: "User successfully deleted"}); 
+        } else {
+            res.status(404).json({message: "User not found"});
+        }
     } catch(err){
-        res.status(500).send(err);
+        res.status(500).json({error: err.message});
     }
 });
 
 
 // Creation of a new User
-router.post('/api/v1/users',
+router.post('/api/v1/users', //upload.single('profilePic'),
     [   
         // Express validator to check if the username, email, and password are valid
         body('userName').notEmpty().withMessage('Username is required'),
@@ -86,7 +119,9 @@ router.post('/api/v1/users',
                 'userName'   : req.body.userName,
                 'email'      : req.body.email,
                 'password'   : req.body.password,
-                'profilePic' : req.body.profilePic
+                'isAdmin'    : req.body.isAdmin,
+                'achievements' : [],
+                // 'profilePic' : req.file ? req.file.filename : null
             });
         } else {
             return res.status(400).json({errors: queryResult.array()});
@@ -95,13 +130,13 @@ router.post('/api/v1/users',
         const savedUser = await user.save();
         res.status(201).json(savedUser);
     } catch (err) {
-        res.status(500).send(err);
+        res.status(500).json({error: err.message});
     }
 });
 
 
-// Updates a certain field
-router.patch('/api/v1/users/:id',
+// Updates a certain field, should only be partial
+router.patch('/api/v1/users/:id', //upload.single('profilePic'),
     [
         // Express validator to check if the username, email, and password are valid
         body('userName').optional().notEmpty().withMessage('If you wish to change username, enter a new non empty username'),
@@ -128,12 +163,19 @@ router.patch('/api/v1/users/:id',
             if (req.body.userName) updateFields.userName = req.body.userName;
             if (req.body.password) updateFields.password = req.body.password;
             if (req.body.email) updateFields.email = req.body.email;
-            if (req.file) updateFields.profilePic = req.file.filename;
+            // if (req.file) updateFields.profilePic = req.file.filename;
+            // if (req.body.isAdmin !== undefined){
+            //     return res.status(400).json({error: "Cannot change isAdmin field"});
+            // }
 
             const user = await User.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
-            res.status(201).send(user);
+            if (user){
+                res.status(200).json(user);
+            } else {
+                res.status(404).json({message: 'User not found'});
+            }
         } catch (err) {
-            res.status(500).send(err);
+            res.status(500).json({error: err.message});
         }
     });
 
