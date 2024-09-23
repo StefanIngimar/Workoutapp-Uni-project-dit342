@@ -551,6 +551,63 @@
 			"response": []
 		},
 		{
+			"name": "localhost:3000/api/dailysessions/66e04670546a9ddaa56b1d7aPUT Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"exerciseID\": \"{{exerciseId}}\"\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/dailysessions/{{sessionId}}/exercises",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"{{sessionId}}",
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "localhost:3000/api/dailysessions/66e04057e98132852cd611f6/66deed0cf05caf2f308e0d04",
 			"event": [
 				{
