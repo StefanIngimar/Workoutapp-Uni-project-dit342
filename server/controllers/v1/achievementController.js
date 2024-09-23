@@ -6,107 +6,45 @@ var Achievement = require('../../models/achievementModel');
 var User = require('../../models/userModel');
 
 
+// Create a new achievement
+router.post('/api/v1/achievements', async function(req, res) {
 
-// // Return all achievements
-// router.get('/api/v1/achievements', async function(req, res) {
-//     try{
-//         const allAchievements = await Achievement.find({});
-//         res.status(200).json(allAchievements);
-//     } catch(err){
-//         res.status(404).send;
-//     }
-// });
+    let milestones = {};
 
-// //Return all achievements for a single user
-// router.get('/api/v1/achievements/:userName', async function(req, res) {
-//     try{
-//         const allAchievements = await Achievement.find({
-//             userName: req.params.userName
-//         }).populate('exerciseMilestone').populate('numOfTimesInGym');
-//         res.status(200).json(allAchievements);
-//     } catch(err){
-//         res.status(404).send;
-//     }
-// });
+    if (req.body.typeOfAchievement === 'weightLiftedMilestone') {
+        const { exercise, weight } = req.body.milestones;
 
-// // Return a single achievement that all users have
-// router.get('/api/v1/achievements/:achievementID/users', async function(req, res){
-//     var achievementID = req.params.achievementID;
-//     try{
-//         const usersWithAchievement = await User.find({achievements: achievementID});
-//         res.status(200).json(usersWithAchievement);
-//     } catch(err){
-//         res.status(404).send;
-//     }
-// });
+        milestones = { exercise, weight };
+    } else if (req.body.typeOfAchievement === 'attendanceMilestone') {
+        const { numOfTimesInGym } = req.body.milestones;
 
-// // Delete an achievement
-// router.delete('/api/v1/achievements/:id', async function(req, res){
-//     var id = req.params.id;
-//     try{
-//         const singleAchiev = await Achievement.findByIdAndDelete(id);
-//         res.status(200).send({singleAchiev, message: "Achievement deleted"});
-//     } catch (err){
-//         res.status(404).send(err);
-//     }
-// });
+        milestones = { numOfTimesInGym };
+    } else if (req.body.typeOfAchievement === 'repetitionMilestone') {
+        const { exercise, reps } = req.body.milestones;
 
-// router.post('/api/v1/achievements', async function(req, res){
-//     try{
-//         // Error handling for a user
-//         const user = await User.findById(req.body.userID);
-//         if(!user){
-//             return res.status(404).json({message: "User not found"});
-//         }
-//         // Create a new achievement
-//         var achievement = new Achievement({
-//             'userID' : req.body.userID,
-//             'description' : req.body.description,
-//             'exerciseMilestone' : req.body.exerciseMilestone,
-//             'numOfTimesInGym' : req.body.numOfTimesInGym
-//         });
-//         // Save the achievement
-//         const savedAchievement = await achievement.save();
-//         res.status(201).json(savedAchievement);
-//     } catch (err){
-//         res.status(500).send(err);
-//     }
-// });
+        milestones = { exercise, reps };
+    } else {
+        return res.status(400).json({ error: 'Invalid typeOfAchievement.' });
+    }
 
-// // Updates an achievement for a user
-// router.patch('/api/v1/achievements/:id', async function(req, res){
-//     var id = req.params.id;
-//     try{
-//         // Error handling for a user
-//         const user = await User.findById(req.body.userID);
-//         if(!user){
-//             return res.status(404).send({message: "User not found"});
-//         }
-//         const achievement = await Achievement.findByIdAndUpdate(id, {
-//             $set: {
-//                 exerciseMilestone: req.body.exerciseMilestone,
-//                 numOfTimesInGym: req.body.numOfTimesInGym
-//             }
-//         }, {new: true});
-//         res.status(201).send(achievement);
-//     } catch(err){
-//         res.status(500).send(err);
-//     }
-// });
+    const achievement = new Achievement({
+        name: req.body.name,
+        exercisename: req.body.exercisename,
+        description: req.body.description,
+        typeOfAchievement: req.body.typeOfAchievement,
+        milestones: milestones
+    });
 
-
-// Post a new achievement of any enum type
-router.post('/api/v1/achievements', async function(req, res){
-    try{
-        const achievement = new Achievement(req.body);
+    try {
         const savedAchievement = await achievement.save();
         res.status(201).json(savedAchievement);
-    } catch(err){
-        res.status(500).send(err);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
     }
 });
 
-// Get all achievements
+
+// Get all created achievements
 router.get('/api/v1/achievements', async function(req, res){
     try{
         const allAchievements = await Achievement.find({});
@@ -152,6 +90,8 @@ router.delete('/api/v1/achievements/:id', async function(req, res){
         res.status(500).send(err);
     }
 });
+
+//Later add an admin delet all achievements
 
 
 
