@@ -25,12 +25,23 @@ router.get('/api/v1/dailysessions/:id', async function (req, res, next) {
     }
 });
 
-// Returns a all item stored in the database by sessionName.
-router.get('/api/v1/dailysessions/:sessionName', async function (req, res) {
-    var sessionName = req.params.sessionName;
+// Returns a all item stored in the database by query.
+router.get('/api/v1/dailysessions/search', async function (req, res, next) { 
+    const query = req.query; 
     try {
-        const session = await DailySession.find({ sessionName: sessionName });
-        res.status(200).json(session);
+        const exercise = await Exercise.find(query);
+        res.status(200).json(exercise);
+    } catch (err) {
+        res.status(404).send(err);
+    }
+});
+
+// Returns all exercises stored in a dailysession by id.
+router.get('/api/v1/dailysessions/:id/exercises', async function (req, res) {
+    var id = req.params.id;
+    try {
+        var session = await DailySession.findById(id);
+        res.status(200).json(session.exercises)
     } catch (err) {
         res.status(404).send(err);
     }
@@ -41,11 +52,25 @@ router.delete('/api/v1/dailysessions/:id', async function (req, res) {
     var id = req.params.id;
     try {
         const session = await DailySession.findByIdAndDelete(id);
-        res.status(200).send({ message: "Session successfully deleted" });
+        res.status(200).send({ message: "Session successfully deleted" }); 
     } catch (err) {
         res.status(404).send(err);
     }
 });
+
+// Deletes all items if admin user.
+router.delete('/api/v1/dailysessions/', async function (req, res) {
+    var isAdmin = req.body.isAdmin;
+    try {
+        if(isAdmin){
+            const session = await DailySession.deleteMany({});
+            res.status(200).send({ message: "All session successfully deleted" }); 
+        }
+    } catch (err) {
+        res.status(404).send(err);
+    }
+});
+
 
 // Removes single execise from session by id.
 router.patch('/api/v1/dailysessions/:sessionID', async function (req, res, next) { // Perhaps should be delete instead of patch?
@@ -76,7 +101,7 @@ router.patch('/api/v1/dailysessions/:sessionID', async function (req, res, next)
 });
 
 // Updates an attribute in a daily session.
-router.patch('/api/v1/dailysessions/:id', async function (req, res) {
+router.patch('/api/v1/dailysessions/:id', async function (req, res, next) { 
     var id = req.params.id;
     try {
         const session = await DailySession.findByIdAndUpdate(id, {
@@ -94,10 +119,37 @@ router.patch('/api/v1/dailysessions/:id', async function (req, res) {
     }
 });
 
+// Adds an exercise by id to a session by id.
+router.patch('/api/v1/dailysessions/:sessionID/exercises', async function (req, res) { // Perhaps should be POST.
+    var exerciseID = req.body.exerciseID;
+    var sessionID = req.params.sessionID;
+
+    try {
+        const exercise = await Exercise.findById(exerciseID);
+        if (!exercise) {
+            return res.status(404).send({ message: "Exercise not found!" });
+        }
+
+        const session = await DailySession.findByIdAndUpdate(
+            sessionID,
+            { $push: { exercises: exercise } },
+            { new: true }
+        );
+
+        if (!session) {
+            return res.status(404).send({ message: "Daily session not found!" });
+        }
+        res.status(200).send({ message: "Exercise added", session });
+
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
 // Creates and stores a new daily session.
 router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add error handling.
     var dailySession = new DailySession({
-        'userID': 'getUserSomehow', // TODO: When user is implemented.
+        'userID': req.body.userID,
         'sessionName': req.body.sessionName,
         'duration': req.body.duration,
         'isCompleted': req.body.isCompleted,
@@ -114,7 +166,7 @@ router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add er
 });
 
 // Adds an exercise by id to a session by id.
-router.put('/api/v1/dailysessions/:sessionID', async function (req, res) { // TODO: Check for duplicates. Also might be post instead of put..
+router.patch('/api/v1/dailysessions/:sessionID', async function (req, res) {
     var exerciseID = req.body.exerciseID;
     var sessionID = req.params.sessionID;
 
