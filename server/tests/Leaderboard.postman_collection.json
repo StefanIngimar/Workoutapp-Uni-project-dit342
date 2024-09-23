@@ -1,0 +1,383 @@
+{
+	"info": {
+		"_postman_id": "139411a8-8355-4747-bb48-52cfe34b83fc",
+		"name": "Leaderboard",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32425632"
+	},
+	"item": [
+		{
+			"name": "POST BOARD",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"expectedResult\", ({\r",
+							"    \"user\": \"66e3107d334983ff003dc045\",\r",
+							"    \"weight\": 800\r",
+							"}));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.globals.set(\"userId\", jsonData._id);\r",
+							"const response = pm.response.json();\r",
+							"delete response._id;\r",
+							"delete response.__v;\r",
+							"\r",
+							"pm.test(\"Response structure is valid(besides _id and __v)\", () =>{\r",
+							"    pm.expect(response).to.eql(pm.globals.get(\"expectedResult\"));\r",
+							"})\r",
+							"var requestBody = request.data;\r",
+							"requestBody = JSON.parse(requestBody);\r",
+							"pm.test(\"Response body is valid\", () =>{\r",
+							"    pm.expect(response).to.eql(requestBody);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\": \"66e3107d334983ff003dc045\",\r\n    \"weight\": 800\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/leaderboard",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"leaderboard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET BOARD",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/leaderboard",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"leaderboard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET BOARD_ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"console.log(\"userId:\", pm.globals.get(\"userId\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/leaderboard/{{userId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"leaderboard",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT BOARD",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success or User Not Found\", function() {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);\r",
+							"});\r",
+							"\r",
+							"console.log(\"userId:\", pm.globals.get(\"userId\"));\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"console.log(\"Response body:\", jsonData);\r",
+							"\r",
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Response contains updated leaderboard entry\", function() {\r",
+							"        pm.expect(jsonData).to.have.property('user');\r",
+							"        pm.expect(jsonData).to.have.property('weight');\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"Correct userId in response\", function() {\r",
+							"        var userId = pm.globals.get(\"userId\");\r",
+							"        pm.expect(jsonData.user).to.eql(userId);\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"Weight updated correctly\", function() {\r",
+							"        pm.expect(jsonData.weight).to.be.a('number');\r",
+							"        pm.expect(jsonData.weight).to.eql(150);\r",
+							"    });\r",
+							"\r",
+							"} else if (pm.response.code === 404) {\r",
+							"\r",
+							"    pm.test(\"User not found\", function() {\r",
+							"        pm.expect(jsonData).to.have.property('message', 'User not found');\r",
+							"    });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\": \"66e3107d334983ff003dc045\",\r\n    \"weight\": 150\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/leaderboard/{{userId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"leaderboard",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE USER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"console.log(\"Response body:\", jsonData);\r",
+							"\r",
+							"if (pm.response.status === 200) {\r",
+							"    pm.test(\"Success\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Leaderboard entry successfully deleted\");\r",
+							"    });\r",
+							"\r",
+							"if (pm.response.status === 404) {\r",
+							"    pm.test(\"User entry not found\", function () {\r",
+							"        pm.expect(jsonData.message).to.eql(\"Leaderboard entry not found\");\r",
+							"    });\r",
+							"}}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: pm.variables.get(\"host\") + \"/api/v1/leaderboard/\" + pm.globals.get(\"userId\"),\r",
+							"    method: 'GET'\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.log(\"Error fetching entry:\", err);\r",
+							"    } else {\r",
+							"        var jsonData = res.json();\r",
+							"        console.log(\"Pre-delete entry check:\", jsonData);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/leaderboard/{{userId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"leaderboard",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE ALL",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204, or 500\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([204, 500]);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.status === 204) {\r",
+							"    pm.test(\"Successfully deleted with no content\", function () {\r",
+							"        pm.expect(pm.response.text()).to.be.empty;\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"if (pm.response.status === 500) {\r",
+							"    pm.test(\"Could not find the board entry\", function(){\r",
+							"        var jsonData = pm.response.json();\r",
+							"        pm.expect(jsonData).to.have.property(\"message\", \"Entry not found\");\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/leaderboard",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"leaderboard"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

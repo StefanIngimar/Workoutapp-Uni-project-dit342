@@ -39,26 +39,40 @@ router.post('/api/v1/leaderboard', async function(req, res){
 router.put('/api/v1/leaderboard/:userid', async function(req, res){
     var userid = req.params.userid;
     try{
-        let leaderboard = await Leaderboard.findOneAndUpdate({user: userid}, req.body);
-        const leaderboardSize = await Leaderboard.countDocuments();
+        let leaderboard = await Leaderboard.findOneAndUpdate({user: userid}, req.body, {new: true});
+        if(!leaderboard){
+            return res.status(404).send({message: "User not found"});
+        } const leaderboardSize = await Leaderboard.countDocuments();
         if(leaderboardSize > 10){
             const userWithLeastWeight = await Leaderboard.findOne().sort({weight: 1});
-            await Leaderboard.findByIdAndDelete(userWithLeastWeight._id);}
-            res.status(200).json(leaderboard);}
-            catch(err){
-                res.status(500).send(err);
-        }});
+            if(userWithLeastWeight._id.toString() !== leaderboard._id.toString()){
+                await Leaderboard.findOneAndDelete({_id: userWithLeastWeight._id});
+            }
+        }
+        res.status(200).json(leaderboard);
+    } catch(err){
+        res.status(500).send(err);
+    }
+});
 
 router.delete('/api/v1/leaderboard/:userid', async function(req, res) {
     var userid = req.params.userid;
     try{
         const leaderboard = await Leaderboard.findOneAndDelete({user: userid});
         if(leaderboard){
-            res.status(200).send({leaderboard, message: "Leaderboard entry successfully deleted"});
+            res.status(204).send({leaderboard, message: "Leaderboard entry successfully deleted"});
         } else{
             res.status(404).send({message: "Leaderboard entry not found"});
         }
     }catch(err){
             res.status(500).send(err);}});
+
+router.delete('/api/v1/leaderboard', async function(req, res){
+    //TODO add admin check after merge
+    try{
+        const leaderboard = await Leaderboard.deleteMany({});
+        res.status(204).send({leaderboard, message: "All leaderboard entries successfully deleted"});}
+    catch(err){
+        res.status(500).send(err);}});
 
 exports = module.exports = router;

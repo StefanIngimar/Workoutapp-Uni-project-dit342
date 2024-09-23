@@ -1,0 +1,329 @@
+{
+	"info": {
+		"_postman_id": "178896b4-4e5c-4abd-a648-1be8d3f04e19",
+		"name": "WorkoutLog",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32425632"
+	},
+	"item": [
+		{
+			"name": "POST LOG",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.globals.set(\"userId\", jsonData._id);\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response contains date\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var responseDate = new Date(jsonData.date).toISOString().split('T', 1)[0]; //show only the date and not the timestamp\r",
+							"    //took some help from https://stackoverflow.com/questions/47066555/remove-time-after-converting-date-toisostring\r",
+							"    pm.expect(responseDate).to.eql(\"2024-09-15\");\r",
+							"});\r",
+							"pm.test(\"Response contains session data\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.session).to.be.an(\"array\");\r",
+							"    if (jsonData.session.length > 0) {\r",
+							"        pm.expect(jsonData.session[0].user).to.eql(\"66e3107d334983ff003dc045\");//user\r",
+							"        pm.expect(jsonData.session[0].exercises[0].exercise).to.eql(\"66e05ce1eba5b8c1d8ac4f91\");//exercise\r",
+							"        pm.expect(jsonData.session[0].exercises[0].sets).to.eql(5);\r",
+							"        pm.expect(jsonData.session[0].exercises[0].reps).to.eql(10);\r",
+							"        pm.expect(jsonData.session[0].exercises[0].weight).to.eql(100);\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date\": \"2024-09-15\",\r\n    \"session\": [{\r\n        \"user\": \"66e3107d334983ff003dc045\",\r\n        \"exercises\":[{\r\n            \"exercise\": \"66e05ce1eba5b8c1d8ac4f91\",\r\n            \"sets\": 5,\r\n            \"reps\": 10,\r\n            \"weight\": 100\r\n        }]\r\n    }]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/workoutlogs",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"workoutlogs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET LOG",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/workoutlogs",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"workoutlogs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET LOG_ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/workoutlogs/{{userId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"workoutlogs",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT LOG",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response contains date\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    if (jsonData.date) {\r",
+							"        var responseDate = new Date(jsonData.date).toISOString().split('T', 1)[0];\r",
+							"        pm.expect(responseDate).to.eql(\"2024-09-13\");\r",
+							"    } else {\r",
+							"        pm.expect(jsonData.date).to.not.be.null;\r",
+							"    }\r",
+							"});\r",
+							"pm.test(\"Response contains session data\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    if (jsonData.session && jsonData.session.length > 0) {\r",
+							"        pm.expect(jsonData.session[0].user).to.eql(\"66e3107d334983ff003dc045\");//user\r",
+							"        pm.expect(jsonData.session[0].exercises[0].exercise).to.eql(\"66e05ce1eba5b8c1d8ac4f91\");//exercise\r",
+							"        pm.expect(jsonData.session[0].exercises[0].sets).to.eql(5);\r",
+							"        pm.expect(jsonData.session[0].exercises[0].reps).to.eql(10);\r",
+							"        pm.expect(jsonData.session[0].exercises[0].weight).to.eql(100);\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date\": \"2024-09-13\",\r\n    \"session\": [{\r\n        \"user\": \"66e3107d334983ff003dc045\",\r\n        \"exercises\":[{\r\n            \"exercise\": \"66e05ce1eba5b8c1d8ac4f91\",\r\n            \"sets\": 5,\r\n            \"reps\": 5,\r\n            \"weight\": 110\r\n        }]\r\n    }]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/workoutlogs/{{userId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"workoutlogs",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE USER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204 or 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([204, 404]);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.status === 204) {\r",
+							"    pm.test(\"Success\", function () {\r",
+							"        pm.expect(pm.response.text()).to.be.empty;\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"if (pm.response.status === 404) {\r",
+							"    pm.test(\"User entry not found\", function () {\r",
+							"        var jsonData = pm.response.json();\r",
+							"        pm.expect(jsonData.message).to.eql(\"Log entry not found\");\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: pm.variables.get(\"host\") + \"/api/v1/workoutlogs/\" + pm.globals.get(\"userId\"),\r",
+							"    method: 'GET'\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.log(\"Error fetching entry:\", err);\r",
+							"    } else {\r",
+							"        var jsonData = res.json();\r",
+							"        console.log(\"Pre-delete entry check:\", jsonData);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/workoutlogs/{{userId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"workoutlogs",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE ALL",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204, or 500\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([204, 500]);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.status === 204) {\r",
+							"    pm.test(\"Successfully deleted with no content\", function () {\r",
+							"        pm.expect(pm.response.text()).to.be.empty;\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"if (pm.response.status === 500) {\r",
+							"    pm.test(\"Could not find the log entires\", function(){\r",
+							"        var jsonData = pm.response.json();\r",
+							"        pm.expect(jsonData).to.have.property(\"message\", \"Entry not found\");\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/workoutlogs",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"workoutlogs"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
