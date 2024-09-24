@@ -1,0 +1,912 @@
+{
+	"info": {
+		"_postman_id": "585cb20f-5d6f-4a1e-825e-8d375ec71081",
+		"name": "FInishedAchievementTests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38104086"
+	},
+	"item": [
+		{
+			"name": "New user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([201, 400]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"if (pm.response.code === 201) {\r",
+							"    pm.globals.set(\"userId4\", jsonData._id);\r",
+							"\r",
+							"    pm.test(\"Correct user response data\", function() {\r",
+							"        Object.keys(sentData).forEach(key => {\r",
+							"            pm.test(`Correct response data: ${key}`, function() {\r",
+							"                pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"            });\r",
+							"        });\r",
+							"    });\r",
+							"} else if (pm.response.code === 400 && jsonData.userName === sentData.userName) {\r",
+							"    pm.test(\"Username already exists\", function() {\r",
+							"        pm.expect(jsonData.error).to.include(\"Username already exists\");\r",
+							"    });\r",
+							"} else if (pm.response.code === 400 && jsonData.email === sentData.email) {\r",
+							"    pm.test(\"Email already in use\", function() {\r",
+							"        pm.expect(jsonData.error).to.include(\"Email already in use\");\r",
+							"    });\r",
+							"}else if (pm.response.code === 400 && jsonData.email === sentData.email && jsonData.userName === sentData.userName) {\r",
+							"    pm.test(\"Username and email already exist\", function() {\r",
+							"        pm.expect(jsonData.error).to.include(\"Username and email already exist\");\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\": \"Alex\",\r\n    \"email\": \"alex@gmail.com\",\r\n    \"password\": \"hejdasdasd\",\r\n    \"isAdmin\": false,\r\n    \"achievements\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/users",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pullups",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Fixed syntax \r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"pm.globals.set(\"exerciseId\", jsonData._id);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(sentData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"pullups\",\r\n    \"hasWeights\" : false,\r\n    \"bodyPart\" : \"back\",\r\n    \"isCustom\" : false,\r\n    \"reps\" : 30,\r\n    \"sets\" : 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/exercises",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DailySession",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Fixed syntax \r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"pm.globals.set(\"sessionId\", jsonData._id);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(sentData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userID\" : \"{{userId4}}\",\r\n    \"sessionName\" : \"upper_body\",\r\n    \"duration\" : 1,\r\n    \"isCompleted\" : true,\r\n    \"notes\" : \"-\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/dailysessions",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"dailysessions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change session",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"pm.test(\"Correct Achievement response data\", function() {\r",
+							"    pm.test(`Correct response data: exerciseID`, function() {\r",
+							"        const exerciseExists = jsonData.session.exercises.some(exercise => exercise._id === sentData.exerciseID);\r",
+							"        pm.expect(exerciseExists).to.be.true;\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"exerciseID\" : \"{{exerciseId}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/dailysessions/{{sessionId}}/exercises",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"{{sessionId}}",
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "repsAchievement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" \r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"pm.globals.set(\"achievementId\", jsonData._id);\r",
+							"pm.globals.set(\"achievementName\", jsonData.name);\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(sentData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"}); "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"30_pullups\",\r\n    \"exercisename\" : \"pullups\",\r\n    \"description\" : \"Complete 30 pullups\",\r\n    \"typeOfAchievement\" : \"repetitionMilestone\",\r\n    \"milestones\" : {\r\n        \"exercise\": \"{{exerciseId}}\",\r\n        \"reps\" : 30\r\n    }\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/achievements",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"achievements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "userAchievement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Fixed syntax \r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"pm.globals.set(\"userAchievementId\", jsonData._id);\r",
+							"pm.globals.set(\"userAchievementName\", jsonData.achievementName);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(sentData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n    \"isCompleted\" : false,\r\n    \"dateCompleted\" : null\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/users/{{userId4}}/achievements/{{achievementId}}/achievementName/{{achievementName}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId4}}",
+						"achievements",
+						"{{achievementId}}",
+						"achievementName",
+						"{{achievementName}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET all achievements",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed status code\r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct Achievement response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/achievements",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"achievements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET all userAchi",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed status code\r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct Achievement response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/userAchievements",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"userAchievements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET single  achi by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the incorrect status code\r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/achievements/{{achievementId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"achievements",
+						"{{achievementId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET single userAchi by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the incorrect status code\r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/userAchievements/{{userAchievementId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"userAchievements",
+						"{{userAchievementId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET single achi by name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the incorrect status code\r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/achievements/{{achievementName}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"achievements",
+						"{{achievementName}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET single userAchi by name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the incorrect status code\r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/userAchievements/{{userAchievementName}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"userAchievements",
+						"{{userAchievementName}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET all users for an achiev by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the incorrect status code\r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/userAchievements/{{achievementId}}/users",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"userAchievements",
+						"{{achievementId}}",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET all users for an achiev by name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the incorrect status code\r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/userAchievements/{{achievementName}}/users",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"userAchievements",
+						"{{achievementName}}",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set to complete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" \r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"pm.test(\"Correct Achievement response data\", function() {\r",
+							"    Object.keys(sentData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"}); "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/userAchievements/{{userAchievementId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"userAchievements",
+						"{{userAchievementId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete one userAchievement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200, 404, 500]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/userAchievements/{{userAchievementId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"userAchievements",
+						"{{userAchievementId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete one achievement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200, 404, 500]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    Object.keys(jsonData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(jsonData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/achievements/{{achievementId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"achievements",
+						"{{achievementId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

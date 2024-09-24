@@ -14,11 +14,12 @@
     "test": "cross-env-shell MONGODB_URI=mongodb://localhost:27017/serverTestDB \"npm run newman-server\"",
     "ci-test": "npm run newman-server",
     "newman-server": "cross-env-shell PORT=3001 \"npm run dropdb && run-p --race start newman-wait\"",
-    "newman-wait": "wait-on http://localhost:3001/api && npm run newman && npm run newman1 && npm run newman && npm run newman2 && npm run newman3",
+    "newman-wait": "wait-on http://localhost:3001/api && npm run newman && npm run newman1 && npm run newman && npm run newman2 && npm run newman3 && npm run newman5",
     "newman": "newman run ./tests/server.postman_collection.json --env-var host=http://localhost:3001",
     "newman1": "newman run ./tests/exercise+DSession.postman_collection.json --env-var host=http://localhost:3001",
     "newman3": "newman run ./tests/Leaderboard.postman_collection.json --env-var host=http://localhost:3001 && newman run ./tests/WorkoutLog.postman_collection.json --env-var host=http://localhost:3001",
     "newman2": "newman run ./tests/userTests.postman_collection.json --env-var host=http://localhost:3001",
+    "newman5": "newman run ./tests/FInishedAchievementTests.postman_collection.json --env-var host=http://localhost:3001",
     "dropdb": "node ./tests/dropdb.js"
   },
   "repository": {
