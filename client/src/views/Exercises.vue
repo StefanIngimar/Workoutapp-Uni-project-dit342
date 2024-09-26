@@ -22,13 +22,18 @@
         </p>
 
         <label> Exercises </label>
+        <p>
+            {{ exerciseMessage }}
+        </p>
+
         <b-form-input v-model="searchText" placeholder="Search"> </b-form-input>
         <b-button class="btn_message" variant="primary" v-on:click="searchExercise()">Submit Search</b-button>
-        
+
         <div v-for="exercise in exercises" v-bind:key="exercise._id">
-            <exercise-item v-bind:exercise="exercise"/> 
+            <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
+                @delete-error="handleDeleteError" />
         </div>
-        
+
     </div>
     <my-footer />
 </template>
@@ -52,6 +57,19 @@ export default {
         ExerciseItem
     },
     methods: {
+        handleExerciseDeleted() {
+            Api.get('/v1/exercises')
+                .then((response) => {
+                    this.exercises = response.data;
+                    this.exerciseMessage = "Exercise deleted!";
+                })
+                .catch((error) => {
+                    this.exerciseMessage = error;
+                })
+        },
+        handleDeleteError() {
+            this.exerciseMessage = error;
+        },
         postExercise() {
             Api.post('/v1/exercises',
                 {
@@ -66,6 +84,13 @@ export default {
             )
                 .then((response) => {
                     this.postMessage = response.data
+                    Api.get('/v1/exercises')
+                        .then((response) => {
+                            this.exercises = response.data
+                        })
+                        .catch((error) => {
+                            this.exercises = error
+                        })
                 })
                 .catch((error) => {
                     this.postMessage = error
@@ -104,7 +129,8 @@ export default {
             isCustom: true,
             reps: '',
             sets: '',
-            searchText: ''
+            searchText: '',
+            exerciseMessage: ''
         }
     }
 }
