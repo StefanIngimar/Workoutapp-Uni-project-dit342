@@ -1,36 +1,55 @@
 <template>
     <div>
-        <h1> Exercises </h1>
-        <p>
-            {{ message }}
-        </p>
-
-        <b-form-input v-model="name" placeholder = "Exercise name"> </b-form-input>
-        <b-form-input v-model="hasWeights" placeholder = "hasWeights?"> </b-form-input>
-        <b-form-input v-model="weight" placeholder = "Weight"> </b-form-input>
-        <b-form-input v-model="bodyPart" placeholder = "Body Part"> </b-form-input>
-        <b-form-input v-model="reps" placeholder = "Reps"> </b-form-input>
-        <b-form-input v-model="sets" placeholder = "Sets"> </b-form-input>
+        <BFrom>
+            <BFormGroup>
+                <b-form-input v-model="name" placeholder="Exercise name"> </b-form-input>
+                <!-- <BFormSelect v-model="hasWeights" :options="hasWeightsForm"/> -->
+                <div>
+                    <label>Is this a bodyweight exercise?</label>
+                    <BFormRadio v-model="hasWeights" name="some-radios" value=true>Yes </BFormRadio>
+                    <BFormRadio v-model="hasWeights" name="some-radios" value=false>No </BFormRadio>
+                </div>
+                <b-form-input v-model="weight" placeholder="Weight"> </b-form-input>
+                <b-form-input v-model="bodyPart" placeholder="Body Part"> </b-form-input>
+                <b-form-input v-model="reps" placeholder="Reps"> </b-form-input>
+                <b-form-input v-model="sets" placeholder="Sets"> </b-form-input>
+            </BFormGroup>
+        </BFrom>
 
         <b-button class="btn_message" variant="primary" v-on:click="postExercise()">Submit Exercise</b-button>
         <p class="col-xl-9">
             {{ postMessage }}
         </p>
+
+        <label> Exercises </label>
+        <b-form-input v-model="searchText" placeholder="Search"> </b-form-input>
+        <b-button class="btn_message" variant="primary" v-on:click="searchExercise()">Submit Search</b-button>
+        
+        <div v-for="exercise in exercises" v-bind:key="exercise._id">
+            <exercise-item v-bind:exercise="exercise"/> 
+        </div>
+        
     </div>
-
-
-
     <my-footer />
 </template>
 
 <script>
 import MyFooter from '@/components/MyFooter.vue'
+import ExerciseItem from '@/components/ExerciseItem.vue'
 import { Api } from '@/Api'
+import { BFormGroup } from 'bootstrap-vue-next';
+
+const hasWeightsForm = [
+    { value: null, text: "Bodyweight exercises?" },
+    { value: 'true', text: "Yes" },
+    { value: 'false', text: "No" }
+]
 
 export default {
     name: 'exercises',
     components: {
-        MyFooter
+        MyFooter,
+        ExerciseItem
     },
     methods: {
         postExercise() {
@@ -51,20 +70,31 @@ export default {
                 .catch((error) => {
                     this.postMessage = error
                 })
+        },
+        searchExercise() {
+            console.log("Search text received: ", this.searchText);
+            Api.get(`/v1/exercises/search?name=${this.searchText}`)
+                .then((response) => {
+                    this.exercises = response.data
+                })
+                .catch((error) => {
+                    this.exercises = error
+                })
         }
     },
 
     mounted() { // Runs when page is loaded.
         Api.get('/v1/exercises')
             .then((response) => {
-                this.message = response.data
+                this.exercises = response.data
             })
             .catch((error) => {
-                this.message = error
+                this.exercises = error
             })
     },
     data() {
         return {
+            exercises: '',
             message: 'none',
             postMessage: '',
             name: '',
@@ -73,7 +103,8 @@ export default {
             bodyPart: '',
             isCustom: true,
             reps: '',
-            sets: ''
+            sets: '',
+            searchText: ''
         }
     }
 }
