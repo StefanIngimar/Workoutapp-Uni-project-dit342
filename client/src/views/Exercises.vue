@@ -2,17 +2,21 @@
     <div>
         <BFrom>
             <BFormGroup>
-                <b-form-input v-model="name" placeholder="Exercise name"> </b-form-input>
-                <!-- <BFormSelect v-model="hasWeights" :options="hasWeightsForm"/> -->
-                <div>
-                    <label>Is this a bodyweight exercise?</label>
-                    <BFormRadio v-model="hasWeights" name="some-radios" value=true>Yes </BFormRadio>
-                    <BFormRadio v-model="hasWeights" name="some-radios" value=false>No </BFormRadio>
+                <div class="form">
+                    <b-form-input v-model="name" placeholder="Exercise name"> </b-form-input>
+                    <!-- <BFormSelect v-model="hasWeights" :options="hasWeightsForm"/> -->
+                    <div>
+                        <label>Is this a bodyweight exercise?</label>
+                        <BFormRadio v-model="hasWeights" name="some-radios" value=true>Yes </BFormRadio>
+                        <BFormRadio v-model="hasWeights" name="some-radios" value=false>No </BFormRadio>
+                    </div>
+
+                    <b-form-input v-model="weight" placeholder="Weight"> </b-form-input>
+                    <b-form-input v-model="bodyPart" placeholder="Body Part"> </b-form-input>
+                    <b-form-input v-model="reps" placeholder="Reps"> </b-form-input>
+                    <b-form-input v-model="sets" placeholder="Sets"> </b-form-input>
                 </div>
-                <b-form-input v-model="weight" placeholder="Weight"> </b-form-input>
-                <b-form-input v-model="bodyPart" placeholder="Body Part"> </b-form-input>
-                <b-form-input v-model="reps" placeholder="Reps"> </b-form-input>
-                <b-form-input v-model="sets" placeholder="Sets"> </b-form-input>
+
             </BFormGroup>
         </BFrom>
 
@@ -25,9 +29,11 @@
         <p>
             {{ exerciseMessage }}
         </p>
+        <div class="searchForm">
+            <b-form-input v-model="searchText" placeholder="Search"> </b-form-input>
+            <b-button class="btn_message" variant="primary" v-on:click="searchExercise()">Submit Search</b-button>
+        </div>
 
-        <b-form-input v-model="searchText" placeholder="Search"> </b-form-input>
-        <b-button class="btn_message" variant="primary" v-on:click="searchExercise()">Submit Search</b-button>
 
         <div v-for="exercise in exercises" v-bind:key="exercise._id">
             <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
@@ -135,3 +141,17 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.form {
+    margin-left: 800px;
+    margin-right: 800px;
+    padding: 50px;
+    background-color: rgb(125, 190, 221);
+}
+
+.searchForm {
+    margin-left: 800px;
+    margin-right: 800px;
+}
+</style>
