@@ -213,6 +213,49 @@ router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add er
     }
 });
 
+// Adds an exercise to a session by id.
+router.post('/api/v1/dailysessions/:sessionID/exercises', async function (req, res) { // Perhaps should be POST.
+    var sessionID = req.params.sessionID;
+
+    if (req.body.hasWeights) {
+        var exercise = new Exercise({
+            'name': req.body.name,
+            'hasWeights': req.body.hasWeights,
+            'weight': req.body.weight,
+            'bodyPart': req.body.bodyPart,
+            'isCustom': req.body.isCustom, // By default (for users) should be true?
+            'reps': req.body.reps,
+            'sets': req.body.sets
+        });
+    } else {
+        var exercise = new Exercise({
+            'name': req.body.name,
+            'hasWeights': req.body.hasWeights,
+            'bodyPart': req.body.bodyPart,
+            'isCustom': req.body.isCustom,
+            'reps': req.body.reps,
+            'sets': req.body.sets
+        });
+    }
+
+    try {
+        const savedExercise = await exercise.save();
+        const session = await DailySession.findByIdAndUpdate(
+            sessionID,
+            { $push: { exercises: savedExercise } },
+            { new: true }
+        );
+
+        if (!session) {
+            return res.status(404).send({ message: "Daily session not found!" });
+        }
+        res.status(201).send({ message: "Exercise added", session });
+
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
 // Adds an exercise by id to a session by id.
 router.patch('/api/v1/dailysessions/:sessionID', async function (req, res) {
     var exerciseID = req.body.exerciseID;
