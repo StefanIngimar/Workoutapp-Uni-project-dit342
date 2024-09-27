@@ -1,43 +1,41 @@
 <template>
     <div>
-        <BFrom>
-            <BFormGroup>
-                <div class="form">
-                    <b-form-input v-model="name" placeholder="Exercise name"> </b-form-input>
-                    <!-- <BFormSelect v-model="hasWeights" :options="hasWeightsForm"/> -->
-                    <div>
-                        <label>Is this a bodyweight exercise?</label>
-                        <BFormRadio v-model="hasWeights" name="some-radios" value=true>Yes </BFormRadio>
-                        <BFormRadio v-model="hasWeights" name="some-radios" value=false>No </BFormRadio>
-                    </div>
-
-                    <b-form-input v-model="weight" placeholder="Weight"> </b-form-input>
-                    <b-form-input v-model="bodyPart" placeholder="Body Part"> </b-form-input>
-                    <b-form-input v-model="reps" placeholder="Reps"> </b-form-input>
-                    <b-form-input v-model="sets" placeholder="Sets"> </b-form-input>
-                </div>
-
-            </BFormGroup>
-        </BFrom>
+        <div class="form">
+            <input v-model="name" placeholder="Exercise name" />
+            <p>Weighted: <input type="checkbox" v-model="hasWeights" /></p>
+            <input v-model="bodyPart" placeholder="Bodypart" />
+            <input type="number" v-model="weight" placeholder="Weight" />
+            <input type="number" v-model="reps" placeholder="Reps" />
+            <input type="number" v-model="sets" placeholder="Sets" />
+        </div>
 
         <b-button class="btn_message" variant="primary" v-on:click="postExercise()">Submit Exercise</b-button>
-        <p class="col-xl-9">
-            {{ postMessage }}
-        </p>
+        <b-button class="btn_message" variant="danger" v-on:click="deleteAllExercises()">Delete All Exercises</b-button>
 
-        <label> Exercises </label>
-        <p>
-            {{ exerciseMessage }}
-        </p>
+        <div v-if="postMessage">
+            <p>Created exercise: </p>
+            <exercise-item v-bind:exercise="postMessage" @exercise-deleted="handleExerciseDeleted"
+                @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated" />
+        </div>
+
+        <div>
+            <label>
+                <h1>Exercises</h1>
+            </label>
+            <p>
+                {{ exerciseMessage }}
+            </p>
+        </div>
+
         <div class="searchForm">
-            <b-form-input v-model="searchText" placeholder="Search"> </b-form-input>
-            <b-button class="btn_message" variant="primary" v-on:click="searchExercise()">Submit Search</b-button>
+            <b-form-input v-on:input="searchExercise" v-model="searchText" placeholder="Search"> </b-form-input>
+            <!-- <b-button class="btn_message" variant="primary" v-on:click="searchExercise()">Submit Search</b-button> -->
         </div>
 
 
         <div v-for="exercise in exercises" v-bind:key="exercise._id">
             <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
-                @delete-error="handleDeleteError" />
+                @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated" />
         </div>
 
     </div>
@@ -50,12 +48,6 @@ import ExerciseItem from '@/components/ExerciseItem.vue'
 import { Api } from '@/Api'
 import { BFormGroup } from 'bootstrap-vue-next';
 
-const hasWeightsForm = [
-    { value: null, text: "Bodyweight exercises?" },
-    { value: 'true', text: "Yes" },
-    { value: 'false', text: "No" }
-]
-
 export default {
     name: 'exercises',
     components: {
@@ -63,9 +55,21 @@ export default {
         ExerciseItem
     },
     methods: {
+        handleExerciseUpdated() {
+            Api.get('/v1/exercises')
+                .then((response) => {
+                    this.exercises = response.data;
+                    this.exerciseMessage = "Exercise updated!";
+                })
+                .catch((error) => {
+                    this.exerciseMessage = error;
+                })
+        },
+
         handleExerciseDeleted() {
             Api.get('/v1/exercises')
                 .then((response) => {
+                    this.postMessage = '';
                     this.exercises = response.data;
                     this.exerciseMessage = "Exercise deleted!";
                 })
@@ -107,9 +111,29 @@ export default {
             Api.get(`/v1/exercises/search?name=${this.searchText}`)
                 .then((response) => {
                     this.exercises = response.data
+                    if (this.searchText === '') {
+                        Api.get('/v1/exercises')
+                            .then((response) => {
+                                this.exercises = response.data
+                            })
+                            .catch((error) => {
+                                this.exercises = error
+                            })
+                    }
                 })
                 .catch((error) => {
                     this.exercises = error
+                })
+        },
+        deleteAllExercises() {
+            Api.delete('/v1/exercises')
+                .then((response) => {
+                    this.postMessage = '';
+                    this.exercises = response.data;
+                    this.exerciseMessage = "All Exercises deleted!";
+                })
+                .catch((error) => {
+                    this.exerciseMessage = error;
                 })
         }
     },
@@ -129,7 +153,7 @@ export default {
             message: 'none',
             postMessage: '',
             name: '',
-            hasWeights: '',
+            hasWeights: false,
             weight: '',
             bodyPart: '',
             isCustom: true,

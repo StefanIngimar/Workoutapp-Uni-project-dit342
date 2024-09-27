@@ -37,10 +37,19 @@ router.get('/api/v1/exercises/:id/bodyPart', async function (req, res, next) {
 });
 
 // Returns a all item stored in the database by query.
-router.get('/api/v1/exercises/search', async function (req, res, next) { 
-    const query = req.query; 
+router.get('/api/v1/exercises/search', async function (req, res, next) {
+    const query = req.query;
+  
+    const searchQuery = {};
+
+    for (const key in query) {
+        if (query.hasOwnProperty(key)) {
+
+            searchQuery[key] = { $regex: query[key], $options: 'i' };
+        }
+    }
     try {
-        const exercise = await Exercise.find(query);
+        const exercise = await Exercise.find(searchQuery);
         res.status(200).json(exercise);
     } catch (err) {
         res.status(404).send(err);
