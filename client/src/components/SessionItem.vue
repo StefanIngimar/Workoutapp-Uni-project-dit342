@@ -2,25 +2,26 @@
   <div class="session-list">
     <div class="session-container">
       <div v-if="isEditing">
-        <p>Name: <input v-model="editSession.name" /></p>
+        <p>Name: <input v-model="editSession.sessionName" /></p>
         <p>Duration: <input type="number" v-model="editSession.duration" /></p>
         <p>Completed: <input type="checkbox" v-model="editSession.isCompleted" /></p>
         <p>Notes: <input v-model="editSession.notes" /></p>
         <p>Exercises:
         <div v-for="exercise in session.exercises" v-bind:key="exercise._id">
-          <exercise-item v-bind:exercise="exercise" />
+          <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
+            @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated" />
         </div>
         </p>
 
         <div v-if="isAddingExercise">
-          <p>Name: <input v-model="exercise.name" /></p>
-          <p>Bodypart: <input v-model="exercise.bodyPart" /></p>
-          <p>Bodyweight: <input type="checkbox" v-model="exercise.hasWeight" /></p>
-          <p>Weight: <input type="number" v-model="exercise.weight" /></p>
-          <p>Reps: <input type="number" v-model="exercise.reps" /></p>
-          <p>Sets: <input type="number" v-model="exercise.sets" /></p>
+          <p>Name: <input v-model="name" /></p>
+          <p>Bodypart: <input v-model="bodyPart" /></p>
+          <p>Bodyweight: <input type="checkbox" v-model="hasWeight" /></p>
+          <p>Weight: <input type="number" v-model="weight" /></p>
+          <p>Reps: <input type="number" v-model="reps" /></p>
+          <p>Sets: <input type="number" v-model="sets" /></p>
 
-          <b-button class="btn_message" variant="success" v-on:click="addNewExercise">Save</b-button>
+          <b-button class="btn_message" variant="success" v-on:click="addNewExercise">Submit</b-button>
           <b-button class="btn_message" variant="danger" v-on:click="toggleNewExercise">Cancel</b-button>
         </div>
 
@@ -32,17 +33,18 @@
 
       <div v-else>
 
-        <p>Name: {{ session.name }}</p>
+        <p>Name: {{ session.sessionName }}</p>
         <p>Completed: {{ session.isCompleted }}</p>
         <p>Duration: {{ session.duration }}</p>
         <p>Notes: {{ session.notes }}</p>
         <p>Exercises:
         <div v-for="exercise in session.exercises" v-bind:key="exercise._id">
-          <exercise-item v-bind:exercise="exercise" />
+          <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
+            @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated" />
         </div>
         </p>
-
-        <b-button class="btn_message" variant="danger" v-on:click="deleteSession(session._id)">X</b-button>
+        <p> {{ exerciseMessage }}</p>
+        <b-button class="btn_message" variant="danger" v-on:click="deleteSession(this.session._id)">X</b-button>
         <b-button class="btn_message" variant="primary" v-on:click="toggleEdit">Edit</b-button>
       </div>
     </div>
@@ -65,7 +67,15 @@ export default {
       isAddingExercise: false,
       isEditing: false,
       exercise: '',
-      editSession: { ...this.session }
+      editSession: { ...this.session },
+      exerciseMessage: '',
+      name: '',
+      hasWeights: false,
+      weight: '',
+      bodyPart: '',
+      isCustom: true,
+      reps: '',
+      sets: '',
     };
   },
   methods: {
@@ -78,7 +88,7 @@ export default {
       this.editSession = { ...this.session };
     },
     saveSession() {
-      Api.patch(`/v1/session/${this.session._id}`, this.editSession)
+      Api.patch(`/v1/dailysessions/${this.session._id}`, this.editSession)
         .then((response) => {
           this.isEditing = false;
           this.$emit('session-updated', response.data);
@@ -87,8 +97,8 @@ export default {
           console.error('Error saving session:', error);
         });
     },
-    deleteSession(exerciseID) {
-      Api.delete(`/v1/session/${exerciseID}`)
+    deleteSession(sessionID) {
+      Api.delete(`/v1/dailysessions/${sessionID}`)
         .then((response) => {
           this.$emit('session-deleted', response.data);
         })
@@ -97,7 +107,16 @@ export default {
         });
     },
     addNewExercise() {
-      Api.post(`/v1/session/${this.session._id}/exercise`, this.exercise)
+      Api.post(`/v1/dailysessions/${this.session._id}/exercises`,
+        {
+          name: this.name,
+          hasWeights: this.hasWeights,
+          weight: this.weight,
+          bodyPart: this.bodyPart,
+          isCustom: this.isCustom,
+          reps: this.reps,
+          sets: this.sets
+        })
         .then((response) => {
           this.isAddingExercise = false;
           this.$emit('session-updated', response.data);
@@ -108,7 +127,30 @@ export default {
     },
     toggleNewExercise() {
       this.isAddingExercise = !this.isAddingExercise;
-    }
+    },
+    handleExerciseUpdated() {
+      Api.get(`/v1/dailysessions/${this.session._id}/exercises`)
+        .then((response) => {
+          this.session.exercises = response.data;
+        })
+        .catch((error) => {
+          this.exerciseMessage = error;
+        })
+    },
+
+    handleExerciseDeleted() {
+      Api.get(`/v1/dailysessions/${this.session._id}/exercises`)
+        .then((response) => {
+          this.session.exercises = response.data;
+          this.exerciseMessage = "Exercise deleted!";
+        })
+        .catch((error) => {
+          this.exerciseMessage = error;
+        })
+    },
+    handleDeleteError() {
+      this.exerciseMessage = error;
+    },
   }
 };
 </script>
