@@ -26,8 +26,8 @@ router.get('/api/v1/dailysessions/:id', async function (req, res, next) {
 });
 
 // Returns a all item stored in the database by query.
-router.get('/api/v1/dailysessions/search', async function (req, res, next) { 
-    const query = req.query; 
+router.get('/api/v1/dailysessions/search', async function (req, res, next) {
+    const query = req.query;
     try {
         const exercise = await Exercise.find(query);
         res.status(200).json(exercise);
@@ -47,12 +47,37 @@ router.get('/api/v1/dailysessions/:id/exercises', async function (req, res) {
     }
 });
 
+// Returns all exercises stored in a dailysession by id.
+router.get('/api/v1/dailysessions/:id/exercises/:id2', async function (req, res) {
+    var id = req.params.id;
+    var id2 = req.params.id2;
+    try {
+        var session = await DailySession.findById(id);
+        if (!session) {
+            return res.status(404).send("No such session");
+        }
+        var exercise = await Exercise.findById(id2);
+        if (!exercise) {
+            return res.status(404).send("No such Exercise");
+        }
+        const matchedEx = session.exercises.find(ex => (ex._id.toString() === id2));
+        if (matchedEx) {
+            return res.status(200).send(matchedEx);
+        } else {
+            return res.status(404).send("Exercise not in session");
+        }
+
+    } catch (err) {
+        res.status(404).send(err);
+    }
+});
+
 // Deletes single item by id.
 router.delete('/api/v1/dailysessions/:id', async function (req, res) {
     var id = req.params.id;
     try {
         const session = await DailySession.findByIdAndDelete(id);
-        res.status(200).send({ message: "Session successfully deleted" }); 
+        res.status(200).send({ message: "Session successfully deleted" });
     } catch (err) {
         res.status(404).send(err);
     }
@@ -62,9 +87,9 @@ router.delete('/api/v1/dailysessions/:id', async function (req, res) {
 router.delete('/api/v1/dailysessions/', async function (req, res) {
     var isAdmin = req.body.isAdmin;
     try {
-        if(isAdmin){
+        if (isAdmin) {
             const session = await DailySession.deleteMany({});
-            res.status(200).send({ message: "All session successfully deleted" }); 
+            res.status(200).send({ message: "All session successfully deleted" });
         }
     } catch (err) {
         res.status(404).send(err);
@@ -101,7 +126,7 @@ router.patch('/api/v1/dailysessions/:sessionID', async function (req, res, next)
 });
 
 // Updates an attribute in a daily session.
-router.patch('/api/v1/dailysessions/:id', async function (req, res, next) { 
+router.patch('/api/v1/dailysessions/:id', async function (req, res, next) {
     var id = req.params.id;
     try {
         const session = await DailySession.findByIdAndUpdate(id, {
@@ -140,6 +165,29 @@ router.patch('/api/v1/dailysessions/:sessionID/exercises', async function (req, 
             return res.status(404).send({ message: "Daily session not found!" });
         }
         res.status(200).send({ message: "Exercise added", session });
+
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+// Deletes an exercise by id to a session by id.
+router.delete('/api/v1/dailysessions/:sessionID/exercises/:exerciseID', async function (req, res) {
+    var exerciseID = req.params.exerciseID
+    var sessionID = req.params.sessionID;
+    try {
+        const session = await DailySession.findById(sessionID);
+
+        if (!session) {
+            return res.status(404).send({ message: "Daily session not found!" });
+        }
+
+        const exercise = await Exercise.findByIdAndDelete(exerciseID);
+        if (!exercise) {
+            return res.status(404).send({ message: "Exercise not found!" });
+        }
+
+        res.status(200).send({ message: "Exercise deleted", session });
 
     } catch (err) {
         res.status(500).send(err);
