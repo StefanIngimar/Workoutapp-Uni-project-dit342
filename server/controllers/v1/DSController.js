@@ -54,17 +54,17 @@ router.get('/api/v1/dailysessions/:id/exercises/:id2', async function (req, res)
     try {
         var session = await DailySession.findById(id);
         if (!session) {
-            return res.status(404).send("No such session");
+            return res.status(404).send({message: "No such session"});
         }
         var exercise = await Exercise.findById(id2);
         if (!exercise) {
-            return res.status(404).send("No such Exercise");
+            return res.status(404).send({message: "No such exercise"});
         }
         const matchedEx = session.exercises.find(ex => (ex._id.toString() === id2));
         if (matchedEx) {
             return res.status(200).send(matchedEx);
         } else {
-            return res.status(404).send("Exercise not in session");
+            return res.status(404).send({message: "Exercise not in session"});
         }
 
     } catch (err) {
