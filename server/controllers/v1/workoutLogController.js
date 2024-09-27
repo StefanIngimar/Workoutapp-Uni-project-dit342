@@ -1,11 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const WorkoutLog = require('../../models/workoutLogModel.js');
+const cors = require('cors');
 
+const app = express();
+app.use(cors());
 router.get('/api/v1/workoutlogs', async function(req, res){
     try {
         const allWorkoutLogs = await WorkoutLog.find({});
-        res.status(200).json(allWorkoutLogs)
+        const events = allWorkoutLogs.map(log => ({
+            title: log.title,
+            start: log.date.toISOString(),
+            end: log.date.toISOString()
+        }));
+        console.log(events);
+        res.status(200).json(events);
     } catch(err) {
         res.status(404).send}});
 
@@ -36,6 +45,7 @@ router.put('/api/v1/workoutlogs/:id', async function(req, res){
 router.post('/api/v1/workoutlogs', async function(req, res){
     try {
         var workoutLog = new WorkoutLog({
+            'title' : req.body.title,
             'date' : req.body.date,
             'exercises' : req.body.exercises});
         const savedWorkoutLog = await workoutLog.save();

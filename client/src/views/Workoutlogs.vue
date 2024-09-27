@@ -3,7 +3,6 @@ import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import axios from 'axios';
-//code is not working, just trying to fetch data properly
 //https://fullcalendar.io/docs/events-json-feed
 export default {
   components: {
@@ -14,24 +13,35 @@ export default {
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
-        eventSources: [
-          {
-            url: '/api/v1/workoutlogs',
-            method: 'GET',
-            extraParams: {
-              custom_param1: 'something',
-              custom_param2: 'somethingelse'
-            },
-            failure: function() {
-              alert('There was an error while fetching workout logs!');
-            },
-            color: 'yellow',
-            textColor: 'black'
-          }
-        ]
+        events: []
       }
     }
+  },
+
+  methods: {
+    async fetchWorkoutLogs(){
+      try{
+        const response = await axios.get('/api/v1/workoutlogs');
+        const events = response.data;
+        console.log('Fetched events: ', events);
+
+        if(Array.isArray(events) && events.length > 0){
+          this.calendarOptions.events = events;
+          this.$forceUpdate();
+        }else{
+          console.error('Invalid data format');
+        }
+      } catch (error){
+        console.error('Error fetching event', error);
+      }
+    }
+  },
+//https://vuejs.org/api/options-lifecycle.html#mounted
+//https://stackoverflow.com/questions/49137607/what-does-mount-mean-in-vue-js
+  mounted() {
+    this.fetchWorkoutLogs();
   }
+  
 }
 </script>
 
