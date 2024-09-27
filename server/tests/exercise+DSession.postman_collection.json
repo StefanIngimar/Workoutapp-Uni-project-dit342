@@ -823,14 +823,15 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/api/v1/dailysessions{{sessionId}}/exercises",
+					"raw": "{{host}}/api/v1/dailysessions/{{sessionId}}/exercises",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"api",
 						"v1",
-						"dailysessions{{sessionId}}",
+						"dailysessions",
+						"{{sessionId}}",
 						"exercises"
 					]
 				}
