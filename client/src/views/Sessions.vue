@@ -1,42 +1,50 @@
 <template>
-    <div>
-        <h1> Sessions </h1>
-        <b-button class="btn_message" variant="primary" v-on:click="getMessage()">Get DailySessions from Server</b-button>
-        <p class="col-xl-9">
-            DailySessions :<br />
-            {{ message }}
-        </p>
+  <div>
+    <h1> Sessions </h1>
+    <session-item v-bind:exercise="message" />
+
+    <div v-for="session in sessions" v-bind:key="session._id">
+      <session-item v-bind:session="session" />
     </div>
+  </div>
 
 </template>
 
 <script>
 import { Api } from '@/Api'
+import MyFooter from '@/components/MyFooter.vue'
+import SessionItem from '@/components/SessionItem.vue'
 
 
 export default {
-    name: 'sessions',
-    data() {
+  name: 'sessions',
+  components: {
+    MyFooter,
+    SessionItem
+  },
+  data() {
     return {
       message: 'none'
     }
   },
+  mounted() {
+    Api.get('/v1/dailysessions')
+      .then((response) => {
+        this.sessions = response.data
+      })
+      .catch((error) => {
+        this.sessions = error
+      })
+  },
   methods: {
-    getMessage() {
-      Api.get('/v1/dailysessions')
-        .then((response) => {
-          this.message = response.data
-        })
-        .catch((error) => {
-          this.message = error
-        })
+
+  },
+  data() {
+    return {
+      sessions: ''
     }
   }
 }
 </script>
 
-<style>
-.btn_message {
-  margin-bottom: 1em;
-}
-</style>
+<style></style>

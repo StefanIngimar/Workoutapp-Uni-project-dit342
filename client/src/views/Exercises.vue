@@ -29,7 +29,6 @@
 
         <div class="searchForm">
             <b-form-input v-on:input="searchExercise" v-model="searchText" placeholder="Search"> </b-form-input>
-            <!-- <b-button class="btn_message" variant="primary" v-on:click="searchExercise()">Submit Search</b-button> -->
         </div>
 
 

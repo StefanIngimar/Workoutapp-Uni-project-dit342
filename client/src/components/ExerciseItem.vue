@@ -21,7 +21,7 @@
           <p>Weight: {{ exercise.weight }}</p>
           <p>Reps: {{ exercise.reps }}</p>
           <p>Sets: {{ exercise.sets }}</p>
-          
+
           <b-button class="btn_message" variant="danger" v-on:click="deleteExercise(exercise._id)">X</b-button>
           <b-button class="btn_message" variant="primary" v-on:click="toggleEdit">Edit</b-button>
         </div>
@@ -38,26 +38,23 @@ export default {
   props: ['exercise'],
   data() {
     return {
-      isEditing: false, // controls edit mode
-      editExercise: { ...this.exercise } // stores a copy of the exercise for editing
+      isEditing: false, 
+      editExercise: { ...this.exercise }
     };
   },
   methods: {
     toggleEdit() {
-      // Toggle the edit mode
       this.isEditing = true;
-      this.editExercise = { ...this.exercise }; // create a copy of the current exercise to allow editing
+      this.editExercise = { ...this.exercise }; 
     },
     cancelEdit() {
-      // Cancel edit and revert to original exercise
       this.isEditing = false;
       this.editExercise = { ...this.exercise };
     },
     saveExercise() {
-      // Save edited exercise data
       Api.patch(`/v1/exercises/${this.exercise._id}`, this.editExercise)
         .then((response) => {
-          this.isEditing = false; // Exit edit mode after saving
+          this.isEditing = false; 
           this.$emit('exercise-updated', response.data);
         })
         .catch((error) => {
@@ -65,7 +62,6 @@ export default {
         });
     },
     deleteExercise(exerciseID) {
-      // Delete exercise
       Api.delete(`/v1/exercises/${exerciseID}`)
         .then((response) => {
           this.$emit('exercise-deleted', response.data);
