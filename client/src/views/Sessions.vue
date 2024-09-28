@@ -44,10 +44,20 @@ export default {
     Api.get('/v1/dailysessions')
       .then((response) => {
         this.sessions = response.data
+        this.sessions.forEach(session => {
+          Api.get(`/v1/dailysessions/${session._id}/exercises`)
+            .then((response) => {
+              this.session.exercises = response.data
+            })
+            .catch((error) => {
+              this.session.exercises = error
+            })
+        });
       })
       .catch((error) => {
         this.sessions = error
       })
+
   },
   methods: {
 
