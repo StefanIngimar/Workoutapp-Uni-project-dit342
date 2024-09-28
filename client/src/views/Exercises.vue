@@ -11,8 +11,6 @@
         </div>
         <b-button class="btn_message" variant="danger" v-on:click="deleteAllExercises()">Delete All Exercises</b-button>
 
-
-
         <div v-if="postMessage">
             <p>Created exercise: </p>
             <exercise-item v-bind:exercise="postMessage" @exercise-deleted="handleExerciseDeleted"
@@ -32,12 +30,10 @@
             <b-form-input v-on:input="searchExercise" v-model="searchText" placeholder="Search"> </b-form-input>
         </div>
 
-
         <div v-for="exercise in exercises" v-bind:key="exercise._id">
             <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
                 @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated" />
         </div>
-
     </div>
     <my-footer />
 </template>
@@ -66,52 +62,19 @@ export default {
                 })
         },
 
-        // handleExerciseDeleted(exerciseID) {
-        //     Api.get('/v1/dailysessions')
-        //         .then((response) => {
-        //             this.sessions = response.data
-        //             Promise.all(this.sessions.forEach(session => {
-        //                 Api.patch(`/v1/dailysessions/${session._id}/exercises`, { exerciseID: exerciseID }) //removes exercise with specific id from session
-        //             }));
-        //         }).catch((error) => {
-        //             console.error('Error deleting exercise:', error);
-        //         });
-
-        //     Api.delete(`/v1/exercises/${exerciseID}`)
-        //         .then((response) => {
-        //             Api.get('/v1/exercises')
-        //                 .then((response) => {
-        //                     this.postMessage = '';
-        //                     this.exercises = response.data;
-        //                     this.exerciseMessage = "Exercise deleted!";
-        //                 })
-        //                 .catch((error) => {
-        //                     this.exerciseMessage = error;
-        //                 })
-        //         })
-        //         .catch((error) => {
-        //             console.error('Error deleting exercise:', error);
-        //         });
-
         handleExerciseDeleted(exerciseID) {
-            // Step 1: Get all sessions
             Api.get('/v1/dailysessions')
                 .then((response) => {
-                    this.sessions = response.data;  // Make sure to use 'this'
-
-                    // Step 2: Remove exercise from all sessions using Promise.all to ensure all patches are done
+                    this.sessions = response.data;  
                     const patchRequests = this.sessions.map((session) => {
                         return Api.patch(`/v1/dailysessions/${session._id}`, { exerciseID: exerciseID });
                     });
-
-                    return Promise.all(patchRequests);  // Wait for all patch requests to complete
+                    return Promise.all(patchRequests);  
                 })
                 .then(() => {
-                    // Step 3: Now delete the exercise itself once all sessions have been updated
                     return Api.delete(`/v1/exercises/${exerciseID}`);
                 })
                 .then(() => {
-                    // Step 4: Fetch updated exercises and update UI
                     return Api.get('/v1/exercises');
                 })
                 .then((response) => {
