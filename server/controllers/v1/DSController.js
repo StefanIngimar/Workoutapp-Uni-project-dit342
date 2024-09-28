@@ -28,9 +28,18 @@ router.get('/api/v1/dailysessions/:id', async function (req, res, next) {
 // Returns a all item stored in the database by query.
 router.get('/api/v1/dailysessions/search', async function (req, res, next) {
     const query = req.query;
+  
+    const searchQuery = {};
+
+    for (const key in query) {
+        if (query.hasOwnProperty(key)) {
+
+            searchQuery[key] = { $regex: query[key], $options: 'i' };
+        }
+    }
     try {
-        const exercise = await Exercise.find(query);
-        res.status(200).json(exercise);
+        const session = await DailySession.find(searchQuery);
+        res.status(200).json(session);
     } catch (err) {
         res.status(404).send(err);
     }
@@ -54,17 +63,17 @@ router.get('/api/v1/dailysessions/:id/exercises/:id2', async function (req, res)
     try {
         var session = await DailySession.findById(id);
         if (!session) {
-            return res.status(404).send({message: "No such session"});
+            return res.status(404).send({ message: "No such session" });
         }
         var exercise = await Exercise.findById(id2);
         if (!exercise) {
-            return res.status(404).send({message: "No such exercise"});
+            return res.status(404).send({ message: "No such exercise" });
         }
         const matchedEx = session.exercises.find(ex => (ex._id.toString() === id2));
         if (matchedEx) {
             return res.status(200).send(matchedEx);
         } else {
-            return res.status(404).send({message: "Exercise not in session"});
+            return res.status(404).send({ message: "Exercise not in session" });
         }
 
     } catch (err) {
@@ -113,6 +122,7 @@ router.patch('/api/v1/dailysessions/:sessionID', async function (req, res, next)
             { $pull: { exercises: exercise } },
             { new: true } // returns the updated version.
         );
+
 
         if (!session) {
             res.status(404).send({ message: "Daily session not found!" });

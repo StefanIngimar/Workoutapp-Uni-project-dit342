@@ -22,7 +22,7 @@
           <p>Reps: {{ exercise.reps }}</p>
           <p>Sets: {{ exercise.sets }}</p>
 
-          <b-button class="btn_message" variant="danger" v-on:click="deleteExercise(exercise._id)">X</b-button>
+          <b-button class="btn_message" variant="danger" v-on:click="$emit('exercise-deleted', exercise._id)">X</b-button>
           <b-button class="btn_message" variant="primary" v-on:click="toggleEdit">Edit</b-button>
         </div>
       </div>

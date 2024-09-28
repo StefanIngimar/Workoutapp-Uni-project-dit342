@@ -8,7 +8,7 @@
         <p>Notes: <input v-model="editSession.notes" /></p>
         <p>Exercises:
         <div v-for="exercise in session.exercises" v-bind:key="exercise._id">
-          <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
+          <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted(exercise._id)"
             @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated" />
         </div>
         </p>
@@ -16,7 +16,7 @@
         <div v-if="isAddingExercise">
           <p>Name: <input v-model="name" /></p>
           <p>Bodypart: <input v-model="bodyPart" /></p>
-          <p>Bodyweight: <input type="checkbox" v-model="hasWeight" /></p>
+          <p>Weighted: <input type="checkbox" v-model="hasWeights" /></p>
           <p>Weight: <input type="number" v-model="weight" /></p>
           <p>Reps: <input type="number" v-model="reps" /></p>
           <p>Sets: <input type="number" v-model="sets" /></p>
@@ -39,7 +39,7 @@
         <p>Notes: {{ session.notes }}</p>
         <p>Exercises:
         <div v-for="exercise in session.exercises" v-bind:key="exercise._id">
-          <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
+          <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted(exercise._id)"
             @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated" />
         </div>
         </p>
@@ -138,10 +138,20 @@ export default {
         })
     },
 
-    handleExerciseDeleted() {
-      Api.get(`/v1/dailysessions/${this.session._id}/exercises`)
+    handleExerciseDeleted(exerciseId) {
+      Api.patch(`/v1/dailysessions/${this.session._id}`,
+        {
+          exerciseID: exerciseId
+        }
+      )
         .then((response) => {
-          this.session.exercises = response.data;
+          Api.get(`/v1/dailysessions/${this.session._id}/exercises`)
+            .then((response) => {
+              this.session.exercises = response.data;
+            })
+            .catch((error) => {
+              this.exerciseMessage = error;
+            })
           this.exerciseMessage = "Exercise deleted!";
         })
         .catch((error) => {

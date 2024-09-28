@@ -12,9 +12,12 @@
       <p>Duration: <input type="number" v-model="duration" /></p>
       <p>Completed: <input type="checkbox" v-model="isCompleted" /></p>
       <p>Notes: <input v-model="notes" /></p>
-      <p>Exercises:</p>
 
       <b-button class="btn_message" variant="primary" v-on:click="postSession()">Submit session</b-button>
+    </div>
+
+    <div class="searchForm">
+      <b-form-input v-on:input="searchExercise" v-model="searchText" placeholder="Search"> </b-form-input>
     </div>
 
     <div v-for="session in sessions" v-bind:key="session._id">
@@ -95,6 +98,24 @@ export default {
         .catch((error) => {
           this.sessionMessage = error;
         })
+    },
+    searchExercise() {
+      Api.get(`/v1/dailysessions/search?sessionName=${this.searchText}`)
+        .then((response) => {
+          this.sessions = response.data
+          if (this.searchText === '') {
+            Api.get('/v1/dailysessions')
+              .then((response) => {
+                this.sessions = response.data
+              })
+              .catch((error) => {
+                this.sessions = error
+              })
+          }
+        })
+        .catch((error) => {
+          this.sessions = error
+        })
     }
   },
   data() {
@@ -107,7 +128,8 @@ export default {
       sessionName: '',
       duration: '',
       isCompleted: false,
-      notes: ''
+      notes: '',
+      searchText: ''
     }
   }
 }
@@ -119,5 +141,12 @@ export default {
   margin-right: 800px;
   padding: 50px;
   background-color: rgb(125, 190, 221);
+  border: 2px solid;
+  border-color: black;
+}
+
+.searchForm {
+  margin-left: 800px;
+  margin-right: 800px;
 }
 </style>

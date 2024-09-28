@@ -1,16 +1,17 @@
 <template>
     <div>
         <div class="form">
-            <input v-model="name" placeholder="Exercise name" />
+            <p>Exercise name:<input v-model="name" placeholder="Chest press" /></p>
             <p>Weighted: <input type="checkbox" v-model="hasWeights" /></p>
-            <input v-model="bodyPart" placeholder="Bodypart" />
-            <input type="number" v-model="weight" placeholder="Weight" />
-            <input type="number" v-model="reps" placeholder="Reps" />
-            <input type="number" v-model="sets" placeholder="Sets" />
+            <p>Bodypart:<input v-model="bodyPart" placeholder="Chest" /></p>
+            <p>Weight:<input type="number" v-model="weight" placeholder="100" /></p>
+            <p>Reps:<input type="number" v-model="reps" placeholder="2" /></p>
+            <p>Sets:<input type="number" v-model="sets" placeholder="2" /></p>
+            <b-button class="btn_message" variant="primary" v-on:click="postExercise()">Submit Exercise</b-button>
         </div>
-
-        <b-button class="btn_message" variant="primary" v-on:click="postExercise()">Submit Exercise</b-button>
         <b-button class="btn_message" variant="danger" v-on:click="deleteAllExercises()">Delete All Exercises</b-button>
+
+
 
         <div v-if="postMessage">
             <p>Created exercise: </p>
@@ -65,16 +66,23 @@ export default {
                 })
         },
 
-        handleExerciseDeleted() {
-            Api.get('/v1/exercises')
+        handleExerciseDeleted(exerciseID) {
+            Api.delete(`/v1/exercises/${exerciseID}`)
                 .then((response) => {
-                    this.postMessage = '';
-                    this.exercises = response.data;
-                    this.exerciseMessage = "Exercise deleted!";
+                    Api.get('/v1/exercises')
+                        .then((response) => {
+                            this.postMessage = '';
+                            this.exercises = response.data;
+                            this.exerciseMessage = "Exercise deleted!";
+                        })
+                        .catch((error) => {
+                            this.exerciseMessage = error;
+                        })
                 })
                 .catch((error) => {
-                    this.exerciseMessage = error;
-                })
+                    console.error('Error deleting exercise:', error);
+                });
+
         },
         handleDeleteError() {
             this.exerciseMessage = error;
@@ -106,7 +114,6 @@ export default {
                 })
         },
         searchExercise() {
-            console.log("Search text received: ", this.searchText);
             Api.get(`/v1/exercises/search?name=${this.searchText}`)
                 .then((response) => {
                     this.exercises = response.data
@@ -171,6 +178,8 @@ export default {
     margin-right: 800px;
     padding: 50px;
     background-color: rgb(125, 190, 221);
+    border: 2px solid;
+    border-color: black;
 }
 
 .searchForm {
