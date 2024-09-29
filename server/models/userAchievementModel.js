@@ -3,7 +3,7 @@ var Schema   = mongoose.Schema;
 
 var userAchievementSchema = new Schema({
     userID : {type: Schema.Types.ObjectId, ref: 'users'},
-    achievement : {type: Schema.Types.ObjectId, ref: 'achievements'},
+    achievementID : {type: Schema.Types.ObjectId, ref: 'achievements'},
     achievementName : {type: Schema.Types.String, ref: 'achievements.name'},
     isCompleted : {type : Boolean, default : false},
     dateCompleted : {type : Date}

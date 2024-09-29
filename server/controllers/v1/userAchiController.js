@@ -20,6 +20,29 @@ router.get('/api/v1/userAchievements', async function(req, res){
     }
 });
 
+
+// Get all user achievements for a specific user
+router.get('/api/v1/users/:userId/userAchievements', async function(req, res){
+    try{
+        const userAchievements = await UserAchievement.find({userID: req.params.userId});
+        res.status(200).json(userAchievements);
+    } catch(err){
+        res.status(404).json({error: err.message});
+    }
+});
+
+// Get specific user achievement for a specific user
+router.get('/api/v1/users/:userId/userAchievements/:userAchievementId', async function(req, res){
+    try{
+        const userAchievement = await UserAchievement.findOne({userID: req.params.userId, _id: req.params.userAchievementId});
+        res.status(200).json(userAchievement);
+    } catch(err){
+        res.status(404).json({error: err.message});
+    }
+});
+
+
+
 // Get a single user achievement by ID
 router.get('/api/v1/userAchievements/:userAchievementId', async function(req, res, next){
     try{
@@ -37,6 +60,9 @@ router.get('/api/v1/userAchievements/:userAchievementId', async function(req, re
 router.get('/api/v1/userAchievements/:achievementName', async function(req, res){
     try{
         const userAchievements = await UserAchievement.find({achievementName: req.params.achievementName});
+        if (!userAchievements){
+            return res.status(404).json({message: "User achievement not found"});
+        }
         res.status(200).json(userAchievements);
     } catch(err){
         res.status(404).json({error: err.message});
@@ -63,13 +89,14 @@ router.get('/api/v1/userAchievements/:achievementName/users', async function(req
     }
 });
 
+
 // Create a new user achievement
-router.post('/api/v1/users/:userID/achievements/:achievementId/achievementName/:achievementName', async function(req, res){
+router.post('/api/v1/userAchievements', async function(req, res){
     
     const newUserAchievement = new UserAchievement({
-            userID : req.params.userID,
-            achievement : req.params.achievementId,
-            achievementName : req.params.achievementName,
+            userID : req.body.userID,
+            achievementID : req.body.achievementID,
+            achievementName : req.body.achievementName,
             isCompleted : req.body.isCompleted,
             dateCompleted : req.body.dateCompleted
         });
@@ -95,19 +122,23 @@ router.delete('/api/v1/userAchievements/:userAchievementId', async function(req,
     }
 });
 
+//TODO: set dateompleted as well
 // // Update a user achievement
-router.patch('/api/v1/userAchievements/:userAchievementId', async function(req, res){
+router.patch('/api/v1/userAchievements/:userAchievementID', async function(req, res){
     try{
-        const userAchievement = await UserAchievement.findById(req.params.userAchievementId);
+        const userAchievement = await UserAchievement.findById(req.params.userAchievementID);
         if (!userAchievement){
             return res.status(404).json({message: "User achievement not found"});
         }
-        const achievement = await Achievement.findById(userAchievement.achievement);
+        const achievement = await Achievement.findById(userAchievement.achievementID);
         if (!achievement){
             return res.status(404).json({message: "Achievement not found"});
         }
         if (achievement.typeOfAchievement === 'weightLiftedMilestone' || achievement.typeOfAchievement === 'repetitionMilestone'){
             const dailySession = await DailySession.find({userID : userAchievement.userID});
+            if (!dailySession){
+                return res.status(404).json({message: "Daily session not found"});
+            }
             dailySession.forEach(session => {
                 session.exercises.forEach(exercise => {
                     if (exercise.name === achievement.exercisename && session.isCompleted === true){
@@ -119,9 +150,12 @@ router.patch('/api/v1/userAchievements/:userAchievementId', async function(req, 
                         }
                     }
                 });
-            });// Might need to adjust later
+            });// TODO: Add a workoutlog body in postman to check if it works
         } else if (achievement.typeOfAchievement === 'attendanceMilestone'){
-            const workoutLog = await WorkoutLog.findOne({user : userAchievement.user});
+            const workoutLog = await WorkoutLog.findOne({user : userAchievement.userID});
+            if (!workoutLog){
+                return res.status(404).json({message: "Workout log not found"});
+            }
             if (workoutLog.length >= achievement.milestones.numOfTimesInGym){
                 userAchievement.isCompleted = true;
             }
@@ -132,6 +166,13 @@ router.patch('/api/v1/userAchievements/:userAchievementId', async function(req, 
         res.status(500).json({error: err.message});
     }
 });
+
+
+/*
+En sak:i workoutloggen, behövs attributen exeercise, sets, reps och weight? De är i en lista av 
+exercises men tänker går det kanske att bara ha en 
+lista av exercise idn? Alltså "exercises" : ["{{exerciseid1}}", "{{exerciseid2}}", osv.... ] 
+*/ 
 
 
 module.exports = router;
