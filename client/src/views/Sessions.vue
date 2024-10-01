@@ -13,10 +13,9 @@
 <script>
 import { Api } from '@/Api'
 
-
 export default {
-    name: 'sessions',
-    data() {
+  name: 'sessions',
+  data() {
     return {
       message: 'none'
     }

@@ -122,8 +122,8 @@ router.delete('/api/v1/userAchievements/:userAchievementId', async function(req,
     }
 });
 
-//TODO: set dateompleted as well
-// // Update a user achievement
+
+// Update a user achievement
 router.patch('/api/v1/userAchievements/:userAchievementID', async function(req, res){
     try{
         const userAchievement = await UserAchievement.findById(req.params.userAchievementID);
@@ -150,15 +150,18 @@ router.patch('/api/v1/userAchievements/:userAchievementID', async function(req, 
                         }
                     }
                 });
-            });// TODO: Add a workoutlog body in postman to check if it works
+            });
         } else if (achievement.typeOfAchievement === 'attendanceMilestone'){
-            const workoutLog = await WorkoutLog.findOne({user : userAchievement.userID});
+            const workoutLog = await WorkoutLog.find({user : userAchievement.userID});
             if (!workoutLog){
                 return res.status(404).json({message: "Workout log not found"});
             }
-            if (workoutLog.length >= achievement.milestones.numOfTimesInGym){
+            if (workoutLog.session.length >= achievement.milestones.numOfTimesInGym){
                 userAchievement.isCompleted = true;
             }
+        }
+        if (userAchievement.isCompleted === true){
+            userAchievement.dateCompleted = new Date();
         }
         const updatedUserAchievement = await userAchievement.save();
         res.status(200).json(updatedUserAchievement);
@@ -168,11 +171,6 @@ router.patch('/api/v1/userAchievements/:userAchievementID', async function(req, 
 });
 
 
-/*
-En sak:i workoutloggen, behövs attributen exeercise, sets, reps och weight? De är i en lista av 
-exercises men tänker går det kanske att bara ha en 
-lista av exercise idn? Alltså "exercises" : ["{{exerciseid1}}", "{{exerciseid2}}", osv.... ] 
-*/ 
 
 
 module.exports = router;

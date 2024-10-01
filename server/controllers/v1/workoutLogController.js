@@ -37,7 +37,7 @@ router.post('/api/v1/workoutlogs', async function(req, res){
     try {
         var workoutLog = new WorkoutLog({
             'date' : req.body.date,
-            'exercises' : req.body.exercises});
+            'session' : req.body.session});
         const savedWorkoutLog = await workoutLog.save();
         res.status(200).send(savedWorkoutLog);}
     catch(err){

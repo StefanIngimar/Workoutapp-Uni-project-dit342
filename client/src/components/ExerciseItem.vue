@@ -11,9 +11,9 @@
 </template>
 
 <script>
-export default{
-    name: 'exercise-item',
-    props: ['exercise']
+export default {
+  name: 'exercise-item',
+  props: ['exercise']
 }
 </script>
 
