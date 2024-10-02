@@ -1,44 +1,86 @@
 <template>
-    <div>
-        <h1> User profile </h1>
-        <b-button class="btn_message" variant="primary" v-on:click="getUser()">Get Profile from Server</b-button>
-        <p class="col-xl-9">
-            User profile :<br />
-            {{ message }}
-        </p>
+  <div>
+    <user-creation  @user-created="handleUserCreated" />
+    <!-- Display the user's name and email -->
+    <user-info v-if="user" :user="user" />
+    <!-- Handle the updateing of user profile -->
+    <edit-profile :user="user" @profile-updated="handleProfileUpdated" />
+    <!-- Diplsay numer of times attending the gym-->
+     <!-- <gym-attendance :numOfTimesInGym="numOfTimesInGym" /> -->
+    <!-- Display the user's achievements -->
+    <achievements :userAchievements="userId" />
+    <div v-if="message" class="error">
+      {{ message }}
     </div>
+  </div>
 </template>
 
 <script>
+import UserInfo from '@/components/UserInfo.vue'
+import EditProfile from '@/components/EditProfile.vue'
+// import GymAttendance from '@/components/GymAttendance.vue'
+import Achievements from '@/components/Achievements.vue'
+import UserCreation from '@/components/UserCreation.vue'
 import { Api } from '@/Api'
 
 export default {
-  name: 'profile',
+  name: 'Profile',
+  components: {
+    UserInfo,
+    EditProfile,
+    // GymAttendance,
+    Achievements,
+    UserCreation
+  },
   data() {
     return {
-      message: 'none'
+      user: {},
+      userId: '',
+      userAchievements: [],
+      numOfTimesInGym: 0,
+      message: ''
     }
   },
   methods: {
-    getUserId() {
-      return this.$route.params.id
+    handleUserCreated(newUser) {
+      this.user = newUser
+      this.userId = newUser._id
     },
-    getUser(userId) {
-      // const userId = this.getUserId()
-      Api.get('/v1/users/users/$(userId)')
-        .then((response) => {
-          this.message = response.data
+    getUserProfile() {
+      if (!this.userId) {
+        this.message = 'User not found'
+        return
+      }
+      Api.get(`/api/v1/users/${this.userId}`)
+        .then(response => {
+          this.user = response.data
         })
-        .catch((error) => {
-          this.message = error
+        .catch(error => {
+          this.messsage = error.response ? error.response.data.message : error.message
         })
+    },
+    handleProfileUpdated(updatedUser) {
+      this.user = updatedUser
+    },
+    created() {
+      this.getUserProfile()
     }
   }
 }
+
 </script>
 
-<style scoped>
-h1 {
-    color: blueviolet;
+<!--Add a way where the user can display
+the current goal their are working towards and in that way they can connect with other users-->
+<style>
+.user-creation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  background-color: black;
+}
+.error {
+  color: red;
 }
 </style>

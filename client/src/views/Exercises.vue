@@ -30,25 +30,24 @@
         </div>
 
     </div>
-    <my-footer />
 </template>
 
 <script>
-import MyFooter from '@/components/MyFooter.vue'
+// import MyFooter from '@/components/MyFooter.vue'
 import ExerciseItem from '@/components/ExerciseItem.vue'
 import { Api } from '@/Api'
-import { BFormGroup } from 'bootstrap-vue-next'
+// import { BFormGroup } from 'bootstrap-vue-next'
 
-const hasWeightsForm = [
-  { value: null, text: 'Bodyweight exercises?' },
-  { value: 'true', text: 'Yes' },
-  { value: 'false', text: 'No' }
-]
+// const hasWeightsForm = [
+//   { value: null, text: 'Bodyweight exercises?' },
+//   { value: 'true', text: 'Yes' },
+//   { value: 'false', text: 'No' }
+// ]
 
 export default {
   name: 'exercises',
   components: {
-    MyFooter,
+    // MyFooter,
     ExerciseItem
   },
   methods: {
