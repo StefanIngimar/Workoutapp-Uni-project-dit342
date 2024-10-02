@@ -14,7 +14,7 @@
         <div v-if="postMessage">
             <p>Created exercise: </p>
             <exercise-item v-bind:exercise="postMessage" @exercise-deleted="handleExerciseDeleted"
-                @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated" />
+                @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
         </div>
 
         <div>
@@ -32,7 +32,7 @@
 
         <div v-for="exercise in exercises" v-bind:key="exercise._id">
             <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
-                @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated" />
+                @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
         </div>
     </div>
     <my-footer />
@@ -51,25 +51,40 @@ export default {
         ExerciseItem
     },
     methods: {
-        handleExerciseUpdated() {
-            Api.get('/v1/exercises')
+        handleExerciseUpdated(exerciseID) {
+            Api.get('/v1/dailysessions')
                 .then((response) => {
-                    this.exercises = response.data;
-                    this.exerciseMessage = "Exercise updated!";
+                    Api.get(`/v1/exercises/${exerciseID}`)
+                        .then((response) => this.updatedExercise = response.data).then(() => {
+                            this.sessions = response.data;
+                            const patchRequests = this.sessions.map((session) => {
+                                return Api.put(`/v1/dailysessions/${session._id}/exercises/${exerciseID}`, this.updatedExercise);
+                            });
+                            return Promise.all(patchRequests);
+                        })
+                        .then(() => {
+                            return Api.get('/v1/exercises');
+                        })
+                        .then((response) => {
+                            this.exercises = response.data;
+                            this.exerciseMessage = "Exercise updated!";
+                        })
                 })
+
                 .catch((error) => {
+                    console.error('Error deleting exercise:', error);
                     this.exerciseMessage = error;
-                })
+                });
         },
 
         handleExerciseDeleted(exerciseID) {
             Api.get('/v1/dailysessions')
                 .then((response) => {
-                    this.sessions = response.data;  
+                    this.sessions = response.data;
                     const patchRequests = this.sessions.map((session) => {
                         return Api.patch(`/v1/dailysessions/${session._id}`, { exerciseID: exerciseID });
                     });
-                    return Promise.all(patchRequests);  
+                    return Promise.all(patchRequests);
                 })
                 .then(() => {
                     return Api.delete(`/v1/exercises/${exerciseID}`);
@@ -170,7 +185,8 @@ export default {
             sets: '',
             searchText: '',
             exerciseMessage: '',
-            sessions: ''
+            sessions: '',
+            updatedExercise: ''
         }
     }
 }

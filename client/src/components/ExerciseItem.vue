@@ -4,7 +4,7 @@
         <div v-if="isEditing">
           <p>Name: <input v-model="editExercise.name" /></p>
           <p>Bodypart: <input v-model="editExercise.bodyPart" /></p>
-          <p>Bodyweight: <input type="checkbox" v-model="editExercise.hasWeight" /></p>
+          <p>Weighted: <input type="checkbox" v-model="editExercise.hasWeight" /></p>
           <p>Weight: <input type="number" v-model="editExercise.weight" /></p>
           <p>Reps: <input type="number" v-model="editExercise.reps" /></p>
           <p>Sets: <input type="number" v-model="editExercise.sets" /></p>
@@ -17,7 +17,7 @@
 
           <p>Name: {{ exercise.name }}</p>
           <p>Bodypart: {{ exercise.bodyPart }}</p>
-          <p>Bodyweight: {{ exercise.hasWeight }}</p>
+          <p>Weighted: {{ exercise.hasWeight }}</p>
           <p>Weight: {{ exercise.weight }}</p>
           <p>Reps: {{ exercise.reps }}</p>
           <p>Sets: {{ exercise.sets }}</p>

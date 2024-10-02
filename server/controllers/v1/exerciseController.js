@@ -14,6 +14,17 @@ router.get('/api/v1/exercises', async function (req, res) {
     }
 });
 
+//TODO: Might need this for all get
+// router.get('/api/v1/exercises', async function (req, res) {
+//     var userID = req.params.userID;
+//     try {
+//         const allExercises = await Exercise.find({userID: userID});
+//         res.status(200).json(allExercises)
+//     } catch (err) {
+//         res.status(404).send(err);
+//     }
+// });
+
 // Returns a single item stored in the database by id.
 router.get('/api/v1/exercises/:id', async function (req, res, next) {
     var id = req.params.id; // Extract id from param of the GET request. 

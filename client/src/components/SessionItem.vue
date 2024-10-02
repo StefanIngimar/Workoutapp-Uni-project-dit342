@@ -9,7 +9,7 @@
         <p>Exercises:
         <div v-for="exercise in session.exercises" v-bind:key="exercise._id">
           <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted(exercise._id)"
-            @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated" />
+            @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
         </div>
         </p>
 
@@ -40,7 +40,7 @@
         <p>Exercises:
         <div v-for="exercise in session.exercises" v-bind:key="exercise._id">
           <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted(exercise._id)"
-            @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated" />
+            @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
         </div>
         </p>
         <p> {{ exerciseMessage }}</p>
@@ -76,6 +76,7 @@ export default {
       isCustom: true,
       reps: '',
       sets: '',
+      updatedExercise: '',
     };
   },
   methods: {
@@ -128,10 +129,19 @@ export default {
     toggleNewExercise() {
       this.isAddingExercise = !this.isAddingExercise;
     },
-    handleExerciseUpdated() {
-      Api.get(`/v1/dailysessions/${this.session._id}/exercises`)
+    handleExerciseUpdated(exID) {
+      Api.get(`/v1/exercises/${exID}`)
         .then((response) => {
-          this.session.exercises = response.data;
+          this.updatedExercise = response.data;
+        })
+        .then(() => {
+          Api.put(`/v1/dailysessions/${this.session._id}/exercises/${exID}`, this.updatedExercise)
+            .then(() => {
+              Api.get(`/v1/dailysessions/${this.session._id}/exercises`)
+                .then((response) => {
+                  this.session.exercises = response.data;
+                })
+            });
         })
         .catch((error) => {
           this.exerciseMessage = error;
