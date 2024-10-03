@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var workoutLogSchema = new Schema({
+    title: { type: String, required: true },
     date: { type: Date, required: true },
     session: [{
         user: { type: Schema.Types.ObjectId, ref: 'users' },

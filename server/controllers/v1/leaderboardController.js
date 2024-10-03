@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const Leaderboard = require('../../models/leaderboardModel.js');
+const jwt = require('jsonwebtoken');
 
 router.get('/api/v1/leaderboard', async function(req, res){
     try {
-        const allLeaderboard = await Leaderboard.find({});
+        const allLeaderboard = await Leaderboard.find({})
+        .sort({weight: -1})
+        .limit(10);
         res.status(200).json(allLeaderboard)
     } catch(err) {
         res.status(404).send}});
@@ -29,6 +32,7 @@ router.post('/api/v1/leaderboard', async function(req, res){
     try {
         var leaderboard = new Leaderboard({
             'user' : req.body.user,
+            'userName' : req.body.userName,
             'weight' : req.body.weight
         });
         const savedLeaderboard = await leaderboard.save();
