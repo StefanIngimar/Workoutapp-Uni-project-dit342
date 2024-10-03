@@ -1,7 +1,7 @@
 //Dependencies
 var express = require('express');
 var router = express.Router();
-require('dotenv').config();
+//require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 const tokenSecret = process.env.JWT_SECRET;
