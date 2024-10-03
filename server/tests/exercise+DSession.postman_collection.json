@@ -457,6 +457,51 @@
 			"response": []
 		},
 		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"Squat\",\r\n    \"hasWeights\" : true,\r\n    \"weight\" : 99,\r\n    \"bodyPart\" : \"Legs\",\r\n    \"isCustom\" : true,\r\n    \"reps\" : 13,\r\n    \"sets\" : 11\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/dailysessions/{{sessionId}}/exercises/{{exerciseId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"{{sessionId}}",
+						"exercises",
+						"{{exerciseId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "localhost:3000/api/dailysessions/Mega day",
 			"event": [
 				{
@@ -545,6 +590,42 @@
 						"dailysessions",
 						"{{sessionId}}",
 						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/dailysessions/{{sessionId}}/exercises/{{exerciseId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"{{sessionId}}",
+						"exercises",
+						"{{exerciseId}}"
 					]
 				}
 			},
@@ -699,6 +780,140 @@
 						"v1",
 						"dailysessions",
 						"{{sessionId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/dailysessions/66e04670546a9ddaa56b1d7aPUT Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"exerciseID\": \"{{exerciseId}}\"\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/dailysessions/{{sessionId}}/exercises",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"{{sessionId}}",
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Barbell curl\",\r\n    \"hasWeights\": true,\r\n    \"weight\" : 35,\r\n    \"bodyPart\": \"Biceps\",\r\n    \"isCustom\": true,\r\n    \"reps\": 1,\r\n    \"sets\": 33\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/dailysessions/{{sessionId}}/exercises",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"{{sessionId}}",
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/dailysessions/{{sessionId}}/exercises/{{exerciseId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"{{sessionId}}",
+						"exercises",
+						"{{exerciseId}}"
 					]
 				}
 			},

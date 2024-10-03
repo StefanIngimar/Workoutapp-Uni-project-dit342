@@ -43,4 +43,6 @@ export default {
 .btn_message {
   margin-bottom: 1em;
 }
+body{
+  background-color: rgb(44, 46, 43);}
 </style>
