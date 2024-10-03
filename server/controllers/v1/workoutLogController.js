@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const WorkoutLog = require('../../models/workoutLogModel.js');
 const cors = require('cors');
-require('dotenv').config();
+//require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 const tokenSecret = process.env.JWT_SECRET;
