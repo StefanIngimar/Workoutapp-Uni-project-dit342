@@ -139,7 +139,7 @@ router.post('/api/v1/users', //upload.single('profilePic'),
             { expiresIn: tokenExpireTime }
         );*/
 
-        res.status(201).json({user: savedUser, token: token});
+        res.status(201).json({user: savedUser/*, token: token*/});
     } catch (err) {
         res.status(500).json({error: err.message});
     }
