@@ -134,10 +134,10 @@ router.post('/api/v1/users', //upload.single('profilePic'),
     try{
         const savedUser = await user.save();
 
-        const token = jwt.sign({userId: savedUser._id, isAdmin: savedUser.isAdmin },
+       /* const token = jwt.sign({userId: savedUser._id, isAdmin: savedUser.isAdmin },
             tokenSecret,
             { expiresIn: tokenExpireTime }
-        );
+        );*/
 
         res.status(201).json({user: savedUser, token: token});
     } catch (err) {
