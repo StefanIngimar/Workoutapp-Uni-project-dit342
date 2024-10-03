@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+const jwt = require('jsonwebtoken');
 const DailySession = require('../../models/dailySessionModel');
 const Exercise = require('../../models/exerciseModel');
 
