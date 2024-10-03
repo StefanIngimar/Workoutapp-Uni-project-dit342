@@ -1,12 +1,15 @@
 <template>
     <div>
+        <label>
+            <h1>Exercises</h1>
+        </label>
         <div class="form">
-            <p>Exercise name:<input v-model="name" placeholder="Chest press" /></p>
-            <p>Weighted: <input type="checkbox" v-model="hasWeights" /></p>
-            <p>Bodypart:<input v-model="bodyPart" placeholder="Chest" /></p>
-            <p>Weight:<input type="number" v-model="weight" placeholder="100" /></p>
-            <p>Reps:<input type="number" v-model="reps" placeholder="2" /></p>
-            <p>Sets:<input type="number" v-model="sets" placeholder="2" /></p>
+            <p>Exercise name:<input class="input" v-model="name" placeholder="Chest press" /></p>
+            <p>Weighted: <input class="input" type="checkbox" v-model="hasWeights" /></p>
+            <p>Bodypart:<input class="input" v-model="bodyPart" placeholder="Chest" /></p>
+            <p>Weight:<input class="input" type="number" v-model="weight" placeholder="100" /></p>
+            <p>Reps:<input class="input" type="number" v-model="reps" placeholder="2" /></p>
+            <p>Sets:<input class="input" type="number" v-model="sets" placeholder="2" /></p>
             <b-button class="btn_message" variant="primary" v-on:click="postExercise()">Submit Exercise</b-button>
         </div>
         <b-button class="btn_message" variant="danger" v-on:click="deleteAllExercises()">Delete All Exercises</b-button>
@@ -18,9 +21,7 @@
         </div>
 
         <div>
-            <label>
-                <h1>Exercises</h1>
-            </label>
+            <h2>Previous exercises:</h2>
             <p>
                 {{ exerciseMessage }}
             </p>
@@ -30,10 +31,13 @@
             <b-form-input v-on:input="searchExercise" v-model="searchText" placeholder="Search"> </b-form-input>
         </div>
 
-        <div v-for="exercise in exercises" v-bind:key="exercise._id">
-            <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
-                @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
+        <div class="exercise-list">
+            <div v-for="exercise in exercises" v-bind:key="exercise._id">
+                <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
+                    @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
+            </div>
         </div>
+
     </div>
     <my-footer />
 </template>
@@ -193,17 +197,11 @@ export default {
 </script>
 
 <style scoped>
-.form {
-    margin-left: 800px;
-    margin-right: 800px;
-    padding: 50px;
-    background-color: rgb(125, 190, 221);
-    border: 2px solid;
-    border-color: black;
-}
-
-.searchForm {
-    margin-left: 800px;
-    margin-right: 800px;
+.exercise-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
 }
 </style>

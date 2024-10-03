@@ -2,12 +2,12 @@
     <div class="exercise-list">
       <div class="exercise-container">
         <div v-if="isEditing">
-          <p>Name: <input v-model="editExercise.name" /></p>
-          <p>Bodypart: <input v-model="editExercise.bodyPart" /></p>
+          <p>Name: <input class="input" v-model="editExercise.name" /></p>
+          <p>Bodypart: <input class="input" v-model="editExercise.bodyPart" /></p>
           <p>Weighted: <input type="checkbox" v-model="editExercise.hasWeight" /></p>
-          <p>Weight: <input type="number" v-model="editExercise.weight" /></p>
-          <p>Reps: <input type="number" v-model="editExercise.reps" /></p>
-          <p>Sets: <input type="number" v-model="editExercise.sets" /></p>
+          <p>Weight: <input class="input" type="number" v-model="editExercise.weight" /></p>
+          <p>Reps: <input class="input" type="number" v-model="editExercise.reps" /></p>
+          <p>Sets: <input class="input" type="number" v-model="editExercise.sets" /></p>
 
           <b-button class="btn_message" variant="success" v-on:click="saveExercise">Save</b-button>
           <b-button class="btn_message" variant="danger" v-on:click="cancelEdit">Cancel</b-button>
@@ -84,16 +84,24 @@ export default {
 }
 
 .exercise-container {
-  background-color: bisque;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color:  rgb(63, 66, 62);
   padding: 10px;
   margin: 10px;
   width: 300px;
   border: 2px solid;
-  border-color: rgb(0, 0, 0);
+  border-radius: 5%;
+  border-color:  rgb(124, 128, 121);
 }
 
 .exercise-container p {
   margin: 0;
   padding: 1px 0;
+}
+.h2 {
+  font-weight: bold;
 }
 </style>

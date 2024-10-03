@@ -8,22 +8,27 @@
 
 
     <div class="form">
-      <p>Name: <input v-model="sessionName" /></p>
-      <p>Duration: <input type="number" v-model="duration" /></p>
+      <p>Name: <input class="input" v-model="sessionName" /></p>
+      <p>Duration: <input class="input" type="number" v-model="duration" /></p>
       <p>Completed: <input type="checkbox" v-model="isCompleted" /></p>
-      <p>Notes: <input v-model="notes" /></p>
+      <p>Notes: <input class="input" v-model="notes" /></p>
 
       <b-button class="btn_message" variant="primary" v-on:click="postSession()">Submit session</b-button>
     </div>
+
+    <h2>Previous sessions:</h2>
 
     <div class="searchForm">
       <b-form-input v-on:input="searchExercise" v-model="searchText" placeholder="Search"> </b-form-input>
     </div>
 
-    <div v-for="session in sessions" v-bind:key="session._id">
-      <session-item v-bind:session="session" @session-deleted="handleSessionDeleted" @delete-error="handleDeleteError"
-        @session-updated="handleSessionUpdated" />
+    <div class="sessions-list">
+      <div v-for="session in sessions" v-bind:key="session._id">
+        <session-item v-bind:session="session" @session-deleted="handleSessionDeleted" @delete-error="handleDeleteError"
+          @session-updated="handleSessionUpdated" />
+      </div>
     </div>
+
   </div>
 
 </template>
@@ -45,15 +50,15 @@ export default {
       .then((response) => {
         this.sessions = response.data
         // Might not be needed
-        this.sessions.forEach(session => {
-          Api.get(`/v1/dailysessions/${session._id}/exercises`)
-            .then((response) => {
-              session.exercises = response.data
-            })
-            .catch((error) => {
-              session.exercises = error
-            })
-        });
+        // this.sessions.forEach(session => {
+        //   Api.get(`/v1/dailysessions/${session._id}/exercises`)
+        //     .then((response) => {
+        //       session.exercises = response.data
+        //     })
+        //     .catch((error) => {
+        //       session.exercises = error
+        //     })
+        // });
       })
       .catch((error) => {
         this.sessions = error
@@ -147,17 +152,11 @@ export default {
 </script>
 
 <style scoped>
-.form {
-  margin-left: 800px;
-  margin-right: 800px;
-  padding: 50px;
-  background-color: rgb(125, 190, 221);
-  border: 2px solid;
-  border-color: black;
-}
-
-.searchForm {
-  margin-left: 800px;
-  margin-right: 800px;
+.sessions-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
 }
 </style>
