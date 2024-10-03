@@ -8,7 +8,8 @@
     <!-- Diplsay numer of times attending the gym-->
      <!-- <gym-attendance :numOfTimesInGym="numOfTimesInGym" /> -->
     <!-- Display the user's achievements -->
-    <achievements :userAchievements="userId" />
+    <!-- <achievement-list :userAchievements="userId" /> -->
+     <button type="button" @click="deletAllUsers">Deleta all users</button>
     <div v-if="message" class="error">
       {{ message }}
     </div>
@@ -19,7 +20,7 @@
 import UserInfo from '@/components/UserInfo.vue'
 import EditProfile from '@/components/EditProfile.vue'
 // import GymAttendance from '@/components/GymAttendance.vue'
-import Achievements from '@/components/Achievements.vue'
+// import AchievementList from '@/components/AchievementList.vue'
 import UserCreation from '@/components/UserCreation.vue'
 import { Api } from '@/Api'
 
@@ -29,7 +30,7 @@ export default {
     UserInfo,
     EditProfile,
     // GymAttendance,
-    Achievements,
+    // AchievementList,
     UserCreation
   },
   data() {
@@ -61,6 +62,15 @@ export default {
     },
     handleProfileUpdated(updatedUser) {
       this.user = updatedUser
+    },
+    deletAllUsers() {
+      Api.delete('/v1/users')
+        .then(() => {
+          this.message = 'All users deleted'
+        })
+        .catch(error => {
+          this.message = error.response ? error.response.data.message : error.message
+        })
     },
     created() {
       this.getUserProfile()

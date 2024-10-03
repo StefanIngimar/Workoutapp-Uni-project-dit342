@@ -31,7 +31,10 @@ export default {
       }
       Api.post('/v1/users', newUser)
         .then((response) => {
-          this.$emit('user-created', response.data)
+          const createdUser = response.data
+          // Store user data in local storage, can be viewed in browser dev tools under appliocaton tab
+          localStorage.setItem('user', JSON.stringify(createdUser))
+          this.$emit('user-created', createdUser)
           this.message = 'User created successfully'
         })
         .catch((error) => {

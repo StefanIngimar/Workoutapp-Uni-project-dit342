@@ -1,9 +1,9 @@
 <template>
     <div class="form">
         <h2>Edit Profile</h2>
-        <p>Username: <input v-model="userName" placeholder="Enter new username"/></p>
-        <p>Email: <input v-model="email" placeholder="Enter new email"/></p>
-        <p>Password: <input type="password" v-model="password" placeholder="Enter new password"/></p>
+        <p>Username: <input v-model="userName" placeholder="Enter new username (optional)"/></p>
+        <p>Email: <input v-model="email" placeholder="Enter new email (optional)"/></p>
+        <p>Password: <input type="password" v-model="password" placeholder="Enter new password (optional)"/></p>
         <b-button class="btn_message" variant="primary" @click="updateProfile()">Update profile</b-button>
         <div v-if="message" class="error">{{ message }}</div>
     </div>
@@ -37,7 +37,9 @@ export default {
       }
       Api.patch(`/v1/users/${this.user._id}`, updatedUser)
         .then(response => {
-          this.$emit('profile-updated', response.data)
+          const updatedUserData = response.data
+          this.$emit('profile-updated', updatedUserData)
+          localStorage.setItem('user', JSON.stringify(updatedUserData))
           this.message = 'Profile updated successfully'
         })
         .catch(error => {

@@ -1,8 +1,15 @@
+<!-- AchievementItem.vue -->
 <template>
-    <div class="achievement-item">
-        <h3>{{ achievement.achievementName }}</h3>
-        <p>Completed at: {{achievement.dateCompleted}}</p>
-    </div>
+  <div class="achievement-item" :class="{ unlocked: isUnlocked }">
+    <h3>{{ achievement.name }}</h3>
+    <p>{{ achievement.description }}</p>
+    <!-- <p v-if="isUnlocked">
+      Completed at: {{ formatDate(userAchievement.dateCompleted) }}
+    </p>
+    <p v-else>
+      Not yet unlocked
+    </p> -->
+  </div>
 </template>
 
 <script>
@@ -12,6 +19,22 @@ export default {
     achievement: {
       type: Object,
       required: true
+    },
+    userAchievement: {
+      type: Object,
+      default: null
+    }
+  },
+  computed: {
+    isUnlocked() {
+      return this.userAchievement && this.userAchievement.isCompleted
+    }
+  },
+  methods: {
+    formatDate(dateString) {
+      if (!dateString) return ''
+      const options = { year: 'numeric', month: 'long', day: 'numeric' }
+      return new Date(dateString).toLocaleDateString(undefined, options)
     }
   }
 }
@@ -19,11 +42,19 @@ export default {
 
 <style scoped>
 .achievement-item {
-    margin: 20px auto;
-    width: 50%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: aquamarine;
+  margin: 20px auto;
+  width: 80%;
+  max-width: 400px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f0f8ff;
+  transition: background-color 0.3s;
+}
+.achievement-item.unlocked {
+  background-color: #e6ffe6;
+}
+h3 {
+  margin-bottom: 10px;
 }
 </style>
