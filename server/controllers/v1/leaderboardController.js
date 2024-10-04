@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Leaderboard = require('../../models/leaderboardModel.js');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
 router.get('/api/v1/leaderboard', async function(req, res){
     try {

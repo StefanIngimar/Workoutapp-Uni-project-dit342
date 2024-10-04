@@ -1,7 +1,7 @@
 //Dependencies
 var express = require('express');
 var router = express.Router();
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 var Achievement = require('../../models/achievementModel');
 var User = require('../../models/userModel');
 

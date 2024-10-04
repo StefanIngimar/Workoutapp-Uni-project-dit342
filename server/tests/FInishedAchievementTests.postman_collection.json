@@ -205,7 +205,7 @@
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
 							"pm.globals.set(\"workoutLogId\", jsonData._id);\r",
 							"\r",
-							"pm.test(\"Correct user response data\", function() {\r",
+							"pm.test(\"Correct Workoutlog response data\", function() {\r",
 							"    Object.keys(sentData).forEach(key => {\r",
 							"        pm.test(`Correct response data: ${key}`, function() {\r",
 							"            if (key === 'session') {\r",
@@ -245,7 +245,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"date\": \"2023-10-01T00:00:00.000Z\",\r\n    \"session\": [\r\n        {\r\n            \"user\": \"{{userId4}}\",\r\n            \"exercises\": [\r\n                {\r\n                    \"exercise\": \"{{exerciseId}}\",\r\n                    \"sets\": 5,\r\n                    \"reps\": 10,\r\n                    \"weight\": 100\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"user\": \"{{userId4}}\",\r\n            \"exercises\": [\r\n                {\r\n                    \"exercise\": \"{{exerciseId}}\",\r\n                    \"sets\": 4,\r\n                    \"reps\": 12,\r\n                    \"weight\": 80\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}\r\n",
+					"raw": "{\r\n    \"title\" : \"Actual workoutlog\",\r\n    \"date\": \"2023-10-01T00:00:00.000Z\",\r\n    \"session\": [\r\n        {\r\n            \"user\": \"{{userId4}}\",\r\n            \"exercises\": [\r\n                {\r\n                    \"exercise\": \"{{exerciseId}}\",\r\n                    \"sets\": 5,\r\n                    \"reps\": 10,\r\n                    \"weight\": 100\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"user\": \"{{userId4}}\",\r\n            \"exercises\": [\r\n                {\r\n                    \"exercise\": \"{{exerciseId}}\",\r\n                    \"sets\": 4,\r\n                    \"reps\": 12,\r\n                    \"weight\": 80\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"

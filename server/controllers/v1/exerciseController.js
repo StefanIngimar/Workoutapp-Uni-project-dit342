@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
 // Import the exerciseModel i.e the exercise "object".
 var Exercise = require('../../models/exerciseModel');

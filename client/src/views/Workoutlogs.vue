@@ -1,11 +1,11 @@
 <script>
-import FullCalendar from '@fullcalendar/vue3';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import axios from 'axios';
-import { ModalsContainer, useModal } from 'vue-final-modal';
-import ModalConfirm from '../components/ModalConfirm.vue';
-import EditWorkoutLog from '../components/EditWorkoutLog.vue';
+import FullCalendar from '@fullcalendar/vue3'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import axios from 'axios'
+import { ModalsContainer, useModal } from 'vue-final-modal'
+import ModalConfirm from '../components/ModalConfirm.vue'
+import EditWorkoutLog from '../components/EditWorkoutLog.vue'
 
 // https://fullcalendar.io/docs/events-json-feed
 export default {
@@ -24,34 +24,34 @@ export default {
         eventClick: this.handleEventClick
       },
       selectedWorkoutLog: null
-    };
+    }
   },
   methods: {
     async fetchWorkoutLogs() {
       try {
-        const response = await axios.get('/api/v1/workoutlogs');
-        const events = response.data;
-        console.log('Fetched events: ', events);
+        const response = await axios.get('/api/v1/workoutlogs')
+        const events = response.data
+        console.log('Fetched events: ', events)
 
         if (Array.isArray(events) && events.length > 0) {
-          this.calendarOptions.events = events;
-          this.$forceUpdate();
+          this.calendarOptions.events = events
+          this.$forceUpdate()
         } else {
-          console.error('Invalid data format');
+          console.error('Invalid data format')
         }
       } catch (error) {
-        console.error('Error fetching events', error);
+        console.error('Error fetching events', error)
       }
     },
     async handleEventClick(info) {
-      info.jsEvent.preventDefault();
-      const workoutLogId = info.event.id;
-      console.log('Event clicked, ID:', workoutLogId);
+      info.jsEvent.preventDefault()
+      const workoutLogId = info.event.id
+      console.log('Event clicked, ID:', workoutLogId)
 
       try {
-        const response = await axios.get(`/api/v1/workoutlogs/${workoutLogId}`);
-        this.selectedWorkoutLog = response.data;
-        console.log('Selected workout log: ', this.selectedWorkoutLog);
+        const response = await axios.get(`/api/v1/workoutlogs/${workoutLogId}`)
+        this.selectedWorkoutLog = response.data
+        console.log('Selected workout log: ', this.selectedWorkoutLog)
 
         const openModal = useModal({
           component: ModalConfirm,
@@ -59,18 +59,18 @@ export default {
             title: 'Workout Log Details',
             log: this.selectedWorkoutLog,
             onConfirm: () => {
-              openModal.close();
+              openModal.close()
             },
             onEdit: () => {
-              openModal.close();
-              this.openEditModal();
+              openModal.close()
+              this.openEditModal()
             }
-          },
-        });
+          }
+        })
 
-        openModal.open();
+        openModal.open()
       } catch (error) {
-        console.error('Error fetching workout log', error);
+        console.error('Error fetching workout log', error)
       }
     },
     openEditModal() {
@@ -81,30 +81,30 @@ export default {
           log: this.selectedWorkoutLog,
           onSave: this.updateWorkoutLog,
           onCancel: () => {
-            openEditModal.close();
+            openEditModal.close()
           }
-        },
-      });
+        }
+      })
 
-      openEditModal.open();
+      openEditModal.open()
     },
     async updateWorkoutLog(updatedLog) {
       try {
-        const response = await axios.put(`/api/v1/workoutlogs/${workoutLogId}`, updatedLog);
-        console.log('Workout log updated:', response.data);
-        alert('Workout log updated successfully');
-        this.fetchWorkoutLogs();
+        const response = await axios.put(`/api/v1/workoutlogs/${workoutLogId}`, updatedLog)
+        console.log('Workout log updated:', response.data)
+        alert('Workout log updated successfully')
+        this.fetchWorkoutLogs()
       } catch (error) {
-        console.error('Error updating workout log:', error);
-        alert('Failed to update workout log');
+        console.error('Error updating workout log:', error)
+        alert('Failed to update workout log')
       }
     }
   },
 
   mounted() {
-    this.fetchWorkoutLogs();
+    this.fetchWorkoutLogs()
   }
-};
+}
 </script>
 
 <template>
