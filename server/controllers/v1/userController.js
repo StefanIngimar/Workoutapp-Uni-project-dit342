@@ -1,11 +1,6 @@
 //Dependencies
 var express = require('express');
 var router = express.Router();
-//require('dotenv').config();
-const jwt = require('jsonwebtoken');
-
-const tokenSecret = process.env.JWT_SECRET;
-const tokenExpireTime = process.env.JWT_EXPIRES_IN;
 
 // Imported external libraries
 /*
@@ -142,13 +137,7 @@ router.post('/api/v1/users', //upload.single('profilePic'),
         }
     try{
         const savedUser = await user.save();
-
-       /* const token = jwt.sign({userId: savedUser._id, isAdmin: savedUser.isAdmin },
-            tokenSecret,
-            { expiresIn: tokenExpireTime }
-        );*/
-
-        res.status(201).json({user: savedUser/*, token: token*/});
+        res.status(201).json(savedUser);
     } catch (err) {
         res.status(500).json({error: err.message});
     }
@@ -201,4 +190,3 @@ router.patch('/api/v1/users/:id', //upload.single('profilePic'),
 
 
 module.exports = router;
-

@@ -2,11 +2,6 @@ const express = require('express');
 const router = express.Router();
 const WorkoutLog = require('../../models/workoutLogModel.js');
 const cors = require('cors');
-//require('dotenv').config();
-const jwt = require('jsonwebtoken');
-
-const tokenSecret = process.env.JWT_SECRET;
-const tokenExpireTime = process.env.JWT_EXPIRES_IN;
 
 const app = express();
 app.use(cors());
