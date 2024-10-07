@@ -6,7 +6,6 @@
         @delete-error="handleDeleteError" @session-updated="handleSessionUpdated" />
     </div>
 
-
     <div class="form">
       <p>Name: <input class="input" v-model="sessionName" /></p>
       <p>Duration: <input class="input" type="number" v-model="duration" /></p>
@@ -38,7 +37,6 @@ import { Api } from '@/Api'
 import MyFooter from '@/components/MyFooter.vue'
 import SessionItem from '@/components/SessionItem.vue'
 
-
 export default {
   name: 'sessions',
   components: {
@@ -63,32 +61,31 @@ export default {
       .catch((error) => {
         this.sessions = error
       })
-
   },
   methods: {
 
     handleSessionUpdated() {
       Api.get('/v1/dailysessions')
         .then((response) => {
-          this.sessions = response.data;
+          this.sessions = response.data
         })
         .catch((error) => {
-          this.exerciseMessage = error;
+          this.exerciseMessage = error
         })
     },
 
     handleSessionDeleted() {
       Api.get('/v1/dailysessions')
         .then((response) => {
-          this.sessions = response.data;
-          this.sessionMessage = '';
+          this.sessions = response.data
+          this.sessionMessage = ''
         })
         .catch((error) => {
-          this.sessionMessage = error;
+          this.sessionMessage = error
         })
     },
     handleDeleteError() {
-      this.sessionMessage = error;
+      this.sessionMessage = error
     },
     postSession() {
       Api.post('/v1/dailysessions',
@@ -102,7 +99,7 @@ export default {
         }
       )
         .then((response) => {
-          this.sessionMessage = response.data;
+          this.sessionMessage = response.data
           Api.get('/v1/dailysessions')
             .then((response) => {
               this.sessions = response.data
@@ -112,7 +109,7 @@ export default {
             })
         })
         .catch((error) => {
-          this.sessionMessage = error;
+          this.sessionMessage = error
         })
     },
     searchExercise() {

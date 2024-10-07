@@ -504,8 +504,8 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
-							"pm.globals.set(\"userAchievementId4\", jsonData._id);\r",
-							"pm.globals.set(\"userAchievementName4\", jsonData.achievementName);\r",
+							"pm.globals.set(\"userAchievementId3\", jsonData._id);\r",
+							"pm.globals.set(\"userAchievementName3\", jsonData.achievementName);\r",
 							"\r",
 							"\r",
 							"pm.test(\"Correct user response data\", function() {\r",
@@ -660,7 +660,7 @@
 							"// Fixed the incorrect status code\r",
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"    pm.expect([200]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
@@ -707,7 +707,7 @@
 							"// Fixed the incorrect status code\r",
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"    pm.expect([200]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
@@ -766,7 +766,7 @@
 							"// Fixed the incorrect status code\r",
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"    pm.expect([200]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
@@ -813,7 +813,7 @@
 							"// Fixed the incorrect status code\r",
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"    pm.expect([200]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
@@ -860,7 +860,7 @@
 							"// Fixed the incorrect status code\r",
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"    pm.expect([200]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
@@ -908,7 +908,7 @@
 							"// Fixed the incorrect status code\r",
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"    pm.expect([200]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
@@ -956,7 +956,7 @@
 							"// Fixed the incorrect status code\r",
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"    pm.expect([200]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
@@ -979,16 +979,16 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}/api/v1/userAchievements/{{achievementName}}/users",
+					"raw": "{{host}}/api/v1/users/{{userId4}}/userAchievements",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"api",
 						"v1",
-						"userAchievements",
-						"{{achievementName}}",
-						"users"
+						"users",
+						"{{userId4}}",
+						"userAchievements"
 					]
 				}
 			},
@@ -1004,7 +1004,7 @@
 							"// Fixed the incorrect status code\r",
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([200, 404]).to.include(statusCode);\r",
+							"    pm.expect([200]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
@@ -1099,6 +1099,61 @@
 			"response": []
 		},
 		{
+			"name": "Set to complete Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" \r",
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"pm.test(\"Correct Achievement response data\", function() {\r",
+							"    Object.keys(sentData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"}); "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/userAchievements/{{userAchievementId3}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"userAchievements",
+						"{{userAchievementId3}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Delete one userAchievement",
 			"event": [
 				{
@@ -1107,7 +1162,7 @@
 						"exec": [
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([200, 404, 500]).to.include(statusCode);\r",
+							"    pm.expect([200]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
@@ -1153,7 +1208,7 @@
 						"exec": [
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([200, 404, 500]).to.include(statusCode);\r",
+							"    pm.expect([200]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",

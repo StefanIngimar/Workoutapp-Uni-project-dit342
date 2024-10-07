@@ -156,7 +156,11 @@ router.patch('/api/v1/userAchievements/:userAchievementID', async function(req, 
             if (!workoutLog){
                 return res.status(404).json({message: "Workout log not found"});
             }
-            if (workoutLog.session.length >= achievement.milestones.numOfTimesInGym){
+            let totalSessions = 0;
+            workoutLog.forEach(log => {
+                totalSessions += log.session.length;
+            });
+            if (totalSessions >= achievement.milestones.numOfTimesInGym){
                 userAchievement.isCompleted = true;
             }
         }

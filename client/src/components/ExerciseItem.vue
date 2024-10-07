@@ -29,49 +29,48 @@
   </div>
 </template>
 
-
 <script>
 import { Api } from '@/Api'
 
 export default {
-name: 'exercise-item',
-props: ['exercise'],
-data() {
-  return {
-    isEditing: false, 
-    editExercise: { ...this.exercise }
-  };
-},
-methods: {
-  toggleEdit() {
-    this.isEditing = true;
-    this.editExercise = { ...this.exercise }; 
+  name: 'exercise-item',
+  props: ['exercise'],
+  data() {
+    return {
+      isEditing: false,
+      editExercise: { ...this.exercise }
+    }
   },
-  cancelEdit() {
-    this.isEditing = false;
-    this.editExercise = { ...this.exercise };
-  },
-  saveExercise() {
-    Api.patch(`/v1/exercises/${this.exercise._id}`, this.editExercise)
-      .then((response) => {
-        this.isEditing = false; 
-        this.$emit('exercise-updated', response.data);
-      })
-      .catch((error) => {
-        console.error('Error saving exercise:', error);
-      });
-  },
-  deleteExercise(exerciseID) {
-    Api.delete(`/v1/exercises/${exerciseID}`)
-      .then((response) => {
-        this.$emit('exercise-deleted', response.data);
-      })
-      .catch((error) => {
-        console.error('Error deleting exercise:', error);
-      });
+  methods: {
+    toggleEdit() {
+      this.isEditing = true
+      this.editExercise = { ...this.exercise }
+    },
+    cancelEdit() {
+      this.isEditing = false
+      this.editExercise = { ...this.exercise }
+    },
+    saveExercise() {
+      Api.patch(`/v1/exercises/${this.exercise._id}`, this.editExercise)
+        .then((response) => {
+          this.isEditing = false
+          this.$emit('exercise-updated', response.data)
+        })
+        .catch((error) => {
+          console.error('Error saving exercise:', error)
+        })
+    },
+    deleteExercise(exerciseID) {
+      Api.delete(`/v1/exercises/${exerciseID}`)
+        .then((response) => {
+          this.$emit('exercise-deleted', response.data)
+        })
+        .catch((error) => {
+          console.error('Error deleting exercise:', error)
+        })
+    }
   }
 }
-};
 </script>
 
 <style scoped>
