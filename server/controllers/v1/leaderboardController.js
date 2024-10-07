@@ -1,16 +1,64 @@
 const express = require('express');
 const router = express.Router();
 const Leaderboard = require('../../models/leaderboardModel.js');
+const WorkoutLog = require('../../models/workoutLogModel.js');
 const jwt = require('jsonwebtoken');
 
-router.get('/api/v1/leaderboard', async function(req, res){
+router.get('/api/v1/leaderboard', async function(req, res) {
     try {
-        const allLeaderboard = await Leaderboard.find({})
-        .sort({weight: -1})
-        .limit(10);
-        res.status(200).json(allLeaderboard)
-    } catch(err) {
-        res.status(404).send}});
+        console.log("Fetching all workout logs...");
+
+        const workoutLogs = await WorkoutLog.find({})
+            .populate('session.user', 'userName')
+            .populate('session.exercises.exercise', 'name')
+            .exec();
+
+        const leaderboard = {};
+
+        // Iterate through all workout logs and sessions to find the heaviest weight for each user
+        workoutLogs.forEach(log => {
+            log.session.forEach(session => {
+                session.exercises.forEach(exercise => {
+                    console.log("Processing exercise entry:", exercise);
+
+                    // Check if the exercise and its details are populated properly
+                    if (!exercise || !exercise.exercise || !exercise.exercise.name || exercise.exercise.name === "" || !exercise.weight) {
+                        console.warn(`Skipping invalid exercise entry in log ${log._id}: Missing required fields`);
+                        return;
+                    }
+
+                    const userId = session.user._id;
+                    const userName = session.user.userName;
+                    const exerciseName = exercise.exercise.name;
+                    const weight = exercise.weight;
+
+                    // Check if this user has lifted more weight for this exercise
+                    if (!leaderboard[userId] || leaderboard[userId].weight < weight) {
+                        leaderboard[userId] = {
+                            user: userName,
+                            weight: weight,
+                            exercise: exerciseName
+                        };
+                    }
+                });
+            });
+        });
+
+        // Convert the leaderboard object to an array
+        const leaderboardArray = Object.values(leaderboard)
+            .map(entry => `${entry.user}, ${entry.weight}kg, ${entry.exercise}`);
+
+        if (leaderboardArray.length === 0) {
+            return res.status(200).json({ message: 'No valid entries found for leaderboard' });
+        }
+
+        // Respond with the leaderboard
+        res.status(200).json(leaderboardArray);
+    } catch (err) {
+        console.error('Error fetching leaderboard:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
 
 router.get('/api/v1/leaderboard/:id', async function(req, res){
     var id = req.params.id;
@@ -28,17 +76,35 @@ router.get('/api/v1/leaderboard/:userid', async function(req, res){
     catch(err){
         res.status(404).send(err);}});
 
-router.post('/api/v1/leaderboard', async function(req, res){
-    try {
-        var leaderboard = new Leaderboard({
-            'user' : req.body.user,
-            'userName' : req.body.userName,
-            'weight' : req.body.weight
+router.post("/api/v1/leaderboard", async function (req, res) {
+  try {
+    const { user, userName, weight, exercise } = req.body;
+
+    if (!user || !userName || !weight || !exercise) {
+      return res
+        .status(400)
+        .json({
+          error: "Missing required fields: user, userName, weight, exercise",
         });
-        const savedLeaderboard = await leaderboard.save();
-        res.status(200).send(savedLeaderboard);}
-    catch(err){
-        res.status(500).send(err);}});
+    }
+
+    // Create a new leaderboard entry with the exercise
+    var leaderboard = new Leaderboard({
+      user: user,
+      userName: userName,
+      weight: weight,
+      exercise: exercise,
+    });
+
+    // Save the leaderboard entry
+    const savedLeaderboard = await leaderboard.save();
+
+    res.status(200).json(savedLeaderboard);
+  } catch (err) {
+    console.error("Error saving leaderboard entry:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
 router.put('/api/v1/leaderboard/:userid', async function(req, res){
     var userid = req.params.userid;
