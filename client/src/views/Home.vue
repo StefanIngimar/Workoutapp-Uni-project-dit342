@@ -5,7 +5,7 @@
       <h1 class="display-5 fw-bold">Gym-Tracker Pro</h1>
       <p class="fs-4">The best gym-tracking app on the market! (Agruably)</p>
       <br> <br>
-      <b-button class="btn_message" variant="primary" v-on:click="$router.push('login')">
+      <b-button class="btn_message" variant="primary" v-on:click="$router.push('auth')">
         Get Started ! </b-button>
     </b-container>
   </div>

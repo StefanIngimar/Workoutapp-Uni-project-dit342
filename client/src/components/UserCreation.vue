@@ -1,5 +1,5 @@
 <template>
-    <div class="form">
+    <div class="UserCreationform">
         <h2>Create user</h2>
         <p>Username: <input v-model="userName" placeholder="Enter Username" /></p>
         <p>Email: <input v-model="email" placeholder="Enter Email" /></p>
@@ -47,13 +47,13 @@ export default {
 </script>
 
 <style scoped>
-.form {
+.UserCreationForm {
     margin: 20px auto;
     width: 20%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: aquamarine;
+    background-color: rgb(14, 239, 164);
 }
 .error{
     color: red;
