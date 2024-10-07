@@ -46,20 +46,46 @@
   align-items: center;
   justify-content: center;
 
-  margin-left: 800px;
-  margin-right: 800px;
-  padding: 50px;
+  margin: 0 auto;
+
+  width: 80%;
+  max-width: 350px;
+
+  padding: 2vw;
   background-color: rgb(63, 66, 62);
-  border: 2px solid;
+  border: 3px solid;
   border-radius: 5%;
   border-color: rgb(124, 128, 121);
 }
 
-.searchForm {
-  margin-left: 800px;
-  margin-right: 800px;
-  align-items: center;
+@media (max-width: 768px) {
+  .form {
+    width: 90%;
+  }
+
+  .searchForm {
+    width: 90%;
+  }
 }
+
+@media (max-width: 576px) {
+  .form {
+    width: 95%;
+    padding: 1vw;
+  }
+  .searchForm {
+    width: 95%;
+  }
+}
+
+.searchForm {
+  margin: 0 auto;
+  align-items: center;
+  max-width: 350px;
+  width: 80%;
+}
+
+.sub-form {}
 
 
 #nav a {

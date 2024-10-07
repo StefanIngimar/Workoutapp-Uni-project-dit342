@@ -1,5 +1,5 @@
 <template>
-    <h1> This is an example footer </h1>
+    <h1> Gym-tracker pro </h1>
 </template>
 
 <script>

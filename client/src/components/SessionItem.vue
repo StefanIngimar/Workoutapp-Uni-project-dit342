@@ -2,24 +2,30 @@
   <div class="session-list">
     <div class="session-container">
       <div v-if="isEditing">
-        <p>Name: <input class="input" v-model="editSession.sessionName" /></p>
-        <p>Duration: <input class="input" type="number" v-model="editSession.duration" /></p>
-        <p>Completed: <input type="checkbox" v-model="editSession.isCompleted" /></p>
-        <p>Notes: <input class="input" v-model="editSession.notes" /></p>
-        <p>Exercises:
-        <div v-for="exercise in session.exercises" v-bind:key="exercise._id">
-          <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted(exercise._id)"
-            @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
+        <div class="sub-form">
+          <p>Name:</p><p><input class="input" v-model="editSession.sessionName" /></p> 
+          <p>Duration:</p><p><input class="input" type="number" v-model="editSession.duration" /></p>
+          <p>Completed: <input type="checkbox" v-model="editSession.isCompleted" /></p>
+          <p>Notes:</p><p><input class="input" v-model="editSession.notes" /></p>
+          <p>Exercises:
+          <div v-for="exercise in session.exercises" v-bind:key="exercise._id">
+            <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted(exercise._id)"
+              @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
+          </div>
+          </p>
         </div>
-        </p>
+
 
         <div v-if="isAddingExercise">
-          <p>Name: <input class="input" v-model="name" /></p>
-          <p>Bodypart: <input class="input" v-model="bodyPart" /></p>
-          <p>Weighted: <input type="checkbox" v-model="hasWeights" /></p>
-          <p>Weight: <input  class="input"type="number" v-model="weight" /></p>
-          <p>Reps: <input class="input" type="number" v-model="reps" /></p>
-          <p>Sets: <input class="input" type="number" v-model="sets" /></p>
+          <div class="sub-form">
+            <p>Name:</p><p><input class="input" v-model="name" /></p>
+            <p>Bodypart:</p><p><input class="input" v-model="bodyPart" /></p>
+            <p>Weighted: <input type="checkbox" v-model="hasWeights" /></p>
+            <p>Weight:</p><p><input class="input" type="number" v-model="weight" /></p>
+            <p>Reps:</p><p><input class="input" type="number" v-model="reps" /></p>
+            <p>Sets:</p><p><input class="input" type="number" v-model="sets" /></p>
+          </div>
+
 
           <b-button class="btn_message" variant="success" v-on:click="addNewExercise">Submit</b-button>
           <b-button class="btn_message" variant="danger" v-on:click="toggleNewExercise">Cancel</b-button>
@@ -185,13 +191,13 @@ export default {
 }
 
 .session-container {
-  background-color:  rgb(80, 85, 79);
+  background-color: rgb(80, 85, 79);
   padding: 10px;
   margin: 10px;
   width: 300px;
   border: 2px solid;
   border-radius: 5%;
-  border-color:  rgb(122, 125, 121);
+  border-color: rgb(122, 125, 121);
 }
 
 .session-container p {
