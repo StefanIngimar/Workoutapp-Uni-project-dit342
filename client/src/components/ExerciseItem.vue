@@ -2,12 +2,17 @@
   <div class="exercise-list">
     <div class="exercise-container">
       <div v-if="isEditing">
-        <p>Name: <input class="input" v-model="editExercise.name" /></p>
-        <p>Bodypart: <input class="input" v-model="editExercise.bodyPart" /></p>
+        <p>Name:</p>
+        <p><input class="input" v-model="editExercise.name" /></p>
+        <p>Bodypart:</p>
+        <p><input class="input" v-model="editExercise.bodyPart" /></p>
         <p>Weighted: <input type="checkbox" v-model="editExercise.hasWeight" /></p>
-        <p>Weight: <input class="input" type="number" v-model="editExercise.weight" /></p>
-        <p>Reps: <input class="input" type="number" v-model="editExercise.reps" /></p>
-        <p>Sets: <input class="input" type="number" v-model="editExercise.sets" /></p>
+        <p>Weight:</p>
+        <p><input class="input" type="number" v-model="editExercise.weight" /></p>
+        <p>Reps:</p>
+        <p><input class="input" type="number" v-model="editExercise.reps" /></p>
+        <p>Sets:</p>
+        <p><input class="input" type="number" v-model="editExercise.sets" /></p>
 
         <b-button class="btn_message" variant="success" v-on:click="saveExercise">Save</b-button>
         <b-button class="btn_message" variant="danger" v-on:click="cancelEdit">Cancel</b-button>
@@ -39,68 +44,69 @@ export default {
     return {
       isEditing: false,
       editExercise: { ...this.exercise }
-    }
+    };
   },
   methods: {
     toggleEdit() {
-      this.isEditing = true
-      this.editExercise = { ...this.exercise }
+      this.isEditing = true;
+      this.editExercise = { ...this.exercise };
     },
     cancelEdit() {
-      this.isEditing = false
-      this.editExercise = { ...this.exercise }
+      this.isEditing = false;
+      this.editExercise = { ...this.exercise };
     },
     saveExercise() {
       Api.patch(`/v1/exercises/${this.exercise._id}`, this.editExercise)
         .then((response) => {
-          this.isEditing = false
-          this.$emit('exercise-updated', response.data)
+          this.isEditing = false;
+          this.$emit('exercise-updated', response.data);
         })
         .catch((error) => {
-          console.error('Error saving exercise:', error)
-        })
+          console.error('Error saving exercise:', error);
+        });
     },
     deleteExercise(exerciseID) {
       Api.delete(`/v1/exercises/${exerciseID}`)
         .then((response) => {
-          this.$emit('exercise-deleted', response.data)
+          this.$emit('exercise-deleted', response.data);
         })
         .catch((error) => {
-          console.error('Error deleting exercise:', error)
-        })
+          console.error('Error deleting exercise:', error);
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped>
 .exercise-list {
-display: flex;
-flex-wrap: wrap;
-justify-content: center;
-gap: 20px;
-padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
 }
 
 .exercise-container {
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-background-color:  rgb(63, 66, 62);
-padding: 10px;
-margin: 10px;
-width: 300px;
-border: 2px solid;
-border-radius: 5%;
-border-color:  rgb(124, 128, 121);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(63, 66, 62);
+  padding: 10px;
+  margin: 10px;
+  width: 300px;
+  border: 2px solid;
+  border-radius: 5%;
+  border-color: rgb(124, 128, 121);
 }
 
 .exercise-container p {
-margin: 0;
-padding: 1px 0;
+  margin: 0;
+  padding: 1px 0;
 }
+
 .h2 {
-font-weight: bold;
+  font-weight: bold;
 }
 </style>

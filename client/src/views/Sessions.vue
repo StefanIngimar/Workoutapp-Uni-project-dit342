@@ -1,21 +1,21 @@
 <template>
   <div>
     <h1> Sessions </h1>
-    <div v-if="sessionMessage">
-      <session-item v-bind:session="sessionMessage" @session-deleted="handleSessionDeleted"
-        @delete-error="handleDeleteError" @session-updated="handleSessionUpdated" />
-    </div>
 
     <div class="form">
-      <p>Name: <input class="input" v-model="sessionName" /></p>
-      <p>Duration: <input class="input" type="number" v-model="duration" /></p>
+      <p>Name:</p><p><input class="input" v-model="sessionName" /></p>
+      <p>Duration:</p><p><input class="input" type="number" v-model="duration" /></p>
       <p>Completed: <input type="checkbox" v-model="isCompleted" /></p>
-      <p>Notes: <input class="input" v-model="notes" /></p>
+      <p>Notes:</p><p><input class="input" v-model="notes" /></p>
 
       <b-button class="btn_message" variant="primary" v-on:click="postSession()">Submit session</b-button>
     </div>
 
     <h2>Previous sessions:</h2>
+    <div v-if="sessionMessage">
+      <session-item v-bind:session="sessionMessage" @session-deleted="handleSessionDeleted"
+        @delete-error="handleDeleteError" @session-updated="handleSessionUpdated(sessionMessage._id)" />
+    </div>
 
     <div class="searchForm">
       <b-form-input v-on:input="searchExercise" v-model="searchText" placeholder="Search"> </b-form-input>
@@ -34,13 +34,11 @@
 
 <script>
 import { Api } from '@/Api'
-import MyFooter from '@/components/MyFooter.vue'
 import SessionItem from '@/components/SessionItem.vue'
 
 export default {
   name: 'sessions',
   components: {
-    MyFooter,
     SessionItem
   },
   mounted() {
@@ -64,10 +62,16 @@ export default {
   },
   methods: {
 
-    handleSessionUpdated() {
+    handleSessionUpdated(sessionID) {
       Api.get('/v1/dailysessions')
         .then((response) => {
           this.sessions = response.data
+          Api.get(`/v1/dailysessions/${sessionID}`)
+            .then((response) => {
+              if (this.sessionMessage) {
+                this.sessionMessage = response.data
+              }
+            })
         })
         .catch((error) => {
           this.exerciseMessage = error
