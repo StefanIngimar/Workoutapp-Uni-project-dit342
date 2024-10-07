@@ -3,6 +3,7 @@
         <h2>Create user</h2>
         <p>Username: <input v-model="userName" placeholder="Enter Username" /></p>
         <p>Email: <input v-model="email" placeholder="Enter Email" /></p>
+        <!-- <P>Admin: <inpu</P> -->
         <p>Password: <input type="password" input v-model="password" placeholder="Enter Password" /></p>
         <button @click="createUser">Create User</button>
         <div v-if="message" class="error">{{ message }}</div>

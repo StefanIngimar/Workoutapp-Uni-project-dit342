@@ -7,6 +7,7 @@ import Exercises from './views/Exercises.vue'
 import Achievements from './views/Achievements.vue'
 import Leaderboard from './views/Leaderboard.vue'
 import Login from './views/Login.vue'
+import Signup from './views/Signup.vue'
 import Workoutlogs from './views/Workoutlogs.vue'
 
 const routes = [
@@ -17,6 +18,7 @@ const routes = [
   { path: '/achievements', name: 'achievements', component: Achievements },
   { path: '/leaderboard', name: 'leaderboard', component: Leaderboard },
   { path: '/login', name: 'login', component: Login },
+  { path: '/signup', name: 'signup', component: Signup },
   { path: '/workoutlogs', name: 'workoutlogs', component: Workoutlogs }
 ]
 
