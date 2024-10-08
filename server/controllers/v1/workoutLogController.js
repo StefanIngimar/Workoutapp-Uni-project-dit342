@@ -87,19 +87,10 @@ router.put('/api/v1/workoutlogs/:id', async function(req, res){
 router.post('/api/v1/workoutlogs', async function(req, res){
     try {
         const { title, date, session } = req.body;
-       /* if (!title || !date || !session || session.length === 0) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }*/
-
-            
-
         const workoutLog = new WorkoutLog({
             title,
             date,
-            session
-            /*'title' : req.body.title,
-            'date' : req.body.date,
-            'session' : req.body.session*/});
+            session});
         const savedWorkoutLog = await workoutLog.save();
         const populatedWorkoutLog = await WorkoutLog.findById(savedWorkoutLog._id)
         .populate({
