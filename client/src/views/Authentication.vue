@@ -1,6 +1,9 @@
 <template>
     <div class="authentication-contatiner">
         <div class="authentication-toggle">
+            <form v-if="isSignUp" @submit.prevent="toggleLogin">
+                <UserCreation />
+            </form>
             <b-button class="btn_message" variant="primary" v-on:click="$router.push('signup')">
                 Sign up </b-button>
             <b-button class="btn_message" variant="primary" v-on:click="$router.push('login')">
@@ -20,7 +23,7 @@ export default {
   },
   data() {
     return {
-      isSignUp: true
+      isSignUp: ''
     }
   },
   methods: {
