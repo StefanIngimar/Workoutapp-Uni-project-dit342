@@ -148,11 +148,10 @@ router.post('/api/v1/users', //upload.single('profilePic'),
             _id: savedUser._id,
             userName: savedUser.userName,
             email: savedUser.email,
-            password: req.body.password,
             isAdmin: savedUser.isAdmin,
             achievements: savedUser.achievements
         }
-        res.status(201).json(responseUser);
+        res.status(201).json({user: responseUser, token: token});
     } catch (err) {
         res.status(500).json({error: err.message});
     }
