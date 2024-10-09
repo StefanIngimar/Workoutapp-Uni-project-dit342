@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const WorkoutLog = require('../../models/workoutLogModel.js');
 const DailySession = require('../../models/dailySessionModel.js');
+const Exercise = require('../../models/exerciseModel');
 const cors = require('cors');
 const { model } = require('mongoose');
 
@@ -36,6 +37,8 @@ router.get('/api/v1/workoutlogs', async function(req, res){
                         };
                     } else {
                         return null; // skip if exercise data is missing
+                        //this occurred after i changed the workoutlog schema and all the data was messed up
+                        //skip the missing data and continue with the rest
                     }
                 }).filter(exercise => exercise !== null) // Filter out null values
             }))
@@ -89,8 +92,20 @@ router.post('/api/v1/workoutlogs', async function(req, res){
         const { title, date, session } = req.body;
         const workoutLog = new WorkoutLog({
             title,
-            date,
-            session});
+            date: new Date(),
+            session: [{ //https://stackoverflow.com/questions/19222520/populate-nested-array-in-mongoose
+                //wanted to link the user and exercise to the workout log
+                //for the frontend to be able to display the user and exercise name
+                user: req.body.session[0].user,
+                exercises: session[0].exercises.map(exercise => ({
+                    exerciseName: exercise.name,
+                    exercise: exercise.exercise,
+                    sets: exercise.sets,
+                    reps: exercise.reps,
+                    weight: exercise.weight
+                }))
+            }]
+        });
         const savedWorkoutLog = await workoutLog.save();
         const populatedWorkoutLog = await WorkoutLog.findById(savedWorkoutLog._id)
         .populate({
@@ -98,7 +113,6 @@ router.post('/api/v1/workoutlogs', async function(req, res){
             model: 'exercises'
         })
         .exec();
-        console.log(req.body.session[0].user, req.body.session[0].exercises[0].exercise);
         res.status(200).send(populatedWorkoutLog);}
     catch(err){
         console.error('Error creating workout log:', err);
