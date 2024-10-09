@@ -12,6 +12,7 @@
      <!-- <gym-attendance :numOfTimesInGym="numOfTimesInGym" /> -->
     <!-- Display the user's achievements -->
     <!-- <achievement-list :userAchievements="userId" /> -->
+     <b-button class="logout_btn" variant="primary" @click="logout">Logout</b-button>
      <button type="button" @click="deletAllUsers">Deleta all users</button>
     <div v-if="message" class="error">
       {{ message }}
@@ -55,6 +56,11 @@ export default {
     },
     handleProfileUpdated(updatedUser) {
       this.user = updatedUser
+    },
+    logout() {
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
+      this.$router.push('/')
     },
     deletAllUsers() {
       Api.delete('/v1/users')

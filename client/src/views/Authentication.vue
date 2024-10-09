@@ -66,6 +66,10 @@ export default {
       this.isLoginMode = true
     },
     handleSignup() {
+      if (this.password !== this.confirmPassword) {
+        this.message = 'Passwords do not match'
+        return
+      }
       const newUser = {
         userName: this.userName,
         email: this.email,
@@ -86,14 +90,20 @@ export default {
         })
     },
     handleLogin() {
-      Api.get(`/v1/users/${this.user.userId}`)
+      const userInput = {
+        userName: this.userName,
+        password: this.password
+      }
+      Api.post('/v1/users/login', userInput)
         .then((response) => {
-          if (!this.userName) {
+          const fetchedUser = response.data.user
+          const jwtToken = response.data.token
+          if (!fetchedUser) {
             this.message = 'User not found'
           }
-          const fetchedUser = response.data
-          this.$emit('user-fetched', fetchedUser)
           localStorage.setItem('user', JSON.stringify(fetchedUser))
+          localStorage.setItem('token', jwtToken)
+          this.$emit('user-fetched', fetchedUser)
           this.$router.push('profile')
         })
         .catch((error) => {

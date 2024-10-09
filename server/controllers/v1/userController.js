@@ -9,6 +9,11 @@ Documentation on methods from:
 "https://express-validator.github.io/docs/guides/getting-started/"
 */ 
 const {body, validationResult} = require('express-validator');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+// Parse from .env file
+const JWT_SECRET = process.env.JWT_SECRET;
 
 /*
  Multer to handle file uplods.
@@ -46,7 +51,7 @@ const { error } = require('console');
 // Return all Users from database
 router.get('/api/v1/users', async function(req, res){
     try {
-        const allUsers = await User.find({});
+        const allUsers = await User.find({}).select('-password');
         res.status(200).json(allUsers);
     } catch(err){
         res.status(404).json({error: err.message});
@@ -58,7 +63,7 @@ router.get('/api/v1/users', async function(req, res){
 router.get('/api/v1/users/:id', async function(req, res, next){
     var id = req.params.id;
     try{
-        const aUser = await User.findById(id);
+        const aUser = await User.findById(id).select('-password');
         if (!aUser){
             return res.status(404).send({message: "User not found"});
         }
@@ -73,7 +78,7 @@ router.get('/api/v1/users/:userName', async function(req, res){
     var userName = req.params.userName; //extract userName from URL parameter
     try{
         // Queries database for user that matches URL
-        const aUser = await User.find({userName: userName});
+        const aUser = await User.find({userName: userName}).select('-password');
         // If query is succesful respond to client with status code 200 and send back requested user as JSON
         res.status(200).json(aUser);
     }catch(err){
@@ -124,10 +129,11 @@ router.post('/api/v1/users', //upload.single('profilePic'),
         // If the email and username are not taken, proceed with user creation
         const queryResult = validationResult(req);
         if (queryResult.isEmpty()){
+            const hashedPassword = await bcrypt.hash(req.body.password, 10);
             var user = new User({
                 'userName'   : req.body.userName,
                 'email'      : req.body.email,
-                'password'   : req.body.password,
+                'password'   : hashedPassword,
                 'isAdmin'    : req.body.isAdmin,
                 'achievements' : [],
                 // 'profilePic' : req.file ? req.file.filename : null
@@ -137,8 +143,46 @@ router.post('/api/v1/users', //upload.single('profilePic'),
         }
     try{
         const savedUser = await user.save();
-        res.status(201).json(savedUser);
+        const token = jwt.sign({userId: savedUser._id, userName: savedUser.userName}, JWT_SECRET);
+        const responseUser = {
+            _id: savedUser._id,
+            userName: savedUser.userName,
+            email: savedUser.email,
+            password: req.body.password,
+            isAdmin: savedUser.isAdmin,
+            achievements: savedUser.achievements
+        }
+        res.status(201).json(responseUser);
     } catch (err) {
+        res.status(500).json({error: err.message});
+    }
+});
+
+router.post('/api/v1/users/login', async function(req, res){
+    const {userName, password} = req.body;
+    try{
+        const user = await User.findOne({userName: userName});
+        if (!user){
+            return res.status(400).json({error: 'User not found'});
+        }
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword){
+            return res.status(400).json({error: 'Invalid password'});
+        }
+
+        const token = jwt.sign({userId: user._id, userName: user.userName}, JWT_SECRET);
+
+        res.status(200).json({
+            user: {
+                _id: user._id,
+                userName: user.userName,
+                email: user.email,
+                isAdmin: user.isAdmin
+            },
+            token: token
+        });
+        
+    } catch(err){
         res.status(500).json({error: err.message});
     }
 });
