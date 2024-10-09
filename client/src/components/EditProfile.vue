@@ -4,6 +4,9 @@
         <p>Username: <input v-model="userName" placeholder="Enter new username (optional)"/></p>
         <p>Email: <input v-model="email" placeholder="Enter new email (optional)"/></p>
         <p>Password: <input type="password" v-model="password" placeholder="Enter new password (optional)"/></p>
+        <div v-if="password" >
+            <p>Confirm Password: <input type="password" v-model="password" placeholder="Confirm password"/> </p>
+        </div>
         <b-button class="btn_message" variant="primary" @click="updateProfile()">Update profile</b-button>
         <div v-if="message" class="error">{{ message }}</div>
     </div>
@@ -58,7 +61,7 @@ export default {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: aquamarine;
+    background-color: rgb(255, 127, 127);
 }
 
 .error {
