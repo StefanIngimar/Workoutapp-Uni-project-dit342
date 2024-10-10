@@ -182,6 +182,7 @@ export default {
         },
         getUserInfo(){
             this.user = JSON.parse(localStorage.getItem('user'));
+
         }
     },
 

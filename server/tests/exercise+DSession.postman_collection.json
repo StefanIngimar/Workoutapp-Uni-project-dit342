@@ -368,7 +368,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"sessionName\" : \"Push\",\r\n    \"duration\": 31,\r\n    \"isCompleted\": true,\r\n    \"notes\": \"Exercise light!\"\r\n}",
+					"raw": "{\r\n    \"sessionName\" : \"Push\",\r\n    \"duration\": 31,\r\n    \"isCompleted\": true,\r\n    \"notes\": \"Exercise light!\",\r\n    \"exercises\" : []\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -463,9 +463,16 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Correct status code\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
+							"pm.test(\"Correct status code and message\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);\r",
+							"    const responseMessage = pm.response.json().message;\r",
+							"    if (pm.response.code === 200) {\r",
+							"        pm.expect(responseMessage).to.be.equal(\"Exercise added\");\r",
+							"    } else {\r",
+							"        pm.expect(responseMessage).to.be.equal(\"Not in session\");\r",
+							"    }\r",
+							"})\r",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
