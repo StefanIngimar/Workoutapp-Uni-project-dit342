@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "67d7cf06-f84d-426a-9850-ca0a7b12575c",
+		"_postman_id": "f53183b6-6e48-4b0a-a79b-1ae0fc5ebef3",
 		"name": "exercise+DSession",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "32425632"
@@ -382,7 +382,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"userID\": \"66ffe37a3297a22098fd7e48\",\r\n    \"sessionName\": \"Push day\",\r\n    \"duration\": 120,\r\n    \"isCompleted\": true,\r\n    \"notes\": \"yes\",\r\n    \"exercises\": [{\r\n        \"exerciseName\": \"rows\",\r\n        \"exercise\": \"6706c664afebd072525ed69c\",\r\n        \"sets\": 5,\r\n        \"reps\": 5,\r\n        \"weight\": 100\r\n}]\r\n}",
+					"raw": "{\r\n    \"userID\": \"66ffe37a3297a22098fd7e48\",\r\n    \"sessionName\": \"Push day\",\r\n    \"duration\": 120,\r\n    \"isCompleted\": true,\r\n    \"notes\": \"yes\",\r\n    \"exercises\": []/*[{\r\n        \"exerciseName\": \"rows\",\r\n        \"exercise\": \"6706c664afebd072525ed69c\",\r\n        \"sets\": 5,\r\n        \"reps\": 5,\r\n        \"weight\": 100\r\n}]*/\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -484,6 +484,16 @@
 						"type": "text/javascript",
 						"packages": {}
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
 				}
 			],
 			"request": {
@@ -491,7 +501,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\" : \"Squat\",\r\n    \"hasWeights\" : true,\r\n    \"weight\" : 99,\r\n    \"bodyPart\" : \"Legs\",\r\n    \"isCustom\" : true,\r\n    \"reps\" : 13,\r\n    \"sets\" : 11\r\n}",
+					"raw": "    {\r\n    \"name\" : \"Squat\",\r\n    \"hasWeights\" : true,\r\n    \"weight\" : 99,\r\n    \"bodyPart\" : \"Legs\",\r\n    \"isCustom\" : true,\r\n    \"reps\" : 13,\r\n    \"sets\" : 11\r\n    }",
 					"options": {
 						"raw": {
 							"language": "json"
