@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "f53183b6-6e48-4b0a-a79b-1ae0fc5ebef3",
+		"_postman_id": "414dacfe-c1b3-4d9f-ba1a-4becf4eb95bd",
 		"name": "exercise+DSession",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "32425632"
+		"_exporter_id": "38128034"
 	},
 	"item": [
 		{
@@ -350,25 +350,11 @@
 							"\r",
 							"pm.globals.set(\"sessionId\", jsonData._id);\r",
 							"\r",
-							"// Test the top-level keys in the response\r",
-							"pm.test(\"Correct response structure\", function() {\r",
-							"    pm.expect(jsonData).to.have.property(\"_id\");\r",
-							"    pm.expect(jsonData).to.have.property(\"userID\").that.equals(sentData.userID);\r",
-							"    pm.expect(jsonData).to.have.property(\"sessionName\").that.equals(sentData.sessionName);\r",
-							"    pm.expect(jsonData).to.have.property(\"duration\").that.equals(sentData.duration);\r",
-							"    pm.expect(jsonData).to.have.property(\"isCompleted\").that.equals(sentData.isCompleted);\r",
-							"    pm.expect(jsonData).to.have.property(\"notes\").that.equals(sentData.notes);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Correct exercise data\", function() {\r",
-							"    pm.expect(jsonData.exercises).to.be.an(\"array\").that.has.lengthOf(sentData.exercises.length);\r",
-							"    \r",
-							"    jsonData.exercises.forEach(function(exercise, index) {\r",
-							"        var sentExercise = sentData.exercises[index];\r",
-							"        pm.expect(exercise.name).to.eql(sentExercise.name);\r",
-							"        pm.expect(exercise.sets).to.eql(sentExercise.sets);\r",
-							"        pm.expect(exercise.reps).to.eql(sentExercise.reps);\r",
-							"        pm.expect(exercise.weight).to.eql(sentExercise.weight);\r",
+							"pm.test(\"Correct exercise response data\", function() {\r",
+							"    Object.keys(sentData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"        });\r",
 							"    });\r",
 							"});"
 						],
@@ -491,16 +477,6 @@
 						"type": "text/javascript",
 						"packages": {}
 					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
 				}
 			],
 			"request": {
@@ -508,7 +484,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "    {\r\n    \"name\" : \"Squat\",\r\n    \"hasWeights\" : true,\r\n    \"weight\" : 99,\r\n    \"bodyPart\" : \"Legs\",\r\n    \"isCustom\" : true,\r\n    \"reps\" : 13,\r\n    \"sets\" : 11\r\n    }",
+					"raw": "{\r\n    \"name\" : \"Squat\",\r\n    \"hasWeights\" : true,\r\n    \"weight\" : 99,\r\n    \"bodyPart\" : \"Legs\",\r\n    \"isCustom\" : true,\r\n    \"reps\" : 13,\r\n    \"sets\" : 11\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
