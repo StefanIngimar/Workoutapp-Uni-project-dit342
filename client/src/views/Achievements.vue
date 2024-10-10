@@ -173,7 +173,7 @@ export default {
     }
 
     this.getAllAchievements()
-    this.getUserAchievements()
+    // this.getUserAchievements()
   }
 
 }

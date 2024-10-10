@@ -5,11 +5,17 @@ var router = express.Router();
 // Import the exerciseModel i.e the exercise "object".
 var Exercise = require('../../models/exerciseModel');
 
-// Returns all items stored in the database.
 router.get('/api/v1/exercises', async function (req, res) {
+    const userId = req.query.userID;
+    const isAdmin = req.query.isAdmin === 'true';
     try {
-        const allExercises = await Exercise.find({});
-        res.status(200).json(allExercises)
+        if (isAdmin) {
+            const allExercises = await Exercise.find({});
+            res.status(200).json(allExercises)
+        } else {
+            const allExercises = await Exercise.find({ userID: userId });
+            res.status(200).json(allExercises)
+        }
     } catch (err) {
         res.status(404).send(err);
     }
@@ -81,12 +87,10 @@ router.delete('/api/v1/exercises/:id', async function (req, res) {
 
 // Deletes all items if admin user.
 router.delete('/api/v1/exercises/', async function (req, res) {
-    var isAdmin = req.body.isAdmin;
     try {
-        if (isAdmin) {
-            const session = await Exercise.deleteMany({});
-            res.status(200).send({ message: "All exercises successfully deleted" });
-        }
+        const session = await Exercise.deleteMany({});
+        res.status(200).send({ message: "All exercises successfully deleted" });
+        
     } catch (err) {
         res.status(404).send(err);
     }
@@ -102,7 +106,8 @@ router.post('/api/v1/exercises', async function (req, res) { // TODO: Add error 
             'bodyPart': req.body.bodyPart,
             'isCustom': req.body.isCustom, // By default (for users) should be true?
             'reps': req.body.reps,
-            'sets': req.body.sets
+            'sets': req.body.sets,
+            'userID': req.body.userID
         });
     } else {
         var exercise = new Exercise({
@@ -111,7 +116,8 @@ router.post('/api/v1/exercises', async function (req, res) { // TODO: Add error 
             'bodyPart': req.body.bodyPart,
             'isCustom': req.body.isCustom,
             'reps': req.body.reps,
-            'sets': req.body.sets
+            'sets': req.body.sets,
+            'userID': req.body.userID
         });
     }
 

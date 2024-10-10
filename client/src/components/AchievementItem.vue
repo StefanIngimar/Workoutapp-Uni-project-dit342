@@ -48,11 +48,11 @@ export default {
   padding: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: #f0f8ff;
+  background-color:  rgb(63, 66, 62);
   transition: background-color 0.3s;
 }
 .achievement-item.unlocked {
-  background-color: #e6ffe6;
+  background-color:  rgb(63, 66, 62);
 }
 h3 {
   margin-bottom: 10px;

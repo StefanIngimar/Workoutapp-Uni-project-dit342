@@ -34,7 +34,6 @@
   </div>
 </template>
 
-
 <script>
 import { Api } from '@/Api'
 
