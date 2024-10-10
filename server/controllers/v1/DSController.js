@@ -243,34 +243,27 @@ router.delete('/api/v1/dailysessions/:sessionID/exercises/:exerciseID', async fu
 
 // Creates and stores a new daily session.
 router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add error handling.
-    
-    try {
-        const { userID, sessionName, duration, isCompleted, notes, exercises } = req.body;
-        const dailySession = new DailySession({
-            userID,
-            sessionName,
-            duration,
-            isCompleted,
-            notes,
-            exercises
-        });
-        const savedSession = await dailySession.save();
+    var dailySession = new DailySession({
+        'userID': req.body.userID,
+        'sessionName': req.body.sessionName,
+        'duration': req.body.duration,
+        'isCompleted': req.body.isCompleted,
+        'notes': req.body.notes,
+        'exercises': []
+    });
 
         const workoutLog = new WorkoutLog({
-            title: sessionName,
-            date: new Date(),
-            session: [{
-                user: userID,
-                exercises: exercises.map(exercise => ({
-                    exerciseName: exercise.name,
-                    exercise: exercise.exercise,
-                    sets: exercise.sets,
-                    reps: exercise.reps,
-                    weight: exercise.weight
-                }))
-            }]
-        });
+        title: req.body.sessionName,
+        date: new Date(),
+        session: [{
+            user: req.body.userID,
+            exercises: []
+        }]
+    });
 
+
+    try {
+        const savedSession = await dailySession.save();
         await workoutLog.save();
         res.status(201).json(savedSession);
     } catch (err) {

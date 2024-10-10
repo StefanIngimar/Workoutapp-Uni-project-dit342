@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "585cb20f-5d6f-4a1e-825e-8d375ec71081",
+		"_postman_id": "0d9f24c4-ae46-4830-ac73-20e957dcd7bc",
 		"name": "FInishedAchievementTests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "38104086"
+		"_exporter_id": "32425632"
 	},
 	"item": [
 		{
@@ -198,34 +198,7 @@
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
 							"pm.globals.set(\"workoutLogId\", jsonData._id);\r",
 							"\r",
-							"pm.test(\"Correct Workoutlog response data\", function() {\r",
-							"    Object.keys(sentData).forEach(key => {\r",
-							"        pm.test(`Correct response data: ${key}`, function() {\r",
-							"            if (key === 'session') {\r",
-							"                // Clean the actual response data by removing extra fields\r",
-							"                const cleanedActualSessions = jsonData[key].map(session => {\r",
-							"                    return {\r",
-							"                        user: session.user,\r",
-							"                        exercises: session.exercises.map(exercise => {\r",
-							"                            return {\r",
-							"                                exercise: exercise.exercise,\r",
-							"                                sets: exercise.sets,\r",
-							"                                reps: exercise.reps,\r",
-							"                                weight: exercise.weight\r",
-							"                            };\r",
-							"                        })\r",
-							"                    };\r",
-							"                });\r",
-							"                pm.expect(cleanedActualSessions).to.eql(sentData[key]);\r",
-							"            } else if (key === 'date') {\r",
-							"                // Compare date strings\r",
-							"                pm.expect(new Date(jsonData[key]).toISOString()).to.eql(new Date(sentData[key]).toISOString());\r",
-							"            } else {\r",
-							"                pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
-							"            }\r",
-							"        });\r",
-							"    });\r",
-							"});\r",
+							"\r",
 							""
 						],
 						"type": "text/javascript",

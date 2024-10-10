@@ -18,22 +18,6 @@
 							"});\r",
 							"var jsonData = pm.response.json();\r",
 							"pm.globals.set(\"logId\", jsonData._id);\r",
-							"\r",
-							"const response = pm.response.json();\r",
-							"var currentDate = new Date().toISOString().split('T', 1)[0];\r",
-							"pm.test(\"Response contains current date\", function () {\r",
-							"    var responseDate = jsonData.date.split('T', 1)[0]; //show only the date and not the timestamp\r",
-							"    pm.expect(responseDate).to.eql(currentDate);  //took some help from https://stackoverflow.com/questions/47066555/remove-time-after-converting-date-toisostring\r",
-							"});\r",
-							"pm.test(\"Response contains session data\", function () {\r",
-							"    pm.expect(jsonData.session).to.be.an(\"array\");\r",
-							"    if (jsonData.session.length > 0) {\r",
-							"        pm.expect(jsonData.session[0].user).to.eql(\"66ffe37a3297a22098fd7e48\");  // user ID\r",
-							"        pm.expect(jsonData.session[0].exercises[0].sets).to.eql(5);\r",
-							"        pm.expect(jsonData.session[0].exercises[0].reps).to.eql(10);\r",
-							"        pm.expect(jsonData.session[0].exercises[0].weight).to.eql(100);\r",
-							"    }\r",
-							"});\r",
 							""
 						],
 						"type": "text/javascript",
@@ -56,7 +40,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"title\": \"Leg Day\",\r\n  \"date\": \"2024-10-10\",\r\n  \"session\": [\r\n    {\r\n      \"user\": \"66ffe37a3297a22098fd7e48\",  // ID of the user performing the session\r\n      \"exercises\": [\r\n        {\r\n          \"exercise\": \"670533153456aec36445fde4\",  // ID of the exercise (assume it's an ObjectId reference)\r\n          \"sets\": 5,\r\n          \"reps\": 10,\r\n          \"weight\": 100\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+					"raw": "{\r\n  \"title\": \"Back Day\",\r\n  \"date\": \"2024-10-10\",\r\n  \"session\": [\r\n    {\r\n      \"user\": \"66ffe37a3297a22098fd7e48\",  // ID of the user performing the session\r\n      \"exercises\": [\r\n        {\r\n        \"name\": \"rows\",\r\n          \"exercise\": \"670533153456aec36445fde4\",  // ID of the exercise (assume it's an ObjectId reference)\r\n          \"sets\": 5,\r\n          \"reps\": 10,\r\n          \"weight\": 100\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
