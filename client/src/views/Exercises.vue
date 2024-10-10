@@ -20,8 +20,9 @@
             </div>
         </div>
 
-
-        <b-button class="btn_message" variant="danger" v-on:click="deleteAllExercises()">Delete All Exercises</b-button>
+        <div v-if="this.user.isAdmin">
+            <b-button class="btn_message" variant="danger" v-on:click="deleteAllExercises()">Delete All Exercises</b-button>
+        </div>
 
         <div v-if="postMessage">
             <p>Created/Last edited exercise: </p>
@@ -48,170 +49,169 @@
         </div>
 
     </div>
-    <my-footer />
 </template>
 
 <script>
-import MyFooter from '@/components/MyFooter.vue'
 import ExerciseItem from '@/components/ExerciseItem.vue'
 import { Api } from '@/Api'
-import { BFormGroup } from 'bootstrap-vue-next';
 
 export default {
-    name: 'exercises',
-    components: {
-        MyFooter,
-        ExerciseItem
-    },
-    methods: {
-        handleExerciseUpdated(exerciseID) {
-            Api.get('/v1/dailysessions')
-                .then((response) => {
-                    Api.get(`/v1/exercises/${exerciseID}`)
-                        .then((response) => {
-                            this.updatedExercise = response.data;
-                            if (this.postMessage) {
-                                this.postMessage = response.data
-                            }
-                        })
-                        .then(() => {
-                            this.sessions = response.data;
-                            const patchRequests = this.sessions.map((session) => {
-                                return Api.put(`/v1/dailysessions/${session._id}/exercises/${exerciseID}`, this.updatedExercise);
-                            });
-                            return Promise.all(patchRequests);
-                        })
-                        .then(() => {
-                            return Api.get('/v1/exercises');
-                        })
-                        .then((response) => {
-                            this.exercises = response.data;
-                            this.exerciseMessage = "Exercise updated!";
-                        })
-                })
-
-                .catch((error) => {
-                    console.error('Error deleting exercise:', error);
-                    this.exerciseMessage = error;
-                });
-        },
-
-        handleExerciseDeleted(exerciseID) {
-            Api.get('/v1/dailysessions')
-                .then((response) => {
-                    this.sessions = response.data;
-                    const patchRequests = this.sessions.map((session) => {
-                        return Api.patch(`/v1/dailysessions/${session._id}`, { exerciseID: exerciseID });
-                    });
-                    return Promise.all(patchRequests);
-                })
-                .then(() => {
-                    return Api.delete(`/v1/exercises/${exerciseID}`);
-                })
-                .then(() => {
-                    return Api.get('/v1/exercises');
-                })
-                .then((response) => {
-                    this.exercises = response.data;
-                    this.exerciseMessage = "Exercise deleted!";
-                    this.postMessage = '';
-                })
-                .catch((error) => {
-                    console.error('Error deleting exercise:', error);
-                    this.exerciseMessage = error;
-                });
-        },
-
-        handleDeleteError() {
-            this.exerciseMessage = error;
-        },
-        postExercise() {
-            Api.post('/v1/exercises',
-                {
-                    name: this.name,
-                    hasWeights: this.hasWeights,
-                    weight: this.weight,
-                    bodyPart: this.bodyPart,
-                    isCustom: this.isCustom,
-                    reps: this.reps,
-                    sets: this.sets
-                }
-            )
-                .then((response) => {
-                    this.postMessage = response.data
-                    Api.get('/v1/exercises')
-                        .then((response) => {
-                            this.exercises = response.data
-                        })
-                        .catch((error) => {
-                            this.exercises = error
-                        })
-                })
-                .catch((error) => {
-                    this.postMessage = error
-                })
-        },
-        searchExercise() {
-            Api.get(`/v1/exercises/search?name=${this.searchText}`)
-                .then((response) => {
-                    this.exercises = response.data
-                    if (this.searchText === '') {
-                        Api.get('/v1/exercises')
-                            .then((response) => {
-                                this.exercises = response.data
-                            })
-                            .catch((error) => {
-                                this.exercises = error
-                            })
-                    }
-                })
-                .catch((error) => {
-                    this.exercises = error
-                })
-        },
-        deleteAllExercises() {
-            Api.delete('/v1/exercises', {isAdmin: this.user.isAdmin})
-                .then((response) => {
-                    this.postMessage = '';
-                    this.exercises = response.data;
-                    this.exerciseMessage = "All Exercises deleted!";
-                })
-                .catch((error) => {
-                    this.exerciseMessage = error;
-                })
-        },
-        getUserInfo(){
-            this.user = JSON.parse(localStorage.getItem('user'));
-        }
-    },
-
-    mounted() { // Runs when page is loaded.
-        Api.get('/v1/exercises')
+  name: 'exercises',
+  components: {
+    ExerciseItem
+  },
+  methods: {
+    handleExerciseUpdated(exerciseID) {
+      Api.get('/v1/dailysessions')
+        .then((response) => {
+          Api.get(`/v1/exercises/${exerciseID}`)
             .then((response) => {
-                this.exercises = response.data
+              this.updatedExercise = response.data
+              if (this.postMessage) {
+                this.postMessage = response.data
+              }
+            })
+            .then(() => {
+              this.sessions = response.data
+              const patchRequests = this.sessions.map((session) => {
+                return Api.put(`/v1/dailysessions/${session._id}/exercises/${exerciseID}`, this.updatedExercise)
+              })
+              return Promise.all(patchRequests)
+            })
+            .then(() => {
+              return Api.get('/v1/exercises')
+            })
+            .then((response) => {
+              this.exercises = response.data
+              this.exerciseMessage = 'Exercise updated!'
+            })
+        })
+
+        .catch((error) => {
+          console.error('Error deleting exercise:', error)
+          this.exerciseMessage = error
+        })
+    },
+
+    handleExerciseDeleted(exerciseID) {
+      Api.get('/v1/dailysessions')
+        .then((response) => {
+          this.sessions = response.data
+          const patchRequests = this.sessions.map((session) => {
+            return Api.patch(`/v1/dailysessions/${session._id}`, { exerciseID })
+          })
+          return Promise.all(patchRequests)
+        })
+        .then(() => {
+          return Api.delete(`/v1/exercises/${exerciseID}`)
+        })
+        .then(() => {
+          return Api.get('/v1/exercises')
+        })
+        .then((response) => {
+          this.exercises = response.data
+          this.exerciseMessage = 'Exercise deleted!'
+          this.postMessage = ''
+        })
+        .catch((error) => {
+          console.error('Error deleting exercise:', error)
+          this.exerciseMessage = error
+        })
+    },
+
+    handleDeleteError() {
+      this.exerciseMessage = error
+    },
+    postExercise() {
+      Api.post('/v1/exercises',
+        {
+          name: this.name,
+          hasWeights: this.hasWeights,
+          weight: this.weight,
+          bodyPart: this.bodyPart,
+          isCustom: this.isCustom,
+          reps: this.reps,
+          sets: this.sets,
+          userID: this.user._id
+        }
+      )
+        .then((response) => {
+          this.postMessage = response.data
+          Api.get('/v1/exercises')
+            .then((response) => {
+              this.exercises = response.data
             })
             .catch((error) => {
-                this.exercises = error
+              this.exercises = error
             })
+        })
+        .catch((error) => {
+          this.postMessage = error
+        })
     },
-    data() {
-        return {
-            exercises: '',
-            postMessage: '',
-            name: '',
-            hasWeights: false,
-            weight: '',
-            bodyPart: '',
-            isCustom: true,
-            reps: '',
-            sets: '',
-            searchText: '',
-            exerciseMessage: '',
-            sessions: '',
-            updatedExercise: '',
-            user: ''
-        }
+    searchExercise() {
+      Api.get(`/v1/exercises/search?name=${this.searchText}`)
+        .then((response) => {
+          this.exercises = response.data
+          if (this.searchText === '') {
+            Api.get('/v1/exercises')
+              .then((response) => {
+                this.exercises = response.data
+              })
+              .catch((error) => {
+                this.exercises = error
+              })
+          }
+        })
+        .catch((error) => {
+          this.exercises = error
+        })
+    },
+    deleteAllExercises() {
+      Api.delete('/v1/exercises', { isAdmin: this.user.isAdmin })
+        .then((response) => {
+          this.postMessage = ''
+          this.exercises = response.data
+          this.exerciseMessage = 'All Exercises deleted!' + this.user.isAdmin
+        })
+        .catch((error) => {
+          this.exerciseMessage = error
+        })
+    },
+    getUserInfo() {
+      this.user = JSON.parse(localStorage.getItem('user'))
     }
+  },
+
+  mounted() { // Runs when page is loaded.
+    this.getUserInfo()
+    Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
+      .then((response) => {
+        this.exercises = response.data
+      })
+      .catch((error) => {
+        this.exercises = error
+      })
+  },
+  data() {
+    return {
+      exercises: '',
+      postMessage: '',
+      name: '',
+      hasWeights: false,
+      weight: '',
+      bodyPart: '',
+      isCustom: true,
+      reps: '',
+      sets: '',
+      searchText: '',
+      exerciseMessage: '',
+      sessions: '',
+      updatedExercise: '',
+      user: '',
+      userID: ''
+    }
+  }
 }
 </script>
 

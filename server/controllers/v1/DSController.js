@@ -203,11 +203,15 @@ router.put('/api/v1/dailysessions/:sessionID/exercises/:exerciseID', async funct
 
         const exerciseIndex = session.exercises.findIndex(ex => ex._id.toString() === exerciseID);
 
-        session.exercises[exerciseIndex] = exercise; 
+        if (exerciseIndex >= 0) {
+            session.exercises[exerciseIndex] = exercise;
 
-        await session.save();
+            await session.save();
 
-        res.status(200).send({ message: "Exercise added", session });
+            res.status(200).send({ message: "Exercise added", session });
+        } else {
+            res.status(404).send({ message: "Not in session", session });
+        }
 
     } catch (err) {
         res.status(500).send(err);

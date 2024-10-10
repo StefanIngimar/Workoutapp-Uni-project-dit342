@@ -3,8 +3,8 @@
     <!-- Display the user's name and email -->
     <!-- <user-info v-if="user" :user="user" /> -->
     <h1> User Profile </h1>
-        <p><strong>Username:</strong>{{ user.userName }}</p>
-        <p><strong>Email:</strong>{{ user.email }}</p>
+        <p><strong>Username:</strong>{{ this.user.userName }}</p>
+        <p><strong>Email:</strong>{{ this.user.email }}</p>
     <!-- <user-fetched /> -->
     <!-- Handle the updateing of user profile -->
     <edit-profile :user="user" @profile-updated="handleProfileUpdated" />
@@ -25,34 +25,36 @@
 // import UserInfo from '@/components/UserInfo.vue'
 import EditProfile from '@/components/EditProfile.vue'
 // import GymAttendance from '@/components/GymAttendance.vue'
-// import AchievementList from '@/components/AchievementList.vue'
+import AchievementList from '@/components/AchievementList.vue'
 import { Api } from '@/Api'
 
 export default {
   name: 'Profile',
   components: {
     // UserInfo,
-    EditProfile
+    EditProfile,
     // GymAttendance,
-    // AchievementList,
+    AchievementList
   },
   data() {
     return {
       user: {},
       userAchievements: [],
       numOfTimesInGym: 0,
-      message: ''
+      message: '',
+      foobar: ''
     }
   },
+  mounted() {
+    this.getUserProfile()
+    this.getAllCompletedAchievements()
+  },
   methods: {
-    created() {
-      this.getUserProfile()
-    },
     getUserProfile() {
-      const user = JSON.parse(localStorage.getItem('user'))
-      if (user) {
-        this.user = user
-      }
+      this.user = JSON.parse(localStorage.getItem('user'))
+      // if (this.user) {
+      //   this.user = user
+      // }
     },
     handleProfileUpdated(updatedUser) {
       this.user = updatedUser
@@ -68,6 +70,15 @@ export default {
           this.message = 'All users deleted'
         })
         .catch(error => {
+          this.message = error.response ? error.response.data.message : error.message
+        })
+    },
+    getAllCompletedAchievements() {
+      Api.get(`/v1/users/${this.user._id}/userAchievements`)
+        .then((response) => {
+          this.userAchievements = response.data
+        })
+        .catch((error) => {
           this.message = error.response ? error.response.data.message : error.message
         })
     }

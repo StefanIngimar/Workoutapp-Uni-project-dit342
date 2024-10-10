@@ -10,7 +10,7 @@ Documentation on methods from:
 */ 
 const {body, validationResult} = require('express-validator');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
 // Parse from .env file
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -143,7 +143,7 @@ router.post('/api/v1/users', //upload.single('profilePic'),
         }
     try{
         const savedUser = await user.save();
-        const token = jwt.sign({userId: savedUser._id, userName: savedUser.userName}, JWT_SECRET);
+        //  const token = jwt.sign({userId: savedUser._id, userName: savedUser.userName}, JWT_SECRET);
         const responseUser = {
             _id: savedUser._id,
             userName: savedUser.userName,
@@ -151,7 +151,8 @@ router.post('/api/v1/users', //upload.single('profilePic'),
             isAdmin: savedUser.isAdmin,
             achievements: savedUser.achievements
         }
-        res.status(201).json({user: responseUser, token: token});
+        res.status(201).json(responseUser);
+        // res.status(201).json({user: responseUser, token: token});
     } catch (err) {
         res.status(500).json({error: err.message});
     }
@@ -164,22 +165,24 @@ router.post('/api/v1/users/login', async function(req, res){
         if (!user){
             return res.status(400).json({error: 'User not found'});
         }
+        // const userPassword = await bcrypt.hash(req.body.password, 10);
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword){
             return res.status(400).json({error: 'Invalid password'});
         }
 
-        const token = jwt.sign({userId: user._id, userName: user.userName}, JWT_SECRET);
+        // const token = jwt.sign({userId: user._id, userName: user.userName}, JWT_SECRET);
+        const responseUser = {
+            _id: user._id,
+            userName: user.userName,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            achievements: user.achievements
+        }
 
-        res.status(200).json({
-            user: {
-                _id: user._id,
-                userName: user.userName,
-                email: user.email,
-                isAdmin: user.isAdmin
-            },
-            token: token
-        });
+        res.status(200).json(responseUser);//,
+            //token: token
+    ;
         
     } catch(err){
         res.status(500).json({error: err.message});

@@ -96,15 +96,16 @@ export default {
       }
       Api.post('/v1/users/login', userInput)
         .then((response) => {
-          const fetchedUser = response.data.user
-          const jwtToken = response.data.token
+          const fetchedUser = response.data
+          // const jwtToken = response.data.token
           if (!fetchedUser) {
-            this.message = 'User not found'
+            this.message = 'User not found' + JSON.stringify(fetchedUser)
+          } else {
+            localStorage.setItem('user', JSON.stringify(fetchedUser))
+            // localStorage.setItem('token', jwtToken)
+            this.$emit('user-fetched', fetchedUser)
+            this.$router.push('profile')
           }
-          localStorage.setItem('user', JSON.stringify(fetchedUser))
-          localStorage.setItem('token', jwtToken)
-          this.$emit('user-fetched', fetchedUser)
-          this.$router.push('profile')
         })
         .catch((error) => {
           this.message = error.response.data.message
