@@ -170,7 +170,7 @@ export default {
                 })
         },
         deleteAllExercises() {
-            Api.delete('/v1/exercises')
+            Api.delete('/v1/exercises', {isAdmin: this.user.isAdmin})
                 .then((response) => {
                     this.postMessage = '';
                     this.exercises = response.data;
@@ -179,6 +179,9 @@ export default {
                 .catch((error) => {
                     this.exerciseMessage = error;
                 })
+        },
+        getUserInfo(){
+            this.user = JSON.parse(localStorage.getItem('user'));
         }
     },
 
@@ -205,7 +208,8 @@ export default {
             searchText: '',
             exerciseMessage: '',
             sessions: '',
-            updatedExercise: ''
+            updatedExercise: '',
+            user: ''
         }
     }
 }
