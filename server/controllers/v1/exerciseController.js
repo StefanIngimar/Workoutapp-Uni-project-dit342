@@ -22,15 +22,21 @@ router.get('/api/v1/exercises', async function (req, res) {
 });
 
 //TODO: Might need this for all get
-// router.get('/api/v1/exercises', async function (req, res) {
-//     var userID = req.params.userID;
-//     try {
-//         const allExercises = await Exercise.find({userID: userID});
-//         res.status(200).json(allExercises)
-//     } catch (err) {
-//         res.status(404).send(err);
-//     }
-// });
+router.get('/api/v1/exercises', async function (req, res) {
+    const userId = req.query.userID;
+    const isAdmin = req.query.isAdmin === 'true';
+    try {
+        if (isAdmin) {
+            const allExercises = await Exercise.find({});
+            res.status(200).json(allExercises)
+        } else {
+            const allExercises = await Exercise.find({ userID: userId });
+            res.status(200).json(allExercises)
+        }
+    } catch (err) {
+        res.status(404).send(err);
+    }
+});
 
 // Returns a single item stored in the database by id.
 router.get('/api/v1/exercises/:id', async function (req, res, next) {
@@ -57,11 +63,18 @@ router.get('/api/v1/exercises/:id/bodyPart', async function (req, res, next) {
 // Returns a all item stored in the database by query.
 router.get('/api/v1/exercises/search', async function (req, res, next) {
     const query = req.query;
-  
-    const searchQuery = {};
+    const isAdmin = req.query.isAdmin === 'true';
+
+    let searchQuery = {};
+
+    if (!isAdmin) {
+        searchQuery = {
+            userID: req.query.userID
+        };
+    } 
 
     for (const key in query) {
-        if (query.hasOwnProperty(key)) {
+        if (query.hasOwnProperty(key) && key !== 'isAdmin' && key !== 'userID') {
 
             searchQuery[key] = { $regex: query[key], $options: 'i' };
         }
@@ -86,7 +99,7 @@ router.delete('/api/v1/exercises/:id', async function (req, res) {
 });
 
 // Deletes all items if admin user.
-router.delete('/api/v1/exercises/', async function (req, res) {
+router.delete('/api/v1/exercises', async function (req, res) {
     try {
         const session = await Exercise.deleteMany({});
         res.status(200).send({ message: "All exercises successfully deleted" });
@@ -95,6 +108,7 @@ router.delete('/api/v1/exercises/', async function (req, res) {
         res.status(404).send(err);
     }
 });
+
 
 // Posts a new exercise to the database.
 router.post('/api/v1/exercises', async function (req, res) { // TODO: Add error handling.
@@ -128,6 +142,39 @@ router.post('/api/v1/exercises', async function (req, res) { // TODO: Add error 
         res.status(500).send(err);
     }
 });
+
+// router.post('/api/v1/exercises', async function (req, res) { // TODO: Add error handling.
+//     if (req.body.hasWeights) {
+//         var exercise = new Exercise({
+//             'name': req.body.name,
+//             'hasWeights': req.body.hasWeights,
+//             'weight': req.body.weight,
+//             'bodyPart': req.body.bodyPart,
+//             'isCustom': req.body.isCustom, // By default (for users) should be true?
+//             'reps': req.body.reps,
+//             'sets': req.body.sets,
+//             'userID': req.body.userId
+//         });
+//     } else {
+//         var exercise = new Exercise({
+//             'name': req.body.name,
+//             'hasWeights': req.body.hasWeights,
+//             'bodyPart': req.body.bodyPart,
+//             'isCustom': req.body.isCustom,
+//             'reps': req.body.reps,
+//             'sets': req.body.sets,
+//             'userID': req.body.userId
+//         });
+//     }
+
+//     try {
+//         const savedExercise = await exercise.save();
+//         res.status(201).json(savedExercise);
+//     } catch (err) {
+//         res.status(500).send(err);
+//     }
+// });
+
 
 // Updates attributes of item by id.
 router.patch('/api/v1/exercises/:id', async function (req, res) {
