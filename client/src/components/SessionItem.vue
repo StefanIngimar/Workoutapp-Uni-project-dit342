@@ -57,10 +57,9 @@
   </div>
 </template>
 
-
 <script>
 import { Api } from '@/Api'
-import ExerciseItem from './ExerciseItem.vue';
+import ExerciseItem from './ExerciseItem.vue'
 
 export default {
   name: 'session-item',
@@ -82,36 +81,36 @@ export default {
       isCustom: true,
       reps: '',
       sets: '',
-      updatedExercise: '',
-    };
+      updatedExercise: ''
+    }
   },
   methods: {
     toggleEdit() {
-      this.isEditing = true;
-      this.editSession = { ...this.session };
+      this.isEditing = true
+      this.editSession = { ...this.session }
     },
     cancelEdit() {
-      this.isEditing = false;
-      this.editSession = { ...this.session };
+      this.isEditing = false
+      this.editSession = { ...this.session }
     },
     saveSession() {
       Api.patch(`/v1/dailysessions/${this.session._id}`, this.editSession)
         .then((response) => {
-          this.isEditing = false;
-          this.$emit('session-updated', response.data);
+          this.isEditing = false
+          this.$emit('session-updated', response.data)
         })
         .catch((error) => {
-          console.error('Error saving session:', error);
-        });
+          console.error('Error saving session:', error)
+        })
     },
     deleteSession(sessionID) {
       Api.delete(`/v1/dailysessions/${sessionID}`)
         .then((response) => {
-          this.$emit('session-deleted', response.data);
+          this.$emit('session-deleted', response.data)
         })
         .catch((error) => {
-          console.error('Error deleting session:', error);
-        });
+          console.error('Error deleting session:', error)
+        })
     },
     addNewExercise() {
       Api.post(`/v1/dailysessions/${this.session._id}/exercises`,
@@ -125,32 +124,32 @@ export default {
           sets: this.sets
         })
         .then((response) => {
-          this.isAddingExercise = false;
-          this.$emit('session-updated', response.data);
+          this.isAddingExercise = false
+          this.$emit('session-updated', response.data)
         })
         .catch((error) => {
-          console.error('Error adding exercise to session:', error);
-        });
+          console.error('Error adding exercise to session:', error)
+        })
     },
     toggleNewExercise() {
-      this.isAddingExercise = !this.isAddingExercise;
+      this.isAddingExercise = !this.isAddingExercise
     },
     handleExerciseUpdated(exID) {
       Api.get(`/v1/exercises/${exID}`)
         .then((response) => {
-          this.updatedExercise = response.data;
+          this.updatedExercise = response.data
         })
         .then(() => {
           Api.put(`/v1/dailysessions/${this.session._id}/exercises/${exID}`, this.updatedExercise)
             .then(() => {
               Api.get(`/v1/dailysessions/${this.session._id}/exercises`)
                 .then((response) => {
-                  this.session.exercises = response.data;
+                  this.session.exercises = response.data
                 })
-            });
+            })
         })
         .catch((error) => {
-          this.exerciseMessage = error;
+          this.exerciseMessage = error
         })
     },
 
@@ -163,22 +162,22 @@ export default {
         .then((response) => {
           Api.get(`/v1/dailysessions/${this.session._id}/exercises`)
             .then((response) => {
-              this.session.exercises = response.data;
+              this.session.exercises = response.data
             })
             .catch((error) => {
-              this.exerciseMessage = error;
+              this.exerciseMessage = error
             })
-          this.exerciseMessage = "Exercise deleted!";
+          this.exerciseMessage = 'Exercise deleted!'
         })
         .catch((error) => {
-          this.exerciseMessage = error;
+          this.exerciseMessage = error
         })
     },
     handleDeleteError() {
-      this.exerciseMessage = error;
-    },
+      this.exerciseMessage = error
+    }
   }
-};
+}
 </script>
 
 <style scoped>

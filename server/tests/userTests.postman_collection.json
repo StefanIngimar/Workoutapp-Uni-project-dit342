@@ -15,35 +15,28 @@
 						"exec": [
 							"pm.test(\"Correct status code\", function() {\r",
 							"    var statusCode = pm.response.code;\r",
-							"    pm.expect([201, 400]).to.include(statusCode);\r",
+							"    pm.expect([201]).to.include(statusCode);\r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"var sentData = JSON.parse(pm.request.body.raw);\r",
 							"\r",
-							"if (pm.response.code === 201) {\r",
-							"    pm.globals.set(\"userId3\", jsonData._id);\r",
+							"pm.globals.set(\"userId3\", jsonData.user._id);\r",
+							"pm.globals.set(\"authToken\", jsonData.token);\r",
 							"\r",
-							"    pm.test(\"Correct user response data\", function() {\r",
-							"        Object.keys(sentData).forEach(key => {\r",
-							"            pm.test(`Correct response data: ${key}`, function() {\r",
-							"                pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
-							"            });\r",
+							"pm.test(\"Correct user response data\", function() {\r",
+							"    const fieldsToCompare = ['userName', 'email', 'isAdmin', 'achievements'];\r",
+							"    fieldsToCompare.forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData.user[key]).to.eql(sentData[key]);\r",
 							"        });\r",
 							"    });\r",
-							"} else if (pm.response.code === 400 && jsonData.userName === sentData.userName) {\r",
-							"    pm.test(\"Username already exists\", function() {\r",
-							"        pm.expect(jsonData.error).to.include(\"Username already exists\");\r",
-							"    });\r",
-							"} else if (pm.response.code === 400 && jsonData.email === sentData.email) {\r",
-							"    pm.test(\"Email already in use\", function() {\r",
-							"        pm.expect(jsonData.error).to.include(\"Email already in use\");\r",
-							"    });\r",
-							"}else if (pm.response.code === 400 && jsonData.email === sentData.email && jsonData.userName === sentData.userName) {\r",
-							"    pm.test(\"Username and email already exist\", function() {\r",
-							"        pm.expect(jsonData.error).to.include(\"Username and email already exist\");\r",
-							"    });\r",
-							"}"
+							"});\r",
+							"\r",
+							"pm.test(\"Token is present\", function() {\r",
+							"    pm.expect(jsonData.token).to.be.a('string');\r",
+							"});\r",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -71,6 +64,64 @@
 						"api",
 						"v1",
 						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    var statusCode = pm.response.code;\r",
+							"    pm.expect([200]).to.include(statusCode);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"if (pm.response.code === 201) {\r",
+							"\r",
+							"    pm.test(\"Correct user response data\", function() {\r",
+							"        Object.keys(sentData).forEach(key => {\r",
+							"            pm.test(`Correct response data: ${key}`, function() {\r",
+							"                pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"            });\r",
+							"        });\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\": \"Alvukk\",\r\n    \"password\": \"hejdasdasd\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/users/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"login"
 					]
 				}
 			},

@@ -1,14 +1,18 @@
 <template>
   <div>
-    <user-creation  @user-created="handleUserCreated" />
     <!-- Display the user's name and email -->
-    <user-info v-if="user" :user="user" />
+    <!-- <user-info v-if="user" :user="user" /> -->
+    <h1> User Profile </h1>
+        <p><strong>Username:</strong>{{ user.userName }}</p>
+        <p><strong>Email:</strong>{{ user.email }}</p>
+    <!-- <user-fetched /> -->
     <!-- Handle the updateing of user profile -->
     <edit-profile :user="user" @profile-updated="handleProfileUpdated" />
     <!-- Diplsay numer of times attending the gym-->
      <!-- <gym-attendance :numOfTimesInGym="numOfTimesInGym" /> -->
     <!-- Display the user's achievements -->
     <!-- <achievement-list :userAchievements="userId" /> -->
+     <b-button class="logout_btn" variant="primary" @click="logout">Logout</b-button>
      <button type="button" @click="deletAllUsers">Deleta all users</button>
     <div v-if="message" class="error">
       {{ message }}
@@ -17,51 +21,46 @@
 </template>
 
 <script>
-import UserInfo from '@/components/UserInfo.vue'
+// import Authentication from '@/Authentication.vue'
+// import UserInfo from '@/components/UserInfo.vue'
 import EditProfile from '@/components/EditProfile.vue'
 // import GymAttendance from '@/components/GymAttendance.vue'
 // import AchievementList from '@/components/AchievementList.vue'
-import UserCreation from '@/components/UserCreation.vue'
 import { Api } from '@/Api'
 
 export default {
   name: 'Profile',
   components: {
-    UserInfo,
-    EditProfile,
+    // UserInfo,
+    EditProfile
     // GymAttendance,
     // AchievementList,
-    UserCreation
   },
   data() {
     return {
       user: {},
-      userId: '',
       userAchievements: [],
       numOfTimesInGym: 0,
       message: ''
     }
   },
   methods: {
-    handleUserCreated(newUser) {
-      this.user = newUser
-      this.userId = newUser._id
+    created() {
+      this.getUserProfile()
     },
     getUserProfile() {
-      if (!this.userId) {
-        this.message = 'User not found'
-        return
+      const user = JSON.parse(localStorage.getItem('user'))
+      if (user) {
+        this.user = user
       }
-      Api.get(`/api/v1/users/${this.userId}`)
-        .then(response => {
-          this.user = response.data
-        })
-        .catch(error => {
-          this.messsage = error.response ? error.response.data.message : error.message
-        })
     },
     handleProfileUpdated(updatedUser) {
       this.user = updatedUser
+    },
+    logout() {
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
+      this.$router.push('/')
     },
     deletAllUsers() {
       Api.delete('/v1/users')
@@ -71,9 +70,6 @@ export default {
         .catch(error => {
           this.message = error.response ? error.response.data.message : error.message
         })
-    },
-    created() {
-      this.getUserProfile()
     }
   }
 }
