@@ -9,7 +9,8 @@ var exerciseSchema = new Schema({
     bodyPart   : {type: String}, 
     isCustom   : {type: Boolean},
     reps       : {type: Number}, 
-    sets       : {type: Number} 
+    sets       : {type: Number},
+    userID     : {type: String}
 });
 
 module.exports = mongoose.model('exercises', exerciseSchema);
