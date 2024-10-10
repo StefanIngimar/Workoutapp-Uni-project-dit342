@@ -18,33 +18,17 @@
 							"});\r",
 							"var jsonData = pm.response.json();\r",
 							"pm.globals.set(\"logId\", jsonData._id);\r",
-<<<<<<< HEAD
-							"\r",
-							"const response = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Response contains date\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    var responseDate = new Date(jsonData.date).toISOString().split('T', 1)[0]; //show only the date and not the timestamp\r",
-							"    //took some help from https://stackoverflow.com/questions/47066555/remove-time-after-converting-date-toisostring\r",
-							"    pm.expect(responseDate).to.eql(\"2024-10-08\");\r",
-=======
 							"\r",
 							"const response = pm.response.json();\r",
 							"var currentDate = new Date().toISOString().split('T', 1)[0];\r",
 							"pm.test(\"Response contains current date\", function () {\r",
 							"    var responseDate = jsonData.date.split('T', 1)[0]; //show only the date and not the timestamp\r",
 							"    pm.expect(responseDate).to.eql(currentDate);  //took some help from https://stackoverflow.com/questions/47066555/remove-time-after-converting-date-toisostring\r",
->>>>>>> stefanfrontend
 							"});\r",
 							"pm.test(\"Response contains session data\", function () {\r",
 							"    pm.expect(jsonData.session).to.be.an(\"array\");\r",
 							"    if (jsonData.session.length > 0) {\r",
-<<<<<<< HEAD
-							"        pm.expect(jsonData.session[0].user).to.eql(\"66ffe37a3297a22098fd7e48\");//user\r",
-							"        pm.expect(jsonData.session[0].exercises[0].exercise).to.eql(\"66e05ce1eba5b8c1d8ac4f91\");//exercise\r",
-=======
 							"        pm.expect(jsonData.session[0].user).to.eql(\"66ffe37a3297a22098fd7e48\");  // user ID\r",
->>>>>>> stefanfrontend
 							"        pm.expect(jsonData.session[0].exercises[0].sets).to.eql(5);\r",
 							"        pm.expect(jsonData.session[0].exercises[0].reps).to.eql(10);\r",
 							"        pm.expect(jsonData.session[0].exercises[0].weight).to.eql(100);\r",
@@ -72,11 +56,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-<<<<<<< HEAD
-					"raw": "{\r\n    \"title\": \"Pull day\",\r\n    \"date\": \"2024-10-08\",\r\n    \"session\": [{\r\n        \"user\": \"66ffe37a3297a22098fd7e48\",\r\n        \"exercises\":[{\r\n            \"exercise\": \"66e05ce1eba5b8c1d8ac4f91\",\r\n            \"sets\": 5,\r\n            \"reps\": 10,\r\n            \"weight\": 100\r\n        }]\r\n    }]\r\n}",
-=======
 					"raw": "{\r\n  \"title\": \"Leg Day\",\r\n  \"date\": \"2024-10-10\",\r\n  \"session\": [\r\n    {\r\n      \"user\": \"66ffe37a3297a22098fd7e48\",  // ID of the user performing the session\r\n      \"exercises\": [\r\n        {\r\n          \"exercise\": \"670533153456aec36445fde4\",  // ID of the exercise (assume it's an ObjectId reference)\r\n          \"sets\": 5,\r\n          \"reps\": 10,\r\n          \"weight\": 100\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
->>>>>>> stefanfrontend
 					"options": {
 						"raw": {
 							"language": "json"
@@ -149,16 +129,11 @@
 				{
 					"listen": "prerequest",
 					"script": {
-<<<<<<< HEAD
-						"packages": {},
-						"type": "text/javascript"
-=======
 						"exec": [
 							""
 						],
 						"type": "text/javascript",
 						"packages": {}
->>>>>>> stefanfrontend
 					}
 				}
 			],
@@ -166,16 +141,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-<<<<<<< HEAD
-					"raw": "http://localhost:3001/api/v1/workoutlogs/{{logId}}",
-					"protocol": "http",
-=======
 					"raw": "{{host}}/api/v1/workoutlogs/{{logId}}",
->>>>>>> stefanfrontend
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3001",
 					"path": [
 						"api",
 						"v1",
