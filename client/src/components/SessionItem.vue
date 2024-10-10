@@ -113,6 +113,7 @@ export default {
         })
     },
     addNewExercise() {
+      var user = JSON.parse(localStorage.getItem('user'))
       Api.post(`/v1/dailysessions/${this.session._id}/exercises`,
         {
           name: this.name,
@@ -121,7 +122,8 @@ export default {
           bodyPart: this.bodyPart,
           isCustom: this.isCustom,
           reps: this.reps,
-          sets: this.sets
+          sets: this.sets,
+          userID: user._id
         })
         .then((response) => {
           this.isAddingExercise = false

@@ -3,12 +3,20 @@ var router = express.Router();
 // const jwt = require('jsonwebtoken');
 const DailySession = require('../../models/dailySessionModel');
 const Exercise = require('../../models/exerciseModel');
+const WorkoutLog = require('../../models/workoutLogModel');
 
 // Returns all items stored in the database.
 router.get('/api/v1/dailysessions', async function (req, res) {
+    const userId = req.query.userID;
+    const isAdmin = req.query.isAdmin === 'true';
     try {
-        const allSessions = await DailySession.find({});
-        res.status(200).json(allSessions)
+        if (isAdmin) {
+            const allSessions = await DailySession.find({});
+            res.status(200).json(allSessions)
+        } else {
+            const allSessions = await DailySession.find({ userID: userId });
+            res.status(200).json(allSessions)
+        }
     } catch (err) {
         res.status(404).send(err);
     }
@@ -28,12 +36,18 @@ router.get('/api/v1/dailysessions/:id', async function (req, res, next) {
 // Returns a all item stored in the database by query.
 router.get('/api/v1/dailysessions/search', async function (req, res, next) {
     const query = req.query;
+    const isAdmin = req.query.isAdmin === 'true';
+    
+    let searchQuery = {};
 
-    const searchQuery = {};
+    if (!isAdmin) {
+        searchQuery = {
+            userID: req.query.userID
+        };
+    } 
 
     for (const key in query) {
-        if (query.hasOwnProperty(key)) {
-
+        if (query.hasOwnProperty(key) && key !== 'isAdmin' && key !== 'userID') {
             searchQuery[key] = { $regex: query[key], $options: 'i' };
         }
     }
@@ -57,19 +71,19 @@ router.get('/api/v1/dailysessions/:id/exercises', async function (req, res) {
 });
 
 // Returns an exercise stored in a dailysession by id.
-router.get('/api/v1/dailysessions/:id/exercises/:id2', async function (req, res) {
-    var id = req.params.id;
-    var id2 = req.params.id2;
+router.get('/api/v1/dailysessions/:sessionID/exercises/:exerciseID', async function (req, res) {
+    var sessionID = req.params.sessionID;
+    var exerciseID = req.params.exerciseID;
     try {
-        var session = await DailySession.findById(id);
+        var session = await DailySession.findById(sessionID);
         if (!session) {
             return res.status(404).send({ message: "No such session" });
         }
-        var exercise = await Exercise.findById(id2);
+        var exercise = await Exercise.findById(exerciseID);
         if (!exercise) {
             return res.status(404).send({ message: "No such exercise" });
         }
-        const matchedEx = session.exercises.find(ex => (ex._id.toString() === id2));
+        const matchedEx = session.exercises.find(ex => (ex._id.toString() === exerciseID));
         if (matchedEx) {
             return res.status(200).send(matchedEx);
         } else {
@@ -94,7 +108,7 @@ router.delete('/api/v1/dailysessions/:id', async function (req, res) {
 
 // Deletes all items if admin user.
 router.delete('/api/v1/dailysessions/', async function (req, res) {
-    var isAdmin = req.body.isAdmin;
+    var isAdmin = req.query.isAdmin;
     try {
         if (isAdmin) {
             const session = await DailySession.deleteMany({});
@@ -104,7 +118,6 @@ router.delete('/api/v1/dailysessions/', async function (req, res) {
         res.status(404).send(err);
     }
 });
-
 
 // Removes single exercise from session by id.
 router.patch('/api/v1/dailysessions/:sessionID', async function (req, res, next) {
@@ -202,11 +215,15 @@ router.put('/api/v1/dailysessions/:sessionID/exercises/:exerciseID', async funct
 
         const exerciseIndex = session.exercises.findIndex(ex => ex._id.toString() === exerciseID);
 
-        session.exercises[exerciseIndex] = exercise; 
+        if (exerciseIndex >= 0) {
+            session.exercises[exerciseIndex] = exercise;
 
-        await session.save();
+            await session.save();
 
-        res.status(200).send({ message: "Exercise added", session });
+            res.status(200).send({ message: "Exercise added", session });
+        } else {
+            res.status(404).send({ message: "Not in session", session });
+        }
 
     } catch (err) {
         res.status(500).send(err);
@@ -246,9 +263,19 @@ router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add er
         'notes': req.body.notes,
         'exercises': []
     });
+        const workoutLog = new WorkoutLog({
+        title: req.body.sessionName,
+        date: new Date(),
+        session: [{
+            user: req.body.userID,
+            exercises: []
+        }]
+    });
+
 
     try {
         const savedSession = await dailySession.save();
+        await workoutLog.save();
         res.status(201).json(savedSession);
     } catch (err) {
         res.status(500).send(err);
@@ -267,7 +294,8 @@ router.post('/api/v1/dailysessions/:sessionID/exercises', async function (req, r
             'bodyPart': req.body.bodyPart,
             'isCustom': req.body.isCustom, // By default (for users) should be true?
             'reps': req.body.reps,
-            'sets': req.body.sets
+            'sets': req.body.sets,
+            'userID': req.body.userID
         });
     } else {
         var exercise = new Exercise({
@@ -276,7 +304,8 @@ router.post('/api/v1/dailysessions/:sessionID/exercises', async function (req, r
             'bodyPart': req.body.bodyPart,
             'isCustom': req.body.isCustom,
             'reps': req.body.reps,
-            'sets': req.body.sets
+            'sets': req.body.sets,
+            'userID': req.body.userID
         });
     }
 

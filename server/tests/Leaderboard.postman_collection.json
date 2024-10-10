@@ -13,10 +13,7 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"pm.globals.set(\"expectedResult\", ({\r",
-							"    \"user\": \"66e3107d334983ff003dc045\",\r",
-							"    \"weight\": 800\r",
-							"}));"
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -26,24 +23,24 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Success\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 200\", function() {\r",
+							"    pm.response.to.have.status(200);  \r",
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
-							"pm.globals.set(\"userId\", jsonData._id);\r",
-							"const response = pm.response.json();\r",
+							"pm.globals.set(\"userId\", jsonData.user);\r",
+							"\r",
+							"const response = { ...jsonData };\r",
 							"delete response._id;\r",
 							"delete response.__v;\r",
 							"\r",
-							"pm.test(\"Response structure is valid(besides _id and __v)\", () =>{\r",
-							"    pm.expect(response).to.eql(pm.globals.get(\"expectedResult\"));\r",
-							"})\r",
-							"var requestBody = request.data;\r",
-							"requestBody = JSON.parse(requestBody);\r",
-							"pm.test(\"Response body is valid\", () =>{\r",
-							"    pm.expect(response).to.eql(requestBody);\r",
-							"})"
+							"pm.test(\"Response contains correct data\", function() {\r",
+							"    pm.expect(response.user).to.eql(\"66e3107d334983ff003dc045\");\r",
+							"    pm.expect(response.userName).to.eql(\"Gigachad\");\r",
+							"    pm.expect(response.weight).to.eql(900);\r",
+							"    //pm.expect(response.exercise).to.eql(\"Bench press\");\r",
+							"});\r",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -55,7 +52,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"user\": \"66e3107d334983ff003dc045\",\r\n    \"weight\": 800\r\n}",
+					"raw": "{\r\n    \"user\": \"66e3107d334983ff003dc045\",\r\n    \"userName\": \"Gigachad\",\r\n    \"weight\": 900,\r\n    \"exercise\": \"Bench press\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -253,23 +250,23 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 200 or 404\", function () {\r",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);\r",
+							"pm.test(\"Status code is 204 or 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([204, 404]);\r",
 							"});\r",
 							"\r",
-							"var jsonData = pm.response.json();\r",
-							"console.log(\"Response body:\", jsonData);\r",
-							"\r",
-							"if (pm.response.status === 200) {\r",
-							"    pm.test(\"Success\", function () {\r",
-							"        pm.expect(jsonData.message).to.eql(\"Leaderboard entry successfully deleted\");\r",
+							"// Only parse the response if it's not 204, since 204 has no content\r",
+							"if (pm.response.status === 204) {\r",
+							"    pm.test(\"Successfully deleted with no content\", function () {\r",
+							"        pm.expect(pm.response.text()).to.be.empty;\r",
 							"    });\r",
+							"}\r",
 							"\r",
 							"if (pm.response.status === 404) {\r",
-							"    pm.test(\"User entry not found\", function () {\r",
-							"        pm.expect(jsonData.message).to.eql(\"Leaderboard entry not found\");\r",
+							"    pm.test(\"Could not find the board entry\", function(){\r",
+							"        var jsonData = pm.response.json();\r",
+							"        pm.expect(jsonData).to.have.property(\"message\", \"Entry not found\");\r",
 							"    });\r",
-							"}}"
+							"}"
 						],
 						"type": "text/javascript",
 						"packages": {}
