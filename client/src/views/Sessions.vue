@@ -18,7 +18,7 @@
     </div>
 
     <div class="searchForm">
-      <b-form-input v-on:input="searchExercise" v-model="searchText" placeholder="Search"> </b-form-input>
+      <b-form-input v-on:input="searchSession" v-model="searchText" placeholder="Search"> </b-form-input>
     </div>
 
     <div class="sessions-list">
@@ -42,7 +42,8 @@ export default {
     SessionItem
   },
   mounted() {
-    Api.get('/v1/dailysessions')
+    this.getUserInfo()
+    Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
       .then((response) => {
         this.sessions = response.data
         // Might not be needed
@@ -61,9 +62,12 @@ export default {
       })
   },
   methods: {
+    getUserInfo() {
+      this.user = JSON.parse(localStorage.getItem('user'))
+    },
 
     handleSessionUpdated(sessionID) {
-      Api.get('/v1/dailysessions')
+      Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           this.sessions = response.data
           Api.get(`/v1/dailysessions/${sessionID}`)
@@ -79,7 +83,7 @@ export default {
     },
 
     handleSessionDeleted() {
-      Api.get('/v1/dailysessions')
+      Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           this.sessions = response.data
           this.sessionMessage = ''
@@ -94,7 +98,7 @@ export default {
     postSession() {
       Api.post('/v1/dailysessions',
         {
-          userID: this.userID,
+          userID: this.user._id,
           sessionName: this.sessionName,
           duration: this.duration,
           isCompleted: this.isCompleted,
@@ -104,7 +108,7 @@ export default {
       )
         .then((response) => {
           this.sessionMessage = response.data
-          Api.get('/v1/dailysessions')
+          Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
             .then((response) => {
               this.sessions = response.data
             })
@@ -116,12 +120,12 @@ export default {
           this.sessionMessage = error
         })
     },
-    searchExercise() {
-      Api.get(`/v1/dailysessions/search?sessionName=${this.searchText}`)
+    searchSession() {
+      Api.get(`/v1/dailysessions/search?sessionName=${this.searchText}&userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           this.sessions = response.data
           if (this.searchText === '') {
-            Api.get('/v1/dailysessions')
+            Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
               .then((response) => {
                 this.sessions = response.data
               })
@@ -146,7 +150,8 @@ export default {
       duration: '',
       isCompleted: false,
       notes: '',
-      searchText: ''
+      searchText: '',
+      user: ''
     }
   }
 }

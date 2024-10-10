@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     handleExerciseUpdated(exerciseID) {
-      Api.get('/v1/dailysessions')
+      Api.get('/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}')
         .then((response) => {
           Api.get(`/v1/exercises/${exerciseID}`)
             .then((response) => {
@@ -79,7 +79,7 @@ export default {
               return Promise.all(patchRequests)
             })
             .then(() => {
-              return Api.get('/v1/exercises')
+              return Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
             })
             .then((response) => {
               this.exercises = response.data
@@ -106,7 +106,7 @@ export default {
           return Api.delete(`/v1/exercises/${exerciseID}`)
         })
         .then(() => {
-          return Api.get('/v1/exercises')
+          return Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         })
         .then((response) => {
           this.exercises = response.data
@@ -137,7 +137,7 @@ export default {
       )
         .then((response) => {
           this.postMessage = response.data
-          Api.get('/v1/exercises')
+          Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
             .then((response) => {
               this.exercises = response.data
             })
@@ -150,11 +150,11 @@ export default {
         })
     },
     searchExercise() {
-      Api.get(`/v1/exercises/search?name=${this.searchText}`)
+      Api.get(`/v1/exercises/search?name=${this.searchText}&userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           this.exercises = response.data
           if (this.searchText === '') {
-            Api.get('/v1/exercises')
+            Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
               .then((response) => {
                 this.exercises = response.data
               })
