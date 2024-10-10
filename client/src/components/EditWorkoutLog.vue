@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { VueFinalModal } from 'vue-final-modal'
 
 const props = defineProps<{
   title?: string,
@@ -22,6 +23,8 @@ const editedLog = ref({...props.log});
 const emit = defineEmits<{
   (e: 'update:modelValue', modelValue: boolean): void
   (e: 'save', updatedLog: any): void
+  (e: 'delete'): void
+  (e: 'cancel'): void
 }>()
 
 const saveLog = () => {
@@ -63,6 +66,12 @@ const saveLog = () => {
 
     <button class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg" @click="saveLog">
       Save Changes
+    </button>
+    <button class="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg" @click="emit('cancel')">
+      Delete Workout Log
+    </button>
+    <button class="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg" @click="emit('cancel')">
+      Cancel
     </button>
   </VueFinalModal>
 </template>

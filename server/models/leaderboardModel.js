@@ -5,7 +5,8 @@ var Schema = mongoose.Schema;
 var leaderboardSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'users' },
     userName: { type: Schema.Types.String, ref: 'users' },
-    weight: { type: Number }
+    weight: { type: Number },
+    exercise: {String}
 });
 
 module.exports = mongoose.model('Leaderboard', leaderboardSchema);

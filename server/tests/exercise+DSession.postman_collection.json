@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "414dacfe-c1b3-4d9f-ba1a-4becf4eb95bd",
+		"_postman_id": "67d7cf06-f84d-426a-9850-ca0a7b12575c",
 		"name": "exercise+DSession",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "38128034"
+		"_exporter_id": "32425632"
 	},
 	"item": [
 		{
@@ -350,11 +350,25 @@
 							"\r",
 							"pm.globals.set(\"sessionId\", jsonData._id);\r",
 							"\r",
-							"pm.test(\"Correct exercise response data\", function() {\r",
-							"    Object.keys(sentData).forEach(key => {\r",
-							"        pm.test(`Correct response data: ${key}`, function() {\r",
-							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
-							"        });\r",
+							"// Test the top-level keys in the response\r",
+							"pm.test(\"Correct response structure\", function() {\r",
+							"    pm.expect(jsonData).to.have.property(\"_id\");\r",
+							"    pm.expect(jsonData).to.have.property(\"userID\").that.equals(sentData.userID);\r",
+							"    pm.expect(jsonData).to.have.property(\"sessionName\").that.equals(sentData.sessionName);\r",
+							"    pm.expect(jsonData).to.have.property(\"duration\").that.equals(sentData.duration);\r",
+							"    pm.expect(jsonData).to.have.property(\"isCompleted\").that.equals(sentData.isCompleted);\r",
+							"    pm.expect(jsonData).to.have.property(\"notes\").that.equals(sentData.notes);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct exercise data\", function() {\r",
+							"    pm.expect(jsonData.exercises).to.be.an(\"array\").that.has.lengthOf(sentData.exercises.length);\r",
+							"    \r",
+							"    jsonData.exercises.forEach(function(exercise, index) {\r",
+							"        var sentExercise = sentData.exercises[index];\r",
+							"        pm.expect(exercise.name).to.eql(sentExercise.name);\r",
+							"        pm.expect(exercise.sets).to.eql(sentExercise.sets);\r",
+							"        pm.expect(exercise.reps).to.eql(sentExercise.reps);\r",
+							"        pm.expect(exercise.weight).to.eql(sentExercise.weight);\r",
 							"    });\r",
 							"});"
 						],
@@ -368,7 +382,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"sessionName\" : \"Push\",\r\n    \"duration\": 31,\r\n    \"isCompleted\": true,\r\n    \"notes\": \"Exercise light!\"\r\n}",
+					"raw": "{\r\n    \"userID\": \"66ffe37a3297a22098fd7e48\",\r\n    \"sessionName\": \"Push day\",\r\n    \"duration\": 120,\r\n    \"isCompleted\": true,\r\n    \"notes\": \"yes\",\r\n    \"exercises\": [{\r\n        \"exerciseName\": \"rows\",\r\n        \"exercise\": \"6706c664afebd072525ed69c\",\r\n        \"sets\": 5,\r\n        \"reps\": 5,\r\n        \"weight\": 100\r\n}]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

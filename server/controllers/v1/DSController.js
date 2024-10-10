@@ -3,6 +3,7 @@ var router = express.Router();
 // const jwt = require('jsonwebtoken');
 const DailySession = require('../../models/dailySessionModel');
 const Exercise = require('../../models/exerciseModel');
+const WorkoutLog = require('../../models/workoutLogModel');
 
 // Returns all items stored in the database.
 router.get('/api/v1/dailysessions', async function (req, res) {
@@ -238,17 +239,35 @@ router.delete('/api/v1/dailysessions/:sessionID/exercises/:exerciseID', async fu
 
 // Creates and stores a new daily session.
 router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add error handling.
-    var dailySession = new DailySession({
-        'userID': req.body.userID,
-        'sessionName': req.body.sessionName,
-        'duration': req.body.duration,
-        'isCompleted': req.body.isCompleted,
-        'notes': req.body.notes,
-        'exercises': []
-    });
-
+    
     try {
+        const { userID, sessionName, duration, isCompleted, notes, exercises } = req.body;
+        const dailySession = new DailySession({
+            userID,
+            sessionName,
+            duration,
+            isCompleted,
+            notes,
+            exercises
+        });
         const savedSession = await dailySession.save();
+
+        const workoutLog = new WorkoutLog({
+            title: sessionName,
+            date: new Date(),
+            session: [{
+                user: userID,
+                exercises: exercises.map(exercise => ({
+                    exerciseName: exercise.name,
+                    exercise: exercise.exercise,
+                    sets: exercise.sets,
+                    reps: exercise.reps,
+                    weight: exercise.weight
+                }))
+            }]
+        });
+
+        await workoutLog.save();
         res.status(201).json(savedSession);
     } catch (err) {
         res.status(500).send(err);
