@@ -263,12 +263,7 @@ router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add er
         'notes': req.body.notes,
         'exercises': []
     });
-
-<<<<<<< HEAD
         const workoutLog = new WorkoutLog({
-=======
-    const workoutLog = new WorkoutLog({
->>>>>>> Gabbranch
         title: req.body.sessionName,
         date: new Date(),
         session: [{
