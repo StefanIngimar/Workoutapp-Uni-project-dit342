@@ -49,15 +49,15 @@ export default {
       }
     },
     async handleEventClick(info) {
-      info.jsEvent.preventDefault();
+    info.jsEvent.preventDefault();
     const workoutLogId = info.event.id;
+    this.workoutLogIdd = workoutLogId;
     console.log('Event clicked, ID:', workoutLogId);
 
     try {
         const response = await axios.get(`/api/v1/workoutlogs/${workoutLogId}`);
         this.selectedWorkoutLog = response.data;
         console.log('Selected workout log: ', this.selectedWorkoutLog);
-        console.log("plain id", workoutLogIDPlain);
         // First, open the ModalConfirm modal
         const openModal = useModal({
             component: ModalConfirm,
@@ -95,10 +95,9 @@ export default {
 },
 
     async updateWorkoutLog(updatedLog) {
-      console.log("selectedworkoutlog", workoutLogId);
       try {
-        const response = await axios.put(`/api/v1/workoutlogs/${workoutLogIDPlain._id}`, updatedLog);
-        console.log("plainy lpain", workoutLogIDPlain._id);
+        console.log('putworkoutlogid', this.workoutLogIdd)
+        const response = await axios.put(`/api/v1/workoutlogs/${this.workoutLogIdd}`, updatedLog);
         console.log('Workout log updated:', response.data);
         alert('Workout log updated successfully');
         this.fetchWorkoutLogs();

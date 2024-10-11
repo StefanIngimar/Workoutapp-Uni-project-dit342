@@ -2,10 +2,9 @@
 import { VueFinalModal } from 'vue-final-modal';
 import { computed } from 'vue';
 
-// Define the props and emit events
 const props = defineProps({
   log: {
-    type: Array,  // Expecting an array of logs
+    type: Array,  
     default: () => ([
       {
         _id: '',
@@ -39,10 +38,9 @@ const props = defineProps({
   },
 });
 
-// Use a plain copy of the log (remove reactivity)
 const plainLog = JSON.parse(JSON.stringify(props.log));
 
-// Define emit events
+
 const emit = defineEmits([
   'update:modelValue',
   'close',
@@ -57,6 +55,8 @@ const sessions = computed(() => {
 // Log the incoming props to check if log data exists
 console.log('Props received:', { log: props.log, plainLog });
 
+console.log('PLAIN:', plainLog)
+
 </script>
 
 <template>
@@ -66,18 +66,18 @@ console.log('Props received:', { log: props.log, plainLog });
     @update:model-value="val => emit('update:modelValue', val)"
   >
     <!-- Loop over the logs array -->
-    <div v-if="plainLog.length > 0">
-      <div v-for="logItem in plainLog" :key="logItem._id">
+    <div v-if="plainLog.title != null">
+      <div>
         <h1 class="text-xl">
           <!-- Display the title from each log -->
-          {{ logItem.title || 'No Title Available' }}
+          {{ plainLog.title || 'No Title Available' }}
         </h1>
-        <p><strong>Date:</strong> {{ new Date(logItem.date).toLocaleDateString() }}</p>
+        <p><strong>Date:</strong> {{ new Date(plainLog.date).toLocaleDateString() }}</p>
 
         <!-- Loop through the sessions and exercises for each log -->
-        <div v-if="logItem.session.length > 0">
+        <div v-if="plainLog.session != null">
           <ul>
-            <li v-for="(session) in logItem.session" :key="session._id">
+            <li v-for="(session) in plainLog.session" :key="session._id">
               <p>{{ session.sessionName || 'No Session Name' }}</p>
               <p><strong>Duration:</strong> {{ session.duration }} mins</p>
               <p><strong>Notes:</strong> {{ session.notes || 'No Notes Available' }}</p>
@@ -111,6 +111,7 @@ console.log('Props received:', { log: props.log, plainLog });
     <!-- No logs available -->
     <div v-else>
       <p>No logs available.</p>
+      <p>{{ plainLog }}</p>
     </div>
 
     <!-- Modal Buttons -->
