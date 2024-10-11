@@ -254,7 +254,7 @@ router.delete('/api/v1/dailysessions/:sessionID/exercises/:exerciseID', async fu
 });
 
 // Creates and stores a new daily session.
-router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add error handling.
+/*router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add error handling.
     var dailySession = new DailySession({
         'userID': req.body.userID,
         'sessionName': req.body.sessionName,
@@ -276,6 +276,39 @@ router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add er
     try {
         const savedSession = await dailySession.save();
         await workoutLog.save();
+        res.status(201).json(savedSession);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});*/
+router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add error handling.
+    const workoutLog = new WorkoutLog({
+        title: req.body.sessionName,
+        date: new Date(),
+        session: []
+    });
+
+    try {
+        const workoutLogCreated = await workoutLog.save();
+
+        var dailySession = new DailySession({
+            'userID': req.body.userID,
+            'sessionName': req.body.sessionName,
+            'duration': req.body.duration,
+            'isCompleted': req.body.isCompleted,
+            'notes': req.body.notes,
+            'exercises': [],
+            'workoutLogID': workoutLogCreated._id
+        });
+    
+        const savedSession = await dailySession.save();
+    
+        const workoutLogUpdated = WorkoutLog.findByIdAndUpdate(
+            workoutLogCreated._id,
+            { $push: { session: savedSession } },
+            { new: true }
+        );
+
         res.status(201).json(savedSession);
     } catch (err) {
         res.status(500).send(err);

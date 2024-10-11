@@ -113,26 +113,31 @@ export default {
         })
     },
     addNewExercise() {
-      var user = JSON.parse(localStorage.getItem('user'))
-      Api.post(`/v1/dailysessions/${this.session._id}/exercises`,
-        {
-          name: this.name,
-          hasWeights: this.hasWeights,
-          weight: this.weight,
-          bodyPart: this.bodyPart,
-          isCustom: this.isCustom,
-          reps: this.reps,
-          sets: this.sets,
-          userID: user._id
-        })
-        .then((response) => {
-          this.isAddingExercise = false
-          this.$emit('session-updated', response.data)
-        })
-        .catch((error) => {
-          console.error('Error adding exercise to session:', error)
-        })
-    },
+  var user = JSON.parse(localStorage.getItem('user'));
+
+  // POST request to add a new exercise to the daily session
+  Api.post(`/v1/dailysessions/${this.session._id}/exercises`, {
+    name: this.name,
+    hasWeights: this.hasWeights,
+    weight: this.weight,
+    bodyPart: this.bodyPart,
+    isCustom: this.isCustom,
+    reps: this.reps,
+    sets: this.sets,
+    userID: user._id
+  })
+  .then((response) => {
+    console.log("Response data:", response.data);
+    Api.put(`/v1/workoutlogs/${response.data.session.workoutLogID}/dailysessions/${response.data.session._id}`);
+    this.isAddingExercise = false;
+    this.$emit('session-updated', response.data);})
+    
+
+    // PUT request to update the workout log with the new session
+  .catch((error) => {
+    console.error('Error adding exercise or updating workout log:', error);
+  });
+},
     toggleNewExercise() {
       this.isAddingExercise = !this.isAddingExercise
     },
