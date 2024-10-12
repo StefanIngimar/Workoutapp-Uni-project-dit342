@@ -60,8 +60,18 @@ router.get('/api/v1/workoutlogs', async function(req, res){
     } catch(err) {
         res.status(404).send}});
 
+router.get('/api/v1/workoutlogs/:userID', async function(req, res){
+    var userID = req.params.userID;
+    try {
+        const allWorkoutLogs = await WorkoutLog.find({ 'session': { $elemMatch: { userID: userID } } });
+        res.status(200).json(allWorkoutLogs);
+    } catch(err) {
+        res.status(404).send(err);
+    }
+});
 
-router.get('/api/v1/workoutlogs/:id', async function(req, res){
+
+router.get('/api/v1/workoutlogs/:userID/:id', async function(req, res){
     var id = req.params.id;
     try {
         const workoutLog = await WorkoutLog.findById(id)

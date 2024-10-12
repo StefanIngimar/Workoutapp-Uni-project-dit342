@@ -8,10 +8,7 @@ router.get('/api/v1/leaderboard', async function(req, res) {
     try {
         console.log("Fetching all workout logs...");
 
-        const workoutLogs = await WorkoutLog.find({})
-            .populate('session.user', 'userName')
-            .populate('session.exercises.exercise', 'name')
-            .exec();
+        const workoutLogs = await WorkoutLog.find({});
 
         const leaderboard = {};
 
@@ -27,10 +24,9 @@ router.get('/api/v1/leaderboard', async function(req, res) {
                         return;
                     }
 
-                    const userId = session.user._id;
-                    const userName = session.user.userName;
-                    const exerciseName = exercise.exercise.name;
-                    const weight = exercise.weight;
+                    const userId = user._id;
+                    const exerciseName = session.exercises.name;
+                    const weight = session.exercises.weight;
 
                     // Check if this user has lifted more weight for this exercise
                     if (!leaderboard[userId] || leaderboard[userId].weight < weight) {
