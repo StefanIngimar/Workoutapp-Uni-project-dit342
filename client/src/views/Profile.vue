@@ -8,6 +8,17 @@
     <!-- <user-fetched /> -->
     <!-- Handle the updateing of user profile -->
     <edit-profile :user="user" @profile-updated="handleProfileUpdated" />
+    <div class="completedAchievements">
+      <h2>Your Completed Achievements</h2>
+      <ul>
+        <li v-for="userAchievement in completedAchievements" :key="userAchievement._id">
+          <h3>{{ userAchievement.achievementID.name }}</h3>
+          <p>{{ userAchievement.achievementID.description }}</p>
+          <p>Completed on: {{ formatDate(userAchievement.dateCompleted) }}</p>
+        </li>
+      </ul>
+    </div>
+
     <!-- Diplsay numer of times attending the gym-->
      <!-- <gym-attendance :numOfTimesInGym="numOfTimesInGym" /> -->
     <!-- Display the user's achievements -->
@@ -25,21 +36,22 @@
 // import UserInfo from '@/components/UserInfo.vue'
 import EditProfile from '@/components/EditProfile.vue'
 // import GymAttendance from '@/components/GymAttendance.vue'
-import AchievementList from '@/components/AchievementList.vue'
+// import AchievementList from '@/components/AchievementList.vue'
 import { Api } from '@/Api'
 
 export default {
   name: 'Profile',
   components: {
     // UserInfo,
-    EditProfile,
+    EditProfile
     // GymAttendance,
-    AchievementList
+    // AchievementList
   },
   data() {
     return {
-      user: {},
-      userAchievements: [],
+      user: '',
+      userId: '',
+      completedAchievements: [],
       numOfTimesInGym: 0,
       message: '',
       foobar: ''
@@ -47,21 +59,29 @@ export default {
   },
   mounted() {
     this.getUserProfile()
-    this.getAllCompletedAchievements()
+    // this.getAllCompletedAchievements()
   },
   methods: {
     getUserProfile() {
       this.user = JSON.parse(localStorage.getItem('user'))
-      // if (this.user) {
-      //   this.user = user
-      // }
+      this.userId = this.user._id
     },
+    // getAllCompletedAchievements() {
+    //   Api.get(`/v1/users/${this.userId}/userAchievements`)
+    //     .then((response) => {
+    //       this.completedAchievements = response.data
+    //     })
+    //     .catch((error) => {
+    //       this.message = error.response ? error.response.data.message : error.message
+    //     })
+    // },
     handleProfileUpdated(updatedUser) {
       this.user = updatedUser
+      localStorage.setItem('user', JSON.stringify(updatedUser))
     },
     logout() {
       localStorage.removeItem('user')
-      localStorage.removeItem('token')
+      // localStorage.removeItem('token')
       this.$router.push('/')
     },
     deletAllUsers() {
@@ -70,15 +90,6 @@ export default {
           this.message = 'All users deleted'
         })
         .catch(error => {
-          this.message = error.response ? error.response.data.message : error.message
-        })
-    },
-    getAllCompletedAchievements() {
-      Api.get(`/v1/users/${this.user._id}/userAchievements`)
-        .then((response) => {
-          this.userAchievements = response.data
-        })
-        .catch((error) => {
           this.message = error.response ? error.response.data.message : error.message
         })
     }
@@ -97,6 +108,15 @@ the current goal their are working towards and in that way they can connect with
   margin-top: 20px;
   background-color: black;
 }
+
+.completedAchievements {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  background-color: black;
+}
+
 .error {
   color: red;
 }

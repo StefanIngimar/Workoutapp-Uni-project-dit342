@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     handleExerciseUpdated(exerciseID) {
-      Api.get('/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}')
+      Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           Api.get(`/v1/exercises/${exerciseID}`)
             .then((response) => {

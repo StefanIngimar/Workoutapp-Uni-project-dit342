@@ -79,14 +79,29 @@ export default {
       Api.post('/v1/users', newUser)
         .then((response) => {
           const createdUser = response.data
-          // Store user data in local storage, can be viewed in browser dev tools under appliocaton tab
           localStorage.setItem('user', JSON.stringify(createdUser))
           this.$emit('user-created', createdUser)
           this.$router.push('profile')
           this.message = 'User created successfully'
         })
         .catch((error) => {
-          this.message = error.response.data.message
+          if (error.response) {
+            if (error.response.status === 400) {
+              if (error.response.data.errors) {
+                this.message = error.response.data.errors.map((error) => error.msg).join(', ')
+              } else if (error.response.data.error) {
+                this.message = error.response.data.error
+              } else {
+                this.message = 'An error occured during login'
+              }
+            } else {
+              this.message = `Error: ${error.response.status} - ${error.response.statusText}`
+            }
+          } else if (error.request) {
+            this.message = 'Server is not responding'
+          } else {
+            this.message = 'An unexpected error occured'
+          }
         })
     },
     handleLogin() {
@@ -108,7 +123,21 @@ export default {
           }
         })
         .catch((error) => {
-          this.message = error.response.data.error
+          if (error.response) {
+            if (error.response.status === 400) {
+              if (error.response.data.error) {
+                this.message = error.response.data.error
+              } else {
+                this.message = 'Invalid login credentials'
+              }
+            } else {
+              this.message = `Error: ${error.response.status} - ${error.response.statusText}`
+            }
+          } else if (error.request) {
+            this.message = 'Sever is not responding'
+          } else {
+            this.message = 'An unexpected error occured'
+          }
         })
     }
   }

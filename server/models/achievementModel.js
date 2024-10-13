@@ -1,30 +1,74 @@
-var mongoose = require('mongoose');
-var Schema   = mongoose.Schema;
+// var mongoose = require('mongoose');
+// var Schema   = mongoose.Schema;
 
+
+// var achievementSchema = new Schema({
+//     name : {
+//         type : String,
+//         required : true
+//     },
+//     exercisename : {
+//         type : String,
+//     },
+//     description : {
+//         type : String,
+//         required : true
+//     },
+//     typeOfAchievement : {
+//         type : String, 
+//         enum : ['weightLiftedMilestone', 'attendanceMilestone', 'repetitionMilestone']
+//     },
+//     milestones : {
+//         type: Schema.Types.Mixed,
+//         required: true
+//     }
+// }, {minimize: false,
+//     toJSON: {minimize: false},
+//     toObject: {minimize: false}
+// });
+
+// module.exports = mongoose.model('achievements', achievementSchema);
+
+
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 var achievementSchema = new Schema({
-    name : {
-        type : String,
-        required : true
+    userID: {
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+        required: true
     },
-    exercisename : {
-        type : String,
+    name: {
+        type: String,
+        required: true
     },
-    description : {
-        type : String,
-        required : true
+    exercisename: {
+        type: String,
     },
-    typeOfAchievement : {
-        type : String, 
-        enum : ['weightLiftedMilestone', 'attendanceMilestone', 'repetitionMilestone']
+    description: {
+        type: String,
+        required: true
     },
-    milestones : {
+    typeOfAchievement: {
+        type: String,
+        enum: ['weightLiftedMilestone', 'attendanceMilestone', 'repetitionMilestone']
+    },
+    milestones: {
         type: Schema.Types.Mixed,
         required: true
+    },
+    isCompleted: {
+        type: Boolean,
+        default: false
+    },
+    dateCompleted: {
+        type: Date
     }
-}, {minimize: false,
-    toJSON: {minimize: false},
-    toObject: {minimize: false}
+}, {
+    minimize: false,
+    toJSON: { minimize: false },
+    toObject: { minimize: false }
 });
 
 module.exports = mongoose.model('achievements', achievementSchema);

@@ -2,7 +2,6 @@
 <template>
   <div class="achievements">
     <h1>Achievements</h1>
-    <button @click="getUserAchievements">Fetch achievements</button>
     <!-- Button to create a new achievement -->
     <button @click="toggleCreateForm">Create New Achievement</button>
 
@@ -57,30 +56,53 @@
         <button type="button" @click="toggleCreateForm">Cancel</button>
       </form>
     </div>
-
     <!-- Display achievements -->
-    <achievement-list
-      :achievements="achievements"
-      :userAchievements="userAchievements"
-    />
+    <div v-if="achievements.length > 0">
+      <h2>Your Achievements</h2>
+      <ul>
+        <li
+          v-for="achievement in achievements"
+          :key="achievement._id"
+          :class="{ completed: achievement.isCompleted }"
+        >
+          <h3>{{ achievement.name }}</h3>
+          <p>{{ achievement.description }}</p>
+          <p>Status:
+            <span v-if="achievement.isCompleted">Completed</span>
+            <span v-else>In Progress</span>
+          </p>
+          <div>
+            <button @click="deleteAchievement(achievement._id)">Delete</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>No achievements found.</p>
+    </div>
+    <div v-if="isAdmin">
+        <button @click="deleteAllAchievement(achievement._id)">Delete All achievements</button>
+    </div>
     <div v-if="message" class="error">{{ message }}</div>
   </div>
 </template>
 
 <script>
-import AchievementList from '@/components/AchievementList.vue'
+// import AchievementList from '@/components/AchievementList.vue'
 import { Api } from '@/Api'
 
 export default {
   name: 'Achievements',
   components: {
-    AchievementList
+    // AchievementList
   },
   data() {
     return {
+      user: '',
       userId: '',
+      isAdmin: false,
       achievements: [],
-      userAchievements: [],
+      // userAchievements: [],
       message: '',
       showCreateForm: false,
       newAchievement: {
@@ -92,24 +114,6 @@ export default {
     }
   },
   methods: {
-    getAllAchievements() {
-      Api.get('/v1/achievements')
-        .then((response) => {
-          this.achievements = response.data
-        })
-        .catch((error) => {
-          this.message = error.response ? error.response.data.message : error.message
-        })
-    },
-    getUserAchievements() {
-      Api.get(`/v1/users/${this.userId}/userAchievements`)
-        .then((response) => {
-          this.userAchievements = response.data
-        })
-        .catch((error) => {
-          this.message = error.response ? error.response.data.message : error.message
-        })
-    },
     toggleCreateForm() {
       this.showCreateForm = !this.showCreateForm
       if (!this.showCreateForm) {
@@ -124,10 +128,14 @@ export default {
     },
     createAchievement() {
       const achievementData = {
+        userID: this.userId,
         name: this.newAchievement.name,
         description: this.newAchievement.description,
         typeOfAchievement: this.newAchievement.typeOfAchievement,
-        milestones: this.newAchievement.milestones
+        milestones: this.newAchievement.milestones,
+        isCompleted: false,
+        dateCompleted: null
+
       }
 
       Api.post('/v1/achievements', achievementData)
@@ -137,43 +145,50 @@ export default {
           this.achievements.push(newAchievement)
           this.message = 'Achievement created successfully!'
           this.toggleCreateForm()
-
-          if (!this.userId) {
-            this.message = 'No user in local storage'
-            return
-          }
-
-          // Create a user achievement for the current user
-          const userAchievementData = {
-            userID: this.userId,
-            achievementID: newAchievement._id,
-            achievementName: newAchievement.name,
-            isCompleted: false,
-            dateCompleted: null
-          }
-
-          return Api.post('/v1/userAchievements', userAchievementData)
-        })
-        .then((response) => {
-          this.userAchievements.push(response.data)
         })
         .catch((error) => {
           this.message = error.response ? error.response.data.message : error.message
         })
+    },
+    // handleAchievementCompleted(achievementID) {
+    //   Api.patch(`/v1/achievements${achievementID}`)
+    //     .then((response) = {
+
+    //     })
+    // },
+    handleDeleteAchievement() {
+
+    },
+    deleteAchievement(achievementID) {
+      Api.delete(`/v1/achievements/${achievementID}`)
+        .then(() => {
+          this.achievements = this.achievements.filter((achievement) => achievement._id !== achievemendID)
+          this.message = 'Achievement deleted!'
+        })
+        .catch((error) => {
+          this.message = error
+        })
+    },
+    getUserInfo() {
+      this.user = JSON.parse(localStorage.getItem('user'))
+      this.userId = this.user._id
+      this.isAdmin = this.user.isAdmin
+    },
+
+    getAllAchievements() {
+      Api.get(`/v1/achievements?userID=${this.userId}&isAdmin=${this.isAdmin}`)
+        .then((response) => {
+          this.achievements = response.data
+        })
+        .catch((error) => {
+          this.message = error
+        })
     }
 
   },
-  created() {
-    const user = JSON.parse(localStorage.getItem('user'))
-    if (user) {
-      this.userId = user._id
-    } else {
-      this.message = 'User not logged in'
-      return
-    }
-
+  mounted() {
+    this.getUserInfo()
     this.getAllAchievements()
-    // this.getUserAchievements()
   }
 
 }
