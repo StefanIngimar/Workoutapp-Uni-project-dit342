@@ -42,15 +42,11 @@ export default {
           console.log('Fetched leaderboard: ', leaderboard);
 
           if(Array.isArray(leaderboard) && leaderboard.length > 0){
-              // parse the comma separated strings into structured data
-              this.leaderboard = leaderboard.map(entry => {
-                  const [userName, weight, exercise] = entry.split(', '); // Split the string into parts
-                  return {
-                      userName,
-                      weight,
-                      exercise
-                  };
-              });
+              this.leaderboard = leaderboard.map(entry => ({
+                      userName: entry.user,
+                      weight: entry.weight,
+                      exercise: entry.exercise
+              }));
           } else {
               console.error('Invalid data format');
           }

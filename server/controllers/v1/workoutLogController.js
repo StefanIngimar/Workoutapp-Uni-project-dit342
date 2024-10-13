@@ -4,54 +4,10 @@ const WorkoutLog = require('../../models/workoutLogModel.js');
 const Dailysession = require('../../models/dailySessionModel.js');
 const Exercise = require('../../models/exerciseModel');
 const cors = require('cors');
-const { model } = require('mongoose');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-// router.get('/api/v1/workoutlogs', async function(req, res){
-//     try {
-//         const allWorkoutLogs = await WorkoutLog.find({})
-//         // .populate({
-//         //     path: 'session.exercises.exercise',
-//         //     model: 'exercises'
-//         // })
-//         //.exec();
-//         console.log("Raw workout logs data:", allWorkoutLogs);
-//         const events = allWorkoutLogs.map(log => ({
-//             id: log._id,
-//             title: log.title,
-//             start: log.date.toISOString(),
-//             end: log.date.toISOString(),
-//             session: log.session.map(session => ({
-//                 user: session.user,
-//                 exercises: session.exercises.map(exercise => {
-//                     if (exercise && exercise.exercise) { // Null/undefined check
-//                         return {
-//                             exerciseId: exercise.exercise._id,
-//                             name: exercise.exercise.name,
-//                             sets: exercise.sets,
-//                             reps: exercise.reps,
-//                             weight: exercise.weight
-//                         };
-//                     } else {
-//                         return null; // skip if exercise data is missing
-//                         //this occurred after i changed the workoutlog schema and all the data was messed up
-//                         //skip the missing data and continue with the rest
-//                     }
-//                 }).filter(exercise => exercise !== null) // Filter out null values
-//             }))
-//         }));
-
-//         console.log("Transformed workout logs:", events);
-
-//         res.status(200).json(events);
-//     } catch (err) {
-//         console.error('Error fetching workout logs:', err);
-//         res.status(500).json({ error: 'Failed to fetch workout logs' });
-//     }
-// });
 
 router.get('/api/v1/workoutlogs', async function(req, res){
     try {
@@ -69,7 +25,6 @@ router.get('/api/v1/workoutlogs/:userID', async function(req, res){
         res.status(404).send(err);
     }
 });
-
 
 router.get('/api/v1/workoutlogs/:userID/:id', async function(req, res){
     var id = req.params.id;
@@ -96,16 +51,11 @@ router.put('/api/v1/workoutlogs/:id', async function(req, res){
     var id = req.params.id;
     try{
         const workoutLog = await WorkoutLog.findByIdAndUpdate(id, req.body)
-        /*.populate({
-            path: 'session.exercises.exercise',
-            model: 'exercises'
-        })
-        .exec();*/
+        if(!req.body.date){res.status(400).send({message: "Date is required"});}
+        if(!req.body.title){res.status(400).send({message: "Title is required"});}
         res.status(200).send({workoutLog, message: "Workout log successfully updated"});}
     catch(err){
         res.status(500).send(err);}});
-
-//router.get('/api/v1/workoutlogs/:exerciseID/sessions', async function(req, res) {
 
 router.put('/api/v1/workoutLogs/:workoutLogID/dailysessions/:sessionID', async function (req, res) {
     var workoutLogID = req.params.workoutLogID;
