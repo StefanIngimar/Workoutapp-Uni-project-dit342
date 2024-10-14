@@ -254,34 +254,7 @@ router.delete('/api/v1/dailysessions/:sessionID/exercises/:exerciseID', async fu
 });
 
 // Creates and stores a new daily session.
-/*router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add error handling.
-    var dailySession = new DailySession({
-        'userID': req.body.userID,
-        'sessionName': req.body.sessionName,
-        'duration': req.body.duration,
-        'isCompleted': req.body.isCompleted,
-        'notes': req.body.notes,
-        'exercises': []
-    });
-        const workoutLog = new WorkoutLog({
-        title: req.body.sessionName,
-        date: new Date(),
-        session: [{
-            user: req.body.userID,
-            exercises: []
-        }]
-    });
-
-
-    try {
-        const savedSession = await dailySession.save();
-        await workoutLog.save();
-        res.status(201).json(savedSession);
-    } catch (err) {
-        res.status(500).send(err);
-    }
-});*/
-router.post('/api/v1/dailysessions', async function (req, res) { // TODO: Add error handling.
+router.post('/api/v1/dailysessions', async function (req, res) { 
     const workoutLog = new WorkoutLog({
         title: req.body.sessionName,
         date: new Date(),
@@ -325,7 +298,7 @@ router.post('/api/v1/dailysessions/:sessionID/exercises', async function (req, r
             'hasWeights': req.body.hasWeights,
             'weight': req.body.weight,
             'bodyPart': req.body.bodyPart,
-            'isCustom': req.body.isCustom, // By default (for users) should be true?
+            'isCustom': req.body.isCustom, 
             'reps': req.body.reps,
             'sets': req.body.sets,
             'userID': req.body.userID

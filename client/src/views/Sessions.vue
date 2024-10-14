@@ -52,16 +52,6 @@ export default {
     Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
       .then((response) => {
         this.sessions = response.data
-        // Might not be needed
-        // this.sessions.forEach(session => {
-        //   Api.get(`/v1/dailysessions/${session._id}/exercises`)
-        //     .then((response) => {
-        //       session.exercises = response.data
-        //     })
-        //     .catch((error) => {
-        //       session.exercises = error
-        //     })
-        // });
       })
       .catch((error) => {
         this.errorMessage = error

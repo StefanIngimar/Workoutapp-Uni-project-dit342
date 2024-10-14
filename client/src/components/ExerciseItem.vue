@@ -107,8 +107,4 @@ export default {
   margin: 0;
   padding: 1px 0;
 }
-
-.h2 {
-  font-weight: bold;
-}
 </style>
