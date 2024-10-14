@@ -96,10 +96,9 @@ html, body {
 
 .navbar-brand{
   color: #ffffff;
-  padding: 10px 15px;
+  padding: 10px 10px;
   background-color: #7b46c2;
   border-radius: 5px;
-  transition: background-color 0.3s;
   text-decoration: none;
 }
 
@@ -112,10 +111,9 @@ html, body {
   margin: 0 25px;
   text-decoration: none;
   color: #ffffff;
-  padding: 10px 15px;
+  padding: 5px 15px;
   background-color: #7b46c2;
   border-radius: 5px;
-  transition: background-color 0.3s;
 }
 
 .nav-item:hover {
@@ -130,12 +128,9 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   margin: 0 auto;
-
   width: 80%;
   max-width: 350px;
-
   padding: 2vw;
   background-color: rgb(63, 66, 62);
   border: 3px solid;
