@@ -27,7 +27,7 @@
         <div v-if="postMessage">
             <p>Created/Last edited exercise: </p>
             <exercise-item v-bind:exercise="postMessage" @exercise-deleted="handleExerciseDeleted"
-                @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated(postMessage._id)" />
+                @delete-error="handleError" @exercise-updated="handleExerciseUpdated(postMessage._id)" />
         </div>
 
         <div>
@@ -44,7 +44,7 @@
         <div class="exercise-list">
             <div v-for="exercise in exercises" v-bind:key="exercise._id">
                 <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
-                    @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
+                    @error-detected="handleError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
             </div>
         </div>
 
@@ -119,7 +119,7 @@ export default {
         })
     },
 
-    handleDeleteError() {
+    handleError() {
       this.exerciseMessage = error
     },
     postExercise() {
@@ -142,11 +142,11 @@ export default {
               this.exercises = response.data
             })
             .catch((error) => {
-              this.exercises = error
+              this.exerciseMessage = error
             })
         })
         .catch((error) => {
-          this.postMessage = error
+          this.exerciseMessage = error
         })
     },
     searchExercise() {
@@ -164,7 +164,7 @@ export default {
           }
         })
         .catch((error) => {
-          this.exercises = error
+          this.exerciseMessage = error
         })
     },
     deleteAllExercises() {
@@ -190,7 +190,7 @@ export default {
         this.exercises = response.data
       })
       .catch((error) => {
-        this.exercises = error
+        this.exerciseMessage = error
       })
   },
   data() {

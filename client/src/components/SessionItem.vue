@@ -100,6 +100,7 @@ export default {
           this.$emit('session-updated', response.data)
         })
         .catch((error) => {
+          this.$emit('error-detected', error);
           console.error('Error saving session:', error)
         })
     },
@@ -109,6 +110,7 @@ export default {
           this.$emit('session-deleted', response.data)
         })
         .catch((error) => {
+          this.$emit('error-detected', error);
           console.error('Error deleting session:', error)
         })
     },
@@ -135,6 +137,7 @@ export default {
 
     // PUT request to update the workout log with the new session
   .catch((error) => {
+    this.$emit('error-detected', error);
     console.error('Error adding exercise or updating workout log:', error);
   });
 },
