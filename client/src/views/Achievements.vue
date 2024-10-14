@@ -80,9 +80,9 @@
     <div v-else>
       <p>No achievements found.</p>
     </div>
-    <div v-if="isAdmin">
+    <!-- <div v-if="isAdmin">
         <button @click="deleteAllAchievement(achievement._id)">Delete All achievements</button>
-    </div>
+    </div> -->
     <div v-if="message" class="error">{{ message }}</div>
   </div>
 </template>
@@ -102,7 +102,6 @@ export default {
       userId: '',
       isAdmin: false,
       achievements: [],
-      // userAchievements: [],
       message: '',
       showCreateForm: false,
       newAchievement: {
@@ -150,19 +149,22 @@ export default {
           this.message = error.response ? error.response.data.message : error.message
         })
     },
-    // handleAchievementCompleted(achievementID) {
-    //   Api.patch(`/v1/achievements${achievementID}`)
-    //     .then((response) = {
-
-    //     })
-    // },
-    handleDeleteAchievement() {
-
+    handleAchievementCompleted(achievementID) {
+      Api.patch(`/v1/achievements${achievementID}`)
+        .then((response) => {
+          const updatedAchievement = response.data
+          const index = this.achievements.findIndex((achievement) => achievement._id === achievementID)
+          this.achievements.splice(index, 1, updatedAchievement)
+          this.message = 'Achievement completed!'
+        })
+        .catch((error) => {
+          this.message = error
+        })
     },
     deleteAchievement(achievementID) {
       Api.delete(`/v1/achievements/${achievementID}`)
         .then(() => {
-          this.achievements = this.achievements.filter((achievement) => achievement._id !== achievemendID)
+          this.achievements = this.achievements.filter((achievement) => achievement._id !== achievementID)
           this.message = 'Achievement deleted!'
         })
         .catch((error) => {
@@ -176,7 +178,7 @@ export default {
     },
 
     getAllAchievements() {
-      Api.get(`/v1/achievements?userID=${this.userId}&isAdmin=${this.isAdmin}`)
+      Api.get(`/v1/achievements?userID=${this.userId}&isAdmin=${this.isAdmin}&isCompleted=false`)
         .then((response) => {
           this.achievements = response.data
         })

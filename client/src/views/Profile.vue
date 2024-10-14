@@ -11,10 +11,10 @@
     <div class="completedAchievements">
       <h2>Your Completed Achievements</h2>
       <ul>
-        <li v-for="userAchievement in completedAchievements" :key="userAchievement._id">
-          <h3>{{ userAchievement.achievementID.name }}</h3>
-          <p>{{ userAchievement.achievementID.description }}</p>
-          <p>Completed on: {{ formatDate(userAchievement.dateCompleted) }}</p>
+        <li v-for="achievement in completedAchievements" :key="achievement._id">
+          <h3>{{ achievement.achievementID.name }}</h3>
+          <p>{{ achievement.achievementID.description }}</p>
+          <p>Completed on: {{ formatDate(achievement.dateCompleted) }}</p>
         </li>
       </ul>
     </div>
@@ -51,6 +51,7 @@ export default {
     return {
       user: '',
       userId: '',
+      isAdmin: false,
       completedAchievements: [],
       numOfTimesInGym: 0,
       message: '',
@@ -59,22 +60,13 @@ export default {
   },
   mounted() {
     this.getUserProfile()
-    // this.getAllCompletedAchievements()
   },
   methods: {
     getUserProfile() {
       this.user = JSON.parse(localStorage.getItem('user'))
       this.userId = this.user._id
+      this.isAdmin = this.user.isAdmin
     },
-    // getAllCompletedAchievements() {
-    //   Api.get(`/v1/users/${this.userId}/userAchievements`)
-    //     .then((response) => {
-    //       this.completedAchievements = response.data
-    //     })
-    //     .catch((error) => {
-    //       this.message = error.response ? error.response.data.message : error.message
-    //     })
-    // },
     handleProfileUpdated(updatedUser) {
       this.user = updatedUser
       localStorage.setItem('user', JSON.stringify(updatedUser))
@@ -92,14 +84,21 @@ export default {
         .catch(error => {
           this.message = error.response ? error.response.data.message : error.message
         })
+    },
+    getAllCompletedAchievements() {
+      Api.get(`/v1/achievements?userID=${this.userId}&isAdmin=${this.isAdmin}&isCompleted=false`)
+        .then((response) => {
+          this.achievements = response.data
+        })
+        .catch((error) => {
+          this.message = error
+        })
     }
   }
 }
 
 </script>
 
-<!--Add a way where the user can display
-the current goal their are working towards and in that way they can connect with other users-->
 <style>
 .user-creation {
   display: flex;

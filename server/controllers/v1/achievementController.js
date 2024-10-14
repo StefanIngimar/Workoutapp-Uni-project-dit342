@@ -56,8 +56,8 @@ router.get('/api/v1/achievements', async function(req, res){
             const allAchievements = await Achievement.find({});
             res.status(200).json(allAchievements);
         } else {
-            const allAchievements = await Achievement.find({userID: userId});
-            res.status(200).json(allAchievements);
+            const userSpecificAchievements = await Achievement.find({userID: userId});
+            res.status(200).json(userSpecificAchievements);
         }
     } catch(err){
         res.status(404).send(err);
@@ -87,7 +87,7 @@ router.get('/api/v1/achievements/:name', async function(req, res){
     }
 });
 
-// Get all user achievements for a specific user
+// Get all achievements for a specific user
 router.get('/api/v1/users/:userId/achievements', async function(req, res){
     try{
         const achievements = await Achievement.find({userID: req.params.userId})
