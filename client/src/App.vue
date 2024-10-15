@@ -64,7 +64,7 @@ export default {
 
 /* some of the navbar styling is from the bootstrap documentation
 https://getbootstrap.com/docs/5.3/components/navbar/ */
-
+/*colour for the website overall*/
 html, body {
   background-color: rgb(44, 46, 43);
   margin: 0;
@@ -93,7 +93,7 @@ html, body {
 ::placeholder {
   color: rgba(242, 255, 237, 0.291);
 }
-
+/*navbar styling */
 .navbar-brand{
   color: #ffffff;
   padding: 10px 10px;

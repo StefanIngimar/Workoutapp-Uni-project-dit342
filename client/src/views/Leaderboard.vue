@@ -2,7 +2,7 @@
   <div>
     <h1 class="mb-4 text-center">Leaderboard</h1>
     <div class="row">
-      <div class="col-md-4" v-for="(entry, index) in leaderboard" :key="entry.id">
+      <div class="col-12 col-md-4" v-for="(entry, index) in leaderboard" :key="entry.id">
         <div class="card mb-3">
           <div class="card-header text-center">
             Rank #{{ index + 1 }}
@@ -62,13 +62,5 @@ export default {
 <style scoped>
 h1 {
   color: blueviolet;
-}
-
-table {
-  font-family: Arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-  content: center;
-  border: 2px solid rgb(140 140 140);
 }
 </style>
