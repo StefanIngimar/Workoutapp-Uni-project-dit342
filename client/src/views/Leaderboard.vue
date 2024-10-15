@@ -2,10 +2,13 @@
   <div>
     <h1 class="mb-4 text-center">Leaderboard</h1>
     <div class="searchForm mb-4">
+        <!-- search bar to filter exercises -->
       <b-form-input v-on:input="filterByExercise" v-model="searchText" placeholder="Filter by exercise"></b-form-input>
     </div>
     <div class="row">
+        <!-- for loop to loop through entries in the leaderboard -->
       <div class="col-12 col-md-4" v-for="(entry, index) in leaderboard" :key="entry.id">
+        <!-- put entries in cards -->
         <div class="card mb-3">
           <div class="card-header text-center">
             Rank #{{ index + 1 }}
@@ -44,7 +47,7 @@ export default {
             console.log('API response:', response.data);
           const leaderboard = response.data;
           this.leaderboard = leaderboard.map(entry => ({
-            userName: entry.user.userName,
+            userName: entry.user,
             weight: entry.weight,
             exercise: entry.exercise
           }));

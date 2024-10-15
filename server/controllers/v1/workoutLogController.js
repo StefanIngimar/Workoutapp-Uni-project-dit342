@@ -30,11 +30,6 @@ router.get('/api/v1/workoutlogs/:userID/:id', async function(req, res){
     var id = req.params.id;
     try {
         const workoutLog = await WorkoutLog.findById(id)
-        .populate({
-            path: 'session.exercises.exercise',
-            model: 'exercises'
-        })
-        .exec();
         res.status(200).json(workoutLog);}
     catch(err) {
         res.status(404).send(err)};});
@@ -102,12 +97,6 @@ router.post('/api/v1/workoutlogs', async function(req, res){
             }]
         });
         const savedWorkoutLog = await workoutLog.save();
-       /* const populatedWorkoutLog = await WorkoutLog.findById(savedWorkoutLog._id)
-        .populate({
-            path: 'session.exercises.exercise',
-            model: 'exercises'
-        })
-        .exec();*/
         res.status(200).send(savedWorkoutLog);}
     catch(err){
         console.error('Error creating workout log:', err);
