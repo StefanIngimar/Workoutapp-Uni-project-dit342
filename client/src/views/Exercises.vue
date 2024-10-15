@@ -1,54 +1,54 @@
 <template>
-    <div>
-        <label>
-            <h1>Exercises</h1>
-        </label>
-        <div class="col-md-12">
-            <div class="form">
-                <p>Exercise name:</p>
-                <p><input class="input" v-model="name" placeholder="Chest press" /></p>
-                <p>Weighted: <input class="input" type="checkbox" v-model="hasWeights" /></p>
-                <p>Bodypart:</p>
-                <p><input class="input" v-model="bodyPart" placeholder="Chest" /></p>
-                <p>Weight:</p>
-                <p><input class="input" type="number" v-model="weight" placeholder="100" /></p>
-                <p>Reps:</p>
-                <p><input class="input" type="number" v-model="reps" placeholder="2" /></p>
-                <p>Sets:</p>
-                <p><input class="input" type="number" v-model="sets" placeholder="2" /></p>
-                <b-button class="btn_message" variant="primary" v-on:click="postExercise()">Submit Exercise</b-button>
-            </div>
-        </div>
-
-        <div v-if="this.user.isAdmin">
-            <b-button class="btn_message" variant="danger" v-on:click="deleteAllExercises()">Delete All Exercises</b-button>
-        </div>
-
-        <div v-if="postMessage">
-            <p>Created/Last edited exercise: </p>
-            <exercise-item v-bind:exercise="postMessage" @exercise-deleted="handleExerciseDeleted"
-                @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated(postMessage._id)" />
-        </div>
-
-        <div>
-            <h2>Previous exercises:</h2>
-            <p>
-                {{ exerciseMessage }}
-            </p>
-        </div>
-
-        <div class="searchForm">
-            <b-form-input v-on:input="searchExercise" v-model="searchText" placeholder="Search"> </b-form-input>
-        </div>
-
-        <div class="exercise-list">
-            <div v-for="exercise in exercises" v-bind:key="exercise._id">
-                <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
-                    @delete-error="handleDeleteError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
-            </div>
-        </div>
-
+  <div>
+    <label>
+      <h1>Exercises</h1>
+    </label>
+    <div class="col-md-12">
+      <div class="form">
+        <p>Exercise name:</p>
+        <p><input class="input" v-model="name" placeholder="Chest press" /></p>
+        <p>Weighted: <input class="input" type="checkbox" v-model="hasWeights" /></p>
+        <p>Bodypart:</p>
+        <p><input class="input" v-model="bodyPart" placeholder="Chest" /></p>
+        <p>Weight:</p>
+        <p><input class="input" type="number" v-model="weight" placeholder="100" /></p>
+        <p>Reps:</p>
+        <p><input class="input" type="number" v-model="reps" placeholder="2" /></p>
+        <p>Sets:</p>
+        <p><input class="input" type="number" v-model="sets" placeholder="2" /></p>
+        <b-button class="btn_message" variant="primary" v-on:click="postExercise()">Submit Exercise</b-button>
+      </div>
     </div>
+
+    <div v-if="this.user.isAdmin">
+      <b-button class="btn_message" variant="danger" v-on:click="deleteAllExercises()">Delete All Exercises</b-button>
+    </div>
+
+    <div v-if="postMessage">
+      <p>Created/Last edited exercise: </p>
+      <exercise-item v-bind:exercise="postMessage" @exercise-deleted="handleExerciseDeleted" @delete-error="handleError"
+        @exercise-updated="handleExerciseUpdated(postMessage._id)" />
+    </div>
+
+    <div>
+      <h2>Previous exercises:</h2>
+      <p>
+        {{ exerciseMessage }}
+      </p>
+    </div>
+
+    <div class="searchForm">
+      <b-form-input v-on:input="searchExercise" v-model="searchText" placeholder="Search"> </b-form-input>
+    </div>
+
+    <div class="exercise-list">
+      <div v-for="exercise in exercises" v-bind:key="exercise._id">
+        <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted"
+          @error-detected="handleError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
+      </div>
+    </div>
+
+  </div>
 </template>
 
 <script>
@@ -119,7 +119,7 @@ export default {
         })
     },
 
-    handleDeleteError() {
+    handleError() {
       this.exerciseMessage = error
     },
     postExercise() {
@@ -142,11 +142,11 @@ export default {
               this.exercises = response.data
             })
             .catch((error) => {
-              this.exercises = error
+              this.exerciseMessage = error
             })
         })
         .catch((error) => {
-          this.postMessage = error
+          this.exerciseMessage = error
         })
     },
     searchExercise() {
@@ -164,7 +164,7 @@ export default {
           }
         })
         .catch((error) => {
-          this.exercises = error
+          this.exerciseMessage = error
         })
     },
     deleteAllExercises() {
@@ -190,7 +190,7 @@ export default {
         this.exercises = response.data
       })
       .catch((error) => {
-        this.exercises = error
+        this.exerciseMessage = error
       })
   },
   data() {
@@ -217,10 +217,10 @@ export default {
 
 <style scoped>
 .exercise-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
 }
 </style>

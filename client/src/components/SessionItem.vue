@@ -3,10 +3,13 @@
     <div class="session-container">
       <div v-if="isEditing">
         <div class="sub-form">
-          <p>Name:</p><p><input class="input" v-model="editSession.sessionName" /></p>
-          <p>Duration:</p><p><input class="input" type="number" v-model="editSession.duration" /></p>
+          <p>Name:</p>
+          <p><input class="input" v-model="editSession.sessionName" /></p>
+          <p>Duration:</p>
+          <p><input class="input" type="number" v-model="editSession.duration" /></p>
           <p>Completed: <input type="checkbox" v-model="editSession.isCompleted" /></p>
-          <p>Notes:</p><p><input class="input" v-model="editSession.notes" /></p>
+          <p>Notes:</p>
+          <p><input class="input" v-model="editSession.notes" /></p>
           <p>Exercises:
           <div v-for="exercise in session.exercises" v-bind:key="exercise._id">
             <exercise-item v-bind:exercise="exercise" @exercise-deleted="handleExerciseDeleted(exercise._id)"
@@ -17,12 +20,17 @@
 
         <div v-if="isAddingExercise">
           <div class="sub-form">
-            <p>Name:</p><p><input class="input" v-model="name" /></p>
-            <p>Bodypart:</p><p><input class="input" v-model="bodyPart" /></p>
+            <p>Name:</p>
+            <p><input class="input" v-model="name" /></p>
+            <p>Bodypart:</p>
+            <p><input class="input" v-model="bodyPart" /></p>
             <p>Weighted: <input type="checkbox" v-model="hasWeights" /></p>
-            <p>Weight:</p><p><input class="input" type="number" v-model="weight" /></p>
-            <p>Reps:</p><p><input class="input" type="number" v-model="reps" /></p>
-            <p>Sets:</p><p><input class="input" type="number" v-model="sets" /></p>
+            <p>Weight:</p>
+            <p><input class="input" type="number" v-model="weight" /></p>
+            <p>Reps:</p>
+            <p><input class="input" type="number" v-model="reps" /></p>
+            <p>Sets:</p>
+            <p><input class="input" type="number" v-model="sets" /></p>
           </div>
 
           <b-button class="btn_message" variant="success" v-on:click="addNewExercise">Submit</b-button>
@@ -98,6 +106,7 @@ export default {
           this.$emit('session-updated', response.data)
         })
         .catch((error) => {
+          this.$emit('error-detected', error);
           console.error('Error saving session:', error)
         })
     },
@@ -107,11 +116,12 @@ export default {
           this.$emit('session-deleted', response.data)
         })
         .catch((error) => {
+          this.$emit('error-detected', error);
           console.error('Error deleting session:', error)
         })
     },
     addNewExercise() {
-      const user = JSON.parse(localStorage.getItem('user'))
+      var user = JSON.parse(localStorage.getItem('user'));
 
       // POST request to add a new exercise to the daily session
       Api.post(`/v1/dailysessions/${this.session._id}/exercises`, {
@@ -125,16 +135,16 @@ export default {
         userID: user._id
       })
         .then((response) => {
-          console.log('Response data:', response.data)
-          Api.put(`/v1/workoutlogs/${response.data.session.workoutLogID}/dailysessions/${response.data.session._id}`)
-          this.isAddingExercise = false
-          this.$emit('session-updated', response.data)
+          console.log("Response data:", response.data);
+          Api.put(`/v1/workoutlogs/${response.data.session.workoutLogID}/dailysessions/${response.data.session._id}`);
+          this.isAddingExercise = false;
+          this.$emit('session-updated', response.data);
         })
 
-      // PUT request to update the workout log with the new session
         .catch((error) => {
-          console.error('Error adding exercise or updating workout log:', error)
-        })
+          this.$emit('error-detected', error);
+          console.error('Error adding exercise or updating workout log:', error);
+        });
     },
     toggleNewExercise() {
       this.isAddingExercise = !this.isAddingExercise
@@ -145,7 +155,7 @@ export default {
           this.updatedExercise = response.data
         })
         .then(() => {
-          Api.put(`/v1/dailysessions/${this.session._id}/exercises/${exID}`, this.updatedExercise)
+          Api.patch(`/v1/dailysessions/${this.session._id}/exercises/${exID}`, this.updatedExercise)
             .then(() => {
               Api.get(`/v1/dailysessions/${this.session._id}/exercises`)
                 .then((response) => {
