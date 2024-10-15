@@ -102,6 +102,7 @@ export default {
       userId: '',
       isAdmin: false,
       achievements: [],
+      achievementID: '',
       message: '',
       showCreateForm: false,
       newAchievement: {
@@ -152,9 +153,8 @@ export default {
     handleAchievementCompleted(achievementID) {
       Api.patch(`/v1/achievements${achievementID}`)
         .then((response) => {
-          const updatedAchievement = response.data
-          const index = this.achievements.findIndex((achievement) => achievement._id === achievementID)
-          this.achievements.splice(index, 1, updatedAchievement)
+          this.achievements = response.data
+          this.achievements = this.achievements.findIndex((achievement) => achievement._id === achievementID)
           this.message = 'Achievement completed!'
         })
         .catch((error) => {
@@ -178,7 +178,7 @@ export default {
     },
 
     getAllAchievements() {
-      Api.get(`/v1/achievements?userID=${this.userId}&isAdmin=${this.isAdmin}&isCompleted=false`)
+      Api.get(`/v1/achievements?userID=${this.userId}&isAdmin=${this.isAdmin}`)
         .then((response) => {
           this.achievements = response.data
         })
@@ -191,6 +191,7 @@ export default {
   mounted() {
     this.getUserInfo()
     this.getAllAchievements()
+    // this.handleAchievementCompleted()
   }
 
 }

@@ -12,9 +12,9 @@
       <h2>Your Completed Achievements</h2>
       <ul>
         <li v-for="achievement in completedAchievements" :key="achievement._id">
-          <h3>{{ achievement.achievementID.name }}</h3>
-          <p>{{ achievement.achievementID.description }}</p>
-          <p>Completed on: {{ formatDate(achievement.dateCompleted) }}</p>
+          <h3>{{ achievement.name }}</h3>
+          <p>{{ achievement.description }}</p>
+          <!-- <p>Completed on: {{ formatDate(achievement.dateCompleted) }}</p> -->
         </li>
       </ul>
     </div>
@@ -60,6 +60,7 @@ export default {
   },
   mounted() {
     this.getUserProfile()
+    this.getAllCompletedAchievements()
   },
   methods: {
     getUserProfile() {
@@ -86,9 +87,9 @@ export default {
         })
     },
     getAllCompletedAchievements() {
-      Api.get(`/v1/achievements?userID=${this.userId}&isAdmin=${this.isAdmin}&isCompleted=false`)
+      Api.get(`/v1/achievements/completed?userID=${this.userId}&isAdmin=${this.isAdmin}`)
         .then((response) => {
-          this.achievements = response.data
+          this.completedAchievements = response.data
         })
         .catch((error) => {
           this.message = error

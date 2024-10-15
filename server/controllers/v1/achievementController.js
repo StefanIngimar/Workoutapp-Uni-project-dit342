@@ -64,6 +64,23 @@ router.get('/api/v1/achievements', async function(req, res){
     }
 });
 
+// Return all achievements that are completed
+router.get('/api/v1/achievements/completed', async function(req, res) {
+    const userId = req.query.userID;
+    const isAdmin = req.query.isAdmin === 'true';
+    try {
+        if (isAdmin) {
+            const allCompletedAchievements = await Achievement.find({ isCompleted: true });
+            res.status(200).json(allCompletedAchievements);
+        } else {
+            const userCompletedAchievements = await Achievement.find({ userID: userId, isCompleted: true });
+            res.status(200).json(userCompletedAchievements);
+        }
+    } catch (err) {
+        res.status(404).send(err);
+    }
+});
+
 // Get a single achievement by ID
 router.get('/api/v1/achievements/:id', async function(req, res, next){
     try{
@@ -123,7 +140,7 @@ router.delete('/api/v1/achievements/:id', async function(req, res){
 });
 
 
-// Update a user achievement
+// Update an achievement
 router.patch('/api/v1/achievements/:achievementID', async function(req, res){
     try{
         const achievement = await Achievement.findById(req.params.achievementID);
@@ -148,13 +165,18 @@ router.patch('/api/v1/achievements/:achievementID', async function(req, res){
                 });
             });
         } else if (achievement.typeOfAchievement === 'attendanceMilestone'){
-            const workoutLog = await WorkoutLog.find({user : achievement.userID});
-            if (!workoutLog){
-                return res.status(404).json({message: "Workout log not found"});
+            const workoutLogs = await WorkoutLog.find({user : achievement.userID});
+            if (!workoutLogs){
+                return res.status(404).json({message: "No workout logs found"});
             }
+            //TODO: FIX ATTENADE ACHIEVEMENT
             let totalSessions = 0;
-            workoutLog.forEach(log => {
-                totalSessions += log.session.length;
+            workoutLogs.forEach(log => {
+                log.forEach(session => {
+                    if (session.user == achievement.userID){
+                        totalSessions++;
+                    }
+                });
             });
             if (totalSessions >= achievement.milestones.numOfTimesInGym){
                 achievement.isCompleted = true;
