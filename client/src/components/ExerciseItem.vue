@@ -62,6 +62,7 @@ export default {
           this.$emit('exercise-updated', response.data);
         })
         .catch((error) => {
+          this.$emit('error-detected', error);
           console.error('Error saving exercise:', error);
         });
     },
@@ -71,6 +72,7 @@ export default {
           this.$emit('exercise-deleted', response.data);
         })
         .catch((error) => {
+          this.$emit('error-detected', error);
           console.error('Error deleting exercise:', error);
         });
     }
@@ -104,9 +106,5 @@ export default {
 .exercise-container p {
   margin: 0;
   padding: 1px 0;
-}
-
-.h2 {
-  font-weight: bold;
 }
 </style>

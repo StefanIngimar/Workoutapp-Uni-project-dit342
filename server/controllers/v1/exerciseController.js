@@ -109,16 +109,15 @@ router.delete('/api/v1/exercises', async function (req, res) {
     }
 });
 
-
 // Posts a new exercise to the database.
-router.post('/api/v1/exercises', async function (req, res) { // TODO: Add error handling.
+router.post('/api/v1/exercises', async function (req, res) { 
     if (req.body.hasWeights) {
         var exercise = new Exercise({
             'name': req.body.name,
             'hasWeights': req.body.hasWeights,
             'weight': req.body.weight,
             'bodyPart': req.body.bodyPart,
-            'isCustom': req.body.isCustom, // By default (for users) should be true?
+            'isCustom': req.body.isCustom,
             'reps': req.body.reps,
             'sets': req.body.sets,
             'userID': req.body.userID
@@ -142,39 +141,6 @@ router.post('/api/v1/exercises', async function (req, res) { // TODO: Add error 
         res.status(500).send(err);
     }
 });
-
-// router.post('/api/v1/exercises', async function (req, res) { // TODO: Add error handling.
-//     if (req.body.hasWeights) {
-//         var exercise = new Exercise({
-//             'name': req.body.name,
-//             'hasWeights': req.body.hasWeights,
-//             'weight': req.body.weight,
-//             'bodyPart': req.body.bodyPart,
-//             'isCustom': req.body.isCustom, // By default (for users) should be true?
-//             'reps': req.body.reps,
-//             'sets': req.body.sets,
-//             'userID': req.body.userId
-//         });
-//     } else {
-//         var exercise = new Exercise({
-//             'name': req.body.name,
-//             'hasWeights': req.body.hasWeights,
-//             'bodyPart': req.body.bodyPart,
-//             'isCustom': req.body.isCustom,
-//             'reps': req.body.reps,
-//             'sets': req.body.sets,
-//             'userID': req.body.userId
-//         });
-//     }
-
-//     try {
-//         const savedExercise = await exercise.save();
-//         res.status(201).json(savedExercise);
-//     } catch (err) {
-//         res.status(500).send(err);
-//     }
-// });
-
 
 // Updates attributes of item by id.
 router.patch('/api/v1/exercises/:id', async function (req, res) {

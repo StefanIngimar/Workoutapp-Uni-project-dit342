@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var workoutLogSchema = new Schema({
+/*var workoutLogSchema = new Schema({
     title: { type: String, required: true },
     date: { type: Date, required: true },
     session: [{
@@ -13,6 +13,11 @@ var workoutLogSchema = new Schema({
         weight: { type: Number }
     }]
     }]
+});*/
+var workoutLogSchema = new Schema({
+    title: { type: String, required: true },
+    date: { type: Date, required: true },
+    session: []
 });
 
 module.exports = mongoose.model('WorkoutLog', workoutLogSchema);

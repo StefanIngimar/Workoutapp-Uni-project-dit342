@@ -9,7 +9,8 @@ var dailySessionSchema = new Schema({
     duration    : {type: Number}, 
     isCompleted : {type: Boolean},
     notes       : {type: String}, 
-    exercises   : [] 
+    exercises   : [],
+    workoutLogID: {type: String}
 });
 
 module.exports = mongoose.model('dailySessions', dailySessionSchema);

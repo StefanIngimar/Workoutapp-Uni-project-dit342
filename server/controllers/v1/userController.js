@@ -171,6 +171,10 @@ router.post('/api/v1/users/login', async function(req, res){
             return res.status(400).json({error: 'Invalid password'});
         }
 
+        // if (password !== user.password){
+        //     return res.status(400).json({error: 'Invalid password'});
+        // }
+
         // const token = jwt.sign({userId: user._id, userName: user.userName}, JWT_SECRET);
         const responseUser = {
             _id: user._id,

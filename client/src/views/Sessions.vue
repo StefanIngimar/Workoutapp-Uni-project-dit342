@@ -3,18 +3,24 @@
     <h1> Sessions </h1>
 
     <div class="form">
-      <p>Name:</p><p><input class="input" v-model="sessionName" /></p>
-      <p>Duration:</p><p><input class="input" type="number" v-model="duration" /></p>
+      <p>Name:</p>
+      <p><input class="input" v-model="sessionName" /></p>
+      <p>Duration:</p>
+      <p><input class="input" type="number" v-model="duration" /></p>
       <p>Completed: <input type="checkbox" v-model="isCompleted" /></p>
-      <p>Notes:</p><p><input class="input" v-model="notes" /></p>
+      <p>Notes:</p>
+      <p><input class="input" v-model="notes" /></p>
 
       <b-button class="btn_message" variant="primary" v-on:click="postSession()">Submit session</b-button>
     </div>
 
     <h2>Previous sessions:</h2>
+    <p>
+      {{ errorMessage }}
+    </p>
     <div v-if="sessionMessage">
       <session-item v-bind:session="sessionMessage" @session-deleted="handleSessionDeleted"
-        @delete-error="handleDeleteError" @session-updated="handleSessionUpdated(sessionMessage._id)" />
+        @error-detected="handleError" @session-updated="handleSessionUpdated(sessionMessage._id)" />
     </div>
 
     <div class="searchForm">
@@ -23,7 +29,7 @@
 
     <div class="sessions-list">
       <div v-for="session in sessions" v-bind:key="session._id">
-        <session-item v-bind:session="session" @session-deleted="handleSessionDeleted" @delete-error="handleDeleteError"
+        <session-item v-bind:session="session" @session-deleted="handleSessionDeleted" @error-detected="handleError"
           @session-updated="handleSessionUpdated" />
       </div>
     </div>
@@ -35,6 +41,7 @@
 <script>
 import { Api } from '@/Api'
 import SessionItem from '@/components/SessionItem.vue'
+import { EventBus } from '@/Eventbus'
 
 export default {
   name: 'sessions',
@@ -46,19 +53,9 @@ export default {
     Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
       .then((response) => {
         this.sessions = response.data
-        // Might not be needed
-        // this.sessions.forEach(session => {
-        //   Api.get(`/v1/dailysessions/${session._id}/exercises`)
-        //     .then((response) => {
-        //       session.exercises = response.data
-        //     })
-        //     .catch((error) => {
-        //       session.exercises = error
-        //     })
-        // });
       })
       .catch((error) => {
-        this.sessions = error
+        this.errorMessage = error
       })
   },
   methods: {
@@ -75,10 +72,14 @@ export default {
               if (this.sessionMessage) {
                 this.sessionMessage = response.data
               }
+              // if (this.isCompleted) {
+              //   console.log('session completed')
+              //   EventBus.emit('session-completed')
+              // }
             })
         })
         .catch((error) => {
-          this.exerciseMessage = error
+          this.errorMessage = error
         })
     },
 
@@ -89,11 +90,11 @@ export default {
           this.sessionMessage = ''
         })
         .catch((error) => {
-          this.sessionMessage = error
+          this.errorMessage = error
         })
     },
-    handleDeleteError() {
-      this.sessionMessage = error
+    handleError() {
+      this.errorMessage = error
     },
     postSession() {
       Api.post('/v1/dailysessions',
@@ -111,13 +112,16 @@ export default {
           Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
             .then((response) => {
               this.sessions = response.data
+              // if (this.isCompleted) {
+              //   EventBus.emit('session-completed')
+              // }
             })
             .catch((error) => {
-              this.sessionsMessage = error
+              this.errorMessage = error
             })
         })
         .catch((error) => {
-          this.sessionMessage = error
+          this.errorMessage = error
         })
     },
     searchSession() {
@@ -130,12 +134,12 @@ export default {
                 this.sessions = response.data
               })
               .catch((error) => {
-                this.sessions = error
+                this.errorMessage = error
               })
           }
         })
         .catch((error) => {
-          this.sessions = error
+          this.errorMessage = error
         })
     }
   },
@@ -143,7 +147,7 @@ export default {
     return {
       sessions: '',
       message: 'none',
-      postMessage: '',
+      errorMessage: '',
       sessionMessage: '',
       userID: '',
       sessionName: '',

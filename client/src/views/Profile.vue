@@ -8,8 +8,17 @@
     <!-- <user-fetched /> -->
     <!-- Handle the updateing of user profile -->
     <edit-profile :user="user" @profile-updated="handleProfileUpdated" />
-    <!-- Diplsay numer of times attending the gym-->
-     <!-- <gym-attendance :numOfTimesInGym="numOfTimesInGym" /> -->
+    <div class="completedAchievements">
+      <h2>Your Completed Achievements</h2>
+      <ul>
+        <li v-for="achievement in completedAchievements" :key="achievement._id">
+          <h3>{{ achievement.name }}</h3>
+          <p>{{ achievement.description }}</p>
+          <!-- <p>Completed on: {{ formatDate(achievement.dateCompleted) }}</p> -->
+        </li>
+      </ul>
+    </div>
+
     <!-- Display the user's achievements -->
     <!-- <achievement-list :userAchievements="userId" /> -->
      <b-button class="logout_btn" variant="primary" @click="logout">Logout</b-button>
@@ -38,8 +47,10 @@ export default {
   },
   data() {
     return {
-      user: {},
-      userAchievements: [],
+      user: '',
+      userId: '',
+      isAdmin: false,
+      completedAchievements: [],
       numOfTimesInGym: 0,
       message: '',
       nonCompletedAchievements: []
@@ -53,16 +64,22 @@ export default {
   methods: {
     getUserProfile() {
       this.user = JSON.parse(localStorage.getItem('user'))
+<<<<<<< HEAD
       if (!this.user) {
         this.$router.push('/')
       }
+=======
+      this.userId = this.user._id
+      this.isAdmin = this.user.isAdmin
+>>>>>>> dc120048311d47159c683bb7272b6baa09815234
     },
     handleProfileUpdated(updatedUser) {
       this.user = updatedUser
+      localStorage.setItem('user', JSON.stringify(updatedUser))
     },
     logout() {
       localStorage.removeItem('user')
-      localStorage.removeItem('token')
+      // localStorage.removeItem('token')
       this.$router.push('/')
     },
     deletAllUsers() {
@@ -73,6 +90,18 @@ export default {
         .catch(error => {
           this.message = error.response ? error.response.data.message : error.message
         })
+<<<<<<< HEAD
+=======
+    },
+    getAllCompletedAchievements() {
+      Api.get(`/v1/achievements/completed?userID=${this.userId}&isAdmin=${this.isAdmin}`)
+        .then((response) => {
+          this.completedAchievements = response.data
+        })
+        .catch((error) => {
+          this.message = error
+        })
+>>>>>>> dc120048311d47159c683bb7272b6baa09815234
     }
     // getAllCompletedAchievements() {
     //   const userId = this.user._id
@@ -100,8 +129,6 @@ export default {
 
 </script>
 
-<!--Add a way where the user can display
-the current goal their are working towards and in that way they can connect with other users-->
 <style>
 .user-creation {
   display: flex;
@@ -110,6 +137,15 @@ the current goal their are working towards and in that way they can connect with
   margin-top: 20px;
   background-color: black;
 }
+
+.completedAchievements {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  background-color: black;
+}
+
 .error {
   color: red;
 }
