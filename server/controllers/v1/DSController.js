@@ -195,7 +195,7 @@ router.patch('/api/v1/dailysessions/:sessionID/exercises', async function (req, 
 });
 
 // Adds an updates an exercise by id to a session by id.
-router.put('/api/v1/dailysessions/:sessionID/exercises/:exerciseID', async function (req, res) {
+router.patch('/api/v1/dailysessions/:sessionID/exercises/:exerciseID', async function (req, res) {
     var exerciseID = req.params.exerciseID;
     var sessionID = req.params.sessionID;
 

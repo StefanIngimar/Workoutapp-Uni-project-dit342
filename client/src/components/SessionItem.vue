@@ -157,7 +157,7 @@ export default {
           this.updatedExercise = response.data
         })
         .then(() => {
-          Api.put(`/v1/dailysessions/${this.session._id}/exercises/${exID}`, this.updatedExercise)
+          Api.patch(`/v1/dailysessions/${this.session._id}/exercises/${exID}`, this.updatedExercise)
             .then(() => {
               Api.get(`/v1/dailysessions/${this.session._id}/exercises`)
                 .then((response) => {
