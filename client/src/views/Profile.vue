@@ -19,6 +19,8 @@
       </ul>
     </div>
 
+    <!-- Diplsay numer of times attending the gym-->
+     <!-- <gym-attendance :numOfTimesInGym="numOfTimesInGym" /> -->
     <!-- Display the user's achievements -->
     <!-- <achievement-list :userAchievements="userId" /> -->
      <b-button class="logout_btn" variant="primary" @click="logout">Logout</b-button>
@@ -64,14 +66,8 @@ export default {
   methods: {
     getUserProfile() {
       this.user = JSON.parse(localStorage.getItem('user'))
-<<<<<<< HEAD
-      if (!this.user) {
-        this.$router.push('/')
-      }
-=======
       this.userId = this.user._id
       this.isAdmin = this.user.isAdmin
->>>>>>> dc120048311d47159c683bb7272b6baa09815234
     },
     handleProfileUpdated(updatedUser) {
       this.user = updatedUser
@@ -90,8 +86,6 @@ export default {
         .catch(error => {
           this.message = error.response ? error.response.data.message : error.message
         })
-<<<<<<< HEAD
-=======
     },
     getAllCompletedAchievements() {
       Api.get(`/v1/achievements/completed?userID=${this.userId}&isAdmin=${this.isAdmin}`)
@@ -101,7 +95,6 @@ export default {
         .catch((error) => {
           this.message = error
         })
->>>>>>> dc120048311d47159c683bb7272b6baa09815234
     }
     // getAllCompletedAchievements() {
     //   const userId = this.user._id
