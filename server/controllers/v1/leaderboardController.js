@@ -63,6 +63,41 @@ router.get('/api/v1/leaderboard', async function(req, res) {
     }
 });
 
+router.get('/api/v1/searchLeaderboard', async function(req, res) {
+    try {
+        const { exercise } = req.query;
+        if (!exercise) {
+            return res.status(400).json({ error: 'Exercise name is required' });
+        }
+        // find leaderboard entries by exercise name (case-insensitive ofc)
+        const leaderboard = await WorkoutLog.find({ 'session.exercises.name': { $regex: exercise, $options: 'i' } });
+        if (leaderboard.length === 0) {
+            return res.status(200).json([]); // return empty if no results are found
+        }
+        // create a new leaderboard array from the filtered workout logs
+        const leaderboardArray = [];
+        for (const log of leaderboard) {
+            for (const session of log.session) {
+                for (const exerciseEntry of session.exercises) {
+                    if (exerciseEntry.name.toLowerCase().includes(exercise.toLowerCase())) {
+                        leaderboardArray.push({
+                            userName: session.userName,
+                            weight: exerciseEntry.weight,
+                            exercise: exerciseEntry.name
+                        });
+                    }
+                }
+            }
+        }
+        // sort the list again by weight
+        leaderboardArray.sort((a, b) => b.weight - a.weight);
+        res.status(200).json(leaderboardArray);
+    } catch (err) {
+        console.error('Error fetching leaderboard:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 router.get('/api/v1/leaderboard/:id', async function(req, res){
     var id = req.params.id;
     try {
@@ -91,7 +126,7 @@ router.post("/api/v1/leaderboard", async function (req, res) {
         });
     }
 
-    // Create a new leaderboard entry with the exercise
+    // create a new leaderboard entry with the exercise
     var leaderboard = new Leaderboard({
       user: user,
       userName: userName,
@@ -99,7 +134,6 @@ router.post("/api/v1/leaderboard", async function (req, res) {
       exercise: exercise,
     });
 
-    // Save the leaderboard entry
     const savedLeaderboard = await leaderboard.save();
 
     res.status(200).json(savedLeaderboard);
@@ -141,7 +175,6 @@ router.delete('/api/v1/leaderboard/:userid', async function(req, res) {
             res.status(500).send(err);}});
 
 router.delete('/api/v1/leaderboard', async function(req, res){
-    //TODO add admin check after merge
     try{
         const leaderboard = await Leaderboard.deleteMany({});
         res.status(204).send({leaderboard, message: "All leaderboard entries successfully deleted"});}

@@ -1,6 +1,9 @@
 <template>
   <div>
     <h1 class="mb-4 text-center">Leaderboard</h1>
+    <div class="searchForm mb-4">
+      <b-form-input v-on:input="filterByExercise" v-model="searchText" placeholder="Filter by exercise"></b-form-input>
+    </div>
     <div class="row">
       <div class="col-12 col-md-4" v-for="(entry, index) in leaderboard" :key="entry.id">
         <div class="card mb-3">
@@ -28,30 +31,48 @@ export default {
 
   data() {
       return {
-          leaderboard: []
+          leaderboard: [],
+          searchText: '',
+          filteredLeaderboard: []
       }
   },
 
   methods: {
-  async fetchLeaderboard(){
-      try{
-          const response = await axios.get('/api/v1/leaderboard');
+    fetchLeaderboard() {
+      axios.get('/api/v1/leaderboard')
+        .then((response) => {
+            console.log('API response:', response.data);
           const leaderboard = response.data;
-          console.log('Fetched leaderboard: ', leaderboard);
+          this.leaderboard = leaderboard.map(entry => ({
+            userName: entry.user.userName,
+            weight: entry.weight,
+            exercise: entry.exercise
+          }));
+          this.filteredLeaderboard = this.leaderboard;
+        })
+        .catch((error) => {
+          console.error('Error fetching leaderboard:', error);
+        });
+    },
 
-          if(Array.isArray(leaderboard) && leaderboard.length > 0){
-              this.leaderboard = leaderboard.map(entry => ({
-                      userName: entry.user,
-                      weight: entry.weight,
-                      exercise: entry.exercise
-              }));
-          } else {
-              console.error('Invalid data format');
-          }
-      } catch (error){
-          console.error('Error fetching leaderboard', error);
+  filterByExercise(){
+    if (this.searchText.trim() === '') {
+        this.fetchLeaderboard(); // reset to full leaderboard if search is empty or user wants to clear search
+      } else {
+        axios.get(`/api/v1/searchLeaderboard?exercise=${this.searchText}`)
+          .then((response) => {
+            if (response.data.message) {
+              // handle cases where no entries are found
+              this.leaderboard = [];
+            } else {
+              this.leaderboard = response.data;
+            }
+          })
+          .catch((error) => {
+            console.error('Error searching leaderboard:', error);
+          });
       }
-  }
+    }
 },
   mounted() {
       this.fetchLeaderboard();
