@@ -90,6 +90,7 @@
 <script>
 // import AchievementList from '@/components/AchievementList.vue'
 import { Api } from '@/Api'
+import { EventBus } from '@/Eventbus'
 
 export default {
   name: 'Achievements',
@@ -151,15 +152,23 @@ export default {
         })
     },
     handleAchievementCompleted(achievementID) {
-      Api.patch(`/v1/achievements${achievementID}`)
-        .then((response) => {
-          this.achievements = response.data
-          this.achievements = this.achievements.findIndex((achievement) => achievement._id === achievementID)
+      Api.patch(`/v1/achievements/${achievementID}`)
+        .then(() => {
+          this.achievements = this.achievements.filter((achievement) => achievement._id !== achievementID)
           this.message = 'Achievement completed!'
         })
         .catch((error) => {
           this.message = error
         })
+    },
+    handleSessionCompleted() {
+      console.log('event received')
+      this.updateAllAchievements()
+    },
+    updateAllAchievements() {
+      this.achievements.forEach((achievement) => {
+        this.handleAchievementCompleted(achievement._id)
+      })
     },
     deleteAchievement(achievementID) {
       Api.delete(`/v1/achievements/${achievementID}`)
@@ -191,9 +200,11 @@ export default {
   mounted() {
     this.getUserInfo()
     this.getAllAchievements()
-    // this.handleAchievementCompleted()
+    EventBus.on('session-completed', this.handleSessionCompleted)
+  },
+  beforeDestroy() {
+    EventBus.off('session-completed', this.handleSessionCompleted)
   }
-
 }
 </script>
 

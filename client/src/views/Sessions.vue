@@ -41,6 +41,7 @@
 <script>
 import { Api } from '@/Api'
 import SessionItem from '@/components/SessionItem.vue'
+import { EventBus } from '@/Eventbus'
 
 export default {
   name: 'sessions',
@@ -71,6 +72,10 @@ export default {
               if (this.sessionMessage) {
                 this.sessionMessage = response.data
               }
+              // if (this.isCompleted) {
+              //   console.log('session completed')
+              //   EventBus.emit('session-completed')
+              // }
             })
         })
         .catch((error) => {
@@ -107,6 +112,9 @@ export default {
           Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
             .then((response) => {
               this.sessions = response.data
+              // if (this.isCompleted) {
+              //   EventBus.emit('session-completed')
+              // }
             })
             .catch((error) => {
               this.errorMessage = error
