@@ -32,11 +32,7 @@
 </template>
 
 <script>
-// import Authentication from '@/Authentication.vue'
-// import UserInfo from '@/components/UserInfo.vue'
 import EditProfile from '@/components/EditProfile.vue'
-// import GymAttendance from '@/components/GymAttendance.vue'
-// import AchievementList from '@/components/AchievementList.vue'
 import { Api } from '@/Api'
 
 export default {
@@ -60,7 +56,7 @@ export default {
   },
   mounted() {
     this.getUserProfile()
-    // this.getAllCompletedAchievements()
+    this.getAllCompletedAchievements()
     // this.getAllNonCompletedAchievements()
   },
   methods: {
@@ -96,26 +92,6 @@ export default {
           this.message = error
         })
     }
-    // getAllCompletedAchievements() {
-    //   const userId = this.user._id
-    //   Api.get(`/v1/users/${userId}/userAchievements`)
-    //     .then((response) => {
-    //       this.userAchievements = response.data
-    //       this.filterAchievements()
-    //     })
-    //     .catch((error) => {
-    //       this.message = error.response ? error.response.data.message : error.message
-    //     })
-    // },
-    // getAllNonCompletedAchievements() {
-    //   Api.get(`/v1/users/${this.user._id}/userAchievements`)
-    //     .then((response) => {
-    //       this.userAchievements = response.data
-    //     })
-    //     .catch((error) => {
-    //       this.message = error.response ? error.response.data.message : error.message
-    //     })
-    // }
 
   }
 }

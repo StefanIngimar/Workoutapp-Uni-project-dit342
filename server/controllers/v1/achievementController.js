@@ -166,23 +166,6 @@ router.patch('/api/v1/achievements/:achievementID', async function(req, res){
                     }
                 });
             });
-        } else if (achievement.typeOfAchievement === 'attendanceMilestone'){
-            const workoutLogs = await WorkoutLog.find({user : achievement.userID});
-            if (!workoutLogs){
-                return res.status(404).json({message: "No workout logs found"});
-            }
-            //TODO: FIX ATTENADE ACHIEVEMENT
-            let totalSessions = 0;
-            workoutLogs.forEach(log => {
-                log.forEach(session => {
-                    if (session.user == achievement.userID){
-                        totalSessions++;
-                    }
-                });
-            });
-            if (totalSessions >= achievement.milestones.numOfTimesInGym){
-                achievement.isCompleted = true;
-            }
         }
         if (achievement.isCompleted === true){
             achievement.dateCompleted = new Date();

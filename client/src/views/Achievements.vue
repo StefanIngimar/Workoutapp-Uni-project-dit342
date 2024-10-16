@@ -21,7 +21,6 @@
           <label>Type:</label>
           <select v-model="newAchievement.typeOfAchievement">
             <option value="weightLiftedMilestone">Weight Lifted Milestone</option>
-            <option value="attendanceMilestone">Attendance Milestone</option>
             <option value="repetitionMilestone">Repetition Milestone</option>
           </select>
         </p>
@@ -34,12 +33,6 @@
           <p>
             <label>Weight:</label>
             <input type="number" v-model="newAchievement.milestones.weight" required />
-          </p>
-        </div>
-        <div v-else-if="newAchievement.typeOfAchievement === 'attendanceMilestone'">
-          <p>
-            <label>Number of Times in Gym:</label>
-            <input type="number" v-model="newAchievement.milestones.numOfTimesInGym" required />
           </p>
         </div>
         <div v-else-if="newAchievement.typeOfAchievement === 'repetitionMilestone'">
