@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="user">
     <h1 class="mb-4 text-center">Leaderboard</h1>
     <div class="searchForm mb-4">
         <!-- search bar to filter exercises -->
@@ -24,6 +24,9 @@
       </div>
     </div>
   </div>
+    <div v-else>
+    User not signed in.
+  </div>
 </template>
 
 <script>
@@ -36,11 +39,20 @@ export default {
       return {
           leaderboard: [],
           searchText: '',
-          filteredLeaderboard: []
+          filteredLeaderboard: [],
+          user: null
       }
   },
 
   methods: {
+    getUserInfo() {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        this.user = JSON.parse(storedUser);
+      } else {
+        console.log('no user signed in')
+      }
+    },
     fetchLeaderboard() {
       axios.get('/api/v1/leaderboard')
         .then((response) => {
@@ -78,7 +90,10 @@ export default {
     }
 },
   mounted() {
+    this.getUserInfo()
+    if(this.user) {
       this.fetchLeaderboard();
+    }
   }
 }
 </script>

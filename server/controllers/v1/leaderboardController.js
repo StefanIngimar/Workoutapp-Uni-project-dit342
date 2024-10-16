@@ -78,10 +78,15 @@ router.get('/api/v1/searchLeaderboard', async function(req, res) {
         const leaderboardArray = [];
         for (const log of leaderboard) {
             for (const session of log.session) {
+                const user = await User.findById(session.userID).select('userName');
                 for (const exerciseEntry of session.exercises) {
+                    if (!exerciseEntry.name || !exerciseEntry.weight) {
+                        console.warn(`Skipping invalid exercise entry in log ${log._id}`);
+                        continue;
+                    }
                     if (exerciseEntry.name.toLowerCase().includes(exercise.toLowerCase())) {
                         leaderboardArray.push({
-                            userName: session.userName,
+                            userName: user ? user.userName : 'Unknown User',
                             weight: exerciseEntry.weight,
                             exercise: exerciseEntry.name
                         });
@@ -92,6 +97,7 @@ router.get('/api/v1/searchLeaderboard', async function(req, res) {
         // sort the list again by weight
         leaderboardArray.sort((a, b) => b.weight - a.weight);
         res.status(200).json(leaderboardArray);
+        console.log('filtered leaderboard:', leaderboardArray);
     } catch (err) {
         console.error('Error fetching leaderboard:', err);
         res.status(500).json({ error: 'Server error' });

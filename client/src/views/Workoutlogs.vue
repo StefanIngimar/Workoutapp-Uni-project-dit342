@@ -133,8 +133,11 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div v-if="this.user">
     <FullCalendar :options="calendarOptions" />
     <ModalsContainer />
+  </div>
+  <div v-else>
+    User not signed in.
   </div>
 </template>
