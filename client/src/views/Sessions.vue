@@ -30,7 +30,7 @@
     <div class="sessions-list">
       <div v-for="session in sessions" v-bind:key="session._id">
         <session-item v-bind:session="session" @session-deleted="handleSessionDeleted" @error-detected="handleError"
-          @session-updated="handleSessionUpdated" />
+          @session-updated="handleSessionUpdated(session._id)" />
       </div>
     </div>
 
@@ -66,12 +66,15 @@ export default {
       Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           this.sessions = response.data
-          Api.get(`/v1/dailysessions/${sessionID}`)
-            .then((response) => {
-              if (this.sessionMessage) {
+          if (this.sessionMessage) {
+            Api.get(`/v1/dailysessions/${sessionID}`)
+              .then((response) => {
                 this.sessionMessage = response.data
-              }
-            })
+              })
+              .catch((error) => {
+                this.errorMessage = error
+              })
+          }
         })
         .catch((error) => {
           this.errorMessage = error
