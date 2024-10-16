@@ -21,7 +21,7 @@ router.get('/api/v1/exercises', async function (req, res) {
     }
 });
 
-//TODO: Might need this for all get
+// Returns all exercises.
 router.get('/api/v1/exercises', async function (req, res) {
     const userId = req.query.userID;
     const isAdmin = req.query.isAdmin === 'true';
