@@ -148,7 +148,7 @@ router.patch('/api/v1/achievements/:achievementID', async function(req, res){
             return res.status(404).json({message: "Achievement not found"});
         }
         if (achievement.typeOfAchievement === 'weightLiftedMilestone' || achievement.typeOfAchievement === 'repetitionMilestone'){
-            const dailySession = await DailySession.find({userID : achievement.userID});
+            const dailySession = await DailySession.find({});
             if (!dailySession){
                 return res.status(404).json({message: "Daily session not found"});
             }
@@ -156,9 +156,11 @@ router.patch('/api/v1/achievements/:achievementID', async function(req, res){
                 session.exercises.forEach(exercise => {
                     if (exercise.name === achievement.exercisename && session.isCompleted === true){
                         if(achievement.typeOfAchievement === 'weightLiftedMilestone' && exercise.weight >= achievement.milestones.weight){
+                            // achievementCopy = await Achievement.findByIdAndUpdate(req.params.achievementID, {$set: {isCompleted: true}}, {new: true});
                             achievement.isCompleted = true;
                         }
                         if (achievement.typeOfAchievement === 'repetitionMilestone' && exercise.reps >= achievement.milestones.reps){
+                            // achievementCopy = await Achievement.findByIdAndUpdate(req.params.achievementID, {$set: {isCompleted: true}}, {new: true});
                             achievement.isCompleted = true;
                         }
                     }

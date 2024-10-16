@@ -29,7 +29,7 @@
         <div v-if="newAchievement.typeOfAchievement === 'weightLiftedMilestone'">
           <p>
             <label>Exercise:</label>
-            <input v-model="newAchievement.milestones.exercise" required />
+            <input v-model="newAchievement.exerciseName" required />
           </p>
           <p>
             <label>Weight:</label>
@@ -45,7 +45,7 @@
         <div v-else-if="newAchievement.typeOfAchievement === 'repetitionMilestone'">
           <p>
             <label>Exercise:</label>
-            <input v-model="newAchievement.milestones.exercise" required />
+            <input v-model="newAchievement.exerciseName" required />
           </p>
           <p>
             <label>Reps:</label>
@@ -61,10 +61,7 @@
       <h2>Your Achievements</h2>
       <ul>
         <li
-          v-for="achievement in achievements"
-          :key="achievement._id"
-          :class="{ completed: achievement.isCompleted }"
-        >
+          v-for="achievement in achievements" :key="achievement._id" :class="{ completed: achievement.isCompleted }">
           <h3>{{ achievement.name }}</h3>
           <p>{{ achievement.description }}</p>
           <p>Status:
@@ -83,6 +80,7 @@
     <!-- <div v-if="isAdmin">
         <button @click="deleteAllAchievement(achievement._id)">Delete All achievements</button>
     </div> -->
+    <sessions @session-completed="handleSessionCompleted"></sessions>
     <div v-if="message" class="error">{{ message }}</div>
   </div>
 </template>
@@ -108,6 +106,7 @@ export default {
       showCreateForm: false,
       newAchievement: {
         name: '',
+        exerciseName: '',
         description: '',
         typeOfAchievement: 'weightLiftedMilestone',
         milestones: {}
@@ -131,6 +130,7 @@ export default {
       const achievementData = {
         userID: this.userId,
         name: this.newAchievement.name,
+        exercisename: this.newAchievement.exerciseName,
         description: this.newAchievement.description,
         typeOfAchievement: this.newAchievement.typeOfAchievement,
         milestones: this.newAchievement.milestones,
@@ -153,9 +153,17 @@ export default {
     },
     handleAchievementCompleted(achievementID) {
       Api.patch(`/v1/achievements/${achievementID}`)
-        .then(() => {
-          this.achievements = this.achievements.filter((achievement) => achievement._id !== achievementID)
-          this.message = 'Achievement completed!'
+        .then((response) => {
+          Api.get(`/v1/achievements?userID=${this.userId}&isAdmin=${this.isAdmin}`)
+            .then((response) => {
+              this.achievements = response.data
+            })
+            .catch((error) => {
+              this.message = error
+            })
+
+          // this.achievements = this.achievements.filter((achievement) => achievement._id !== achievementID)
+          // this.message = 'Achievement completed!'
         })
         .catch((error) => {
           this.message = error
@@ -166,6 +174,7 @@ export default {
       this.updateAllAchievements()
     },
     updateAllAchievements() {
+      console.log('updating all achievements')
       this.achievements.forEach((achievement) => {
         this.handleAchievementCompleted(achievement._id)
       })
@@ -201,10 +210,10 @@ export default {
     this.getUserInfo()
     this.getAllAchievements()
     EventBus.on('session-completed', this.handleSessionCompleted)
-  },
-  beforeDestroy() {
-    EventBus.off('session-completed', this.handleSessionCompleted)
   }
+  // beforeDestroy() {
+  //   EventBus.off('session-completed', this.handleSessionCompleted)
+  // }
 }
 </script>
 

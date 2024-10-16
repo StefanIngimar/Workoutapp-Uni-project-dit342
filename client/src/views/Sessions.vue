@@ -30,7 +30,7 @@
     <div class="sessions-list">
       <div v-for="session in sessions" v-bind:key="session._id">
         <session-item v-bind:session="session" @session-deleted="handleSessionDeleted" @error-detected="handleError"
-          @session-updated="handleSessionUpdated" />
+          @session-updated="handleSessionUpdated(session._id)" />
       </div>
     </div>
 
@@ -41,7 +41,6 @@
 <script>
 import { Api } from '@/Api'
 import SessionItem from '@/components/SessionItem.vue'
-import { EventBus } from '@/Eventbus'
 
 export default {
   name: 'sessions',
@@ -67,16 +66,15 @@ export default {
       Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           this.sessions = response.data
-          Api.get(`/v1/dailysessions/${sessionID}`)
-            .then((response) => {
-              if (this.sessionMessage) {
+          if (this.sessionMessage) {
+            Api.get(`/v1/dailysessions/${sessionID}`)
+              .then((response) => {
                 this.sessionMessage = response.data
-              }
-              // if (this.isCompleted) {
-              //   console.log('session completed')
-              //   EventBus.emit('session-completed')
-              // }
-            })
+              })
+              .catch((error) => {
+                this.errorMessage = error
+              })
+          }
         })
         .catch((error) => {
           this.errorMessage = error
@@ -112,9 +110,6 @@ export default {
           Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
             .then((response) => {
               this.sessions = response.data
-              // if (this.isCompleted) {
-              //   EventBus.emit('session-completed')
-              // }
             })
             .catch((error) => {
               this.errorMessage = error

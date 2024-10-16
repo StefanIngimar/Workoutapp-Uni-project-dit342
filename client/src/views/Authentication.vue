@@ -1,49 +1,102 @@
 <template>
-  <div class="authentication-container">
-    <div v-if="isLoginMode" class="login-form">
-      <h1>Log in</h1>
-      <p>Username:
-        <input v-model="userName" placeholder="Enter username to login" />
-      </p>
-      <p>Password:
-        <input type="password" v-model="password" placeholder="Enter password" />
-      </p>
-      <b-button class="login_btn" variant="primary" @click="handleLogin">Log In</b-button>
-      <p>
-        Don't have an account?
-        <a href="#" @click.prevent="toggleSignup">Sign Up</a>
-      </p>
-    </div>
-    <div v-else class="signup-form">
-      <h1>Sign up</h1>
-      <p>Username:
-        <input v-model="userName" placeholder="Enter username to sign up" />
-      </p>
-      <p>Email:
-        <input v-model="email" placeholder="Enter email" />
-      </p>
-      <p>Password:
-        <input type="password" v-model="password" placeholder="Enter password" />
-      </p>
-      <p>Confirm Password:
-        <input type="password" v-model="confirmPassword" placeholder="Confirm password" />
-
-      </p>
-      <p>Admin
-        <input type="checkbox" v-model="isAdmin" />
-      </p>
-      <b-button class="signup_btn" variant="primary" @click="handleSignup">Sign Up</b-button>
-      <p>
-        Already have an account?
-        <a href="#" @click.prevent="toggleLogin">Log In</a>
-      </p>
+  <div class="authentication-container container">
+    <div class="row justify-content-center">
+      <div v-if="isLoginMode" class="login-form col-12 col-md-8 col-lg-6">
+        <h1>Log in</h1>
+        <div class="form-group">
+          <label>Username:</label>
+          <input
+            v-model="userName"
+            placeholder="Enter username to login"
+            class="form-control"
+          />
+        </div>
+        <div class="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            v-model="password"
+            placeholder="Enter password"
+            class="form-control"
+          />
+        </div>
+        <b-button
+          id="login-button"
+          class="login_btn"
+          variant="primary"
+          @click="handleLogin"
+        >
+          Log In
+        </b-button>
+        <p>
+          Don't have an account?
+          <a href="#" @click.prevent="toggleSignup">Sign Up</a>
+        </p>
+      </div>
+      <div v-else class="signup-form col-12 col-md-8 col-lg-6">
+        <h1>Sign up</h1>
+        <div class="form-group">
+          <label>Username:</label>
+          <input
+            v-model="userName"
+            placeholder="Enter username to sign up"
+            class="form-control"
+          />
+        </div>
+        <div class="form-group">
+          <label>Email:</label>
+          <input
+            v-model="email"
+            placeholder="Enter email"
+            class="form-control"
+          />
+        </div>
+        <div class="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            v-model="password"
+            placeholder="Enter password"
+            class="form-control"
+          />
+        </div>
+        <div class="form-group">
+          <label>Confirm Password:</label>
+          <input
+            type="password"
+            v-model="confirmPassword"
+            placeholder="Confirm password"
+            class="form-control"
+          />
+        </div>
+        <div class="form-group form-check">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            v-model="isAdmin"
+            id="adminCheck"
+          />
+          <label class="form-check-label" for="adminCheck">Admin</label>
+        </div>
+        <b-button
+          id="signup-button"
+          class="signup_btn"
+          variant="primary"
+          @click="handleSignup"
+        >
+          Sign Up
+        </b-button>
+        <p>
+          Already have an account?
+          <a href="#" @click.prevent="toggleLogin">Log In</a>
+        </p>
+      </div>
     </div>
     <div v-if="message" class="error">{{ message }}</div>
   </div>
 </template>
 
 <script>
-// import UserCreation from '@/components/UserCreation.vue'
 import { Api } from '@/Api'
 
 export default {
@@ -52,7 +105,9 @@ export default {
     return {
       isLoginMode: false,
       userName: '',
+      email: '',
       password: '',
+      confirmPassword: '',
       userId: '',
       isAdmin: false,
       message: ''
@@ -88,11 +143,13 @@ export default {
           if (error.response) {
             if (error.response.status === 400) {
               if (error.response.data.errors) {
-                this.message = error.response.data.errors.map((error) => error.msg).join(', ')
+                this.message = error.response.data.errors
+                  .map((error) => error.msg)
+                  .join(', ')
               } else if (error.response.data.error) {
                 this.message = error.response.data.error
               } else {
-                this.message = 'An error occured during login'
+                this.message = 'An error occurred during signup'
               }
             } else {
               this.message = `Error: ${error.response.status} - ${error.response.statusText}`
@@ -100,7 +157,7 @@ export default {
           } else if (error.request) {
             this.message = 'Server is not responding'
           } else {
-            this.message = 'An unexpected error occured'
+            this.message = 'An unexpected error occurred'
           }
         })
     },
@@ -112,12 +169,10 @@ export default {
       Api.post('/v1/users/login', userInput)
         .then((response) => {
           const fetchedUser = response.data
-          // const jwtToken = response.data.token
           if (!fetchedUser) {
-            this.message = 'User not found' + JSON.stringify(fetchedUser)
+            this.message = 'User not found'
           } else {
             localStorage.setItem('user', JSON.stringify(fetchedUser))
-            // localStorage.setItem('token', jwtToken)
             this.$emit('user-fetched', fetchedUser)
             this.$router.push('profile')
           }
@@ -134,9 +189,9 @@ export default {
               this.message = `Error: ${error.response.status} - ${error.response.statusText}`
             }
           } else if (error.request) {
-            this.message = 'Sever is not responding'
+            this.message = 'Server is not responding'
           } else {
-            this.message = 'An unexpected error occured'
+            this.message = 'An unexpected error occurred'
           }
         })
     }
@@ -145,14 +200,71 @@ export default {
 </script>
 
 <style scoped>
+/* CSS Class Selectors */
 .authentication-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
+
+.login-form,
+.signup-form {
+  background-color: rgb(63, 66, 62);
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login_btn,
+.signup_btn {
+  width: 100%;
+  margin-top: 15px;
+}
+
 .error {
   color: red;
+  margin-top: 15px;
+  text-align: center;
+}
+
+/* CSS Element Selectors */
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+p {
+  margin-top: 15px;
+  text-align: center;
+}
+
+/* CSS ID Selectors */
+#login-button {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+#signup-button {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+/* Additional CSS Selector (Pseudo-class) */
+input:focus {
+  border-color: red;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+/* Responsive Design */
+@media (max-width: 767px) {
+  .authentication-container {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .login-form,
+  .signup-form {
+    padding: 20px;
+  }
 }
 </style>
