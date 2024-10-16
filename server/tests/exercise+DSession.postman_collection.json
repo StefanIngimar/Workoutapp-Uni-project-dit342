@@ -469,7 +469,7 @@
 							"    if (pm.response.code === 200) {\r",
 							"        pm.expect(responseMessage).to.be.equal(\"Exercise added\");\r",
 							"    } else {\r",
-							"        pm.expect(responseMessage).to.be.equal(\"Not in session\");\r",
+							"        pm.expect(responseMessage === \"Not in session\" || responseMessage === \"Daily session not found!\").to.be.true;\r",
 							"    }\r",
 							"})\r",
 							""
@@ -557,6 +557,10 @@
 						"exec": [
 							"pm.test(\"Correct status code\", function() {\r",
 							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct amount of stored exercises\", function(){\r",
+							"    pm.expect(pm.response.json().session.exercises.length).to.equal(1);\r",
 							"});"
 						],
 						"type": "text/javascript",
@@ -758,6 +762,10 @@
 						"exec": [
 							"pm.test(\"Correct status code\", function() {\r",
 							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct amount of stored exercises\", function(){\r",
+							"    pm.expect(pm.response.json().session.exercises.length).to.equal(0);\r",
 							"});"
 						],
 						"type": "text/javascript",
@@ -801,6 +809,10 @@
 						"exec": [
 							"pm.test(\"Correct status code\", function() {\r",
 							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct amount of stored exercises\", function(){\r",
+							"    pm.expect(pm.response.json().session.exercises.length).to.equal(1);\r",
 							"});"
 						],
 						"type": "text/javascript",
@@ -855,6 +867,10 @@
 						"exec": [
 							"pm.test(\"Correct status code\", function() {\r",
 							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Correct amount of stored exercises\", function(){\r",
+							"    pm.expect(pm.response.json().session.exercises.length).to.equal(1);\r",
 							"});"
 						],
 						"type": "text/javascript",
