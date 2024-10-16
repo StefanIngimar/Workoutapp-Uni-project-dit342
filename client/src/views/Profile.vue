@@ -55,12 +55,13 @@ export default {
       completedAchievements: [],
       numOfTimesInGym: 0,
       message: '',
-      foobar: ''
+      nonCompletedAchievements: []
     }
   },
   mounted() {
     this.getUserProfile()
-    this.getAllCompletedAchievements()
+    // this.getAllCompletedAchievements()
+    // this.getAllNonCompletedAchievements()
   },
   methods: {
     getUserProfile() {
@@ -95,6 +96,27 @@ export default {
           this.message = error
         })
     }
+    // getAllCompletedAchievements() {
+    //   const userId = this.user._id
+    //   Api.get(`/v1/users/${userId}/userAchievements`)
+    //     .then((response) => {
+    //       this.userAchievements = response.data
+    //       this.filterAchievements()
+    //     })
+    //     .catch((error) => {
+    //       this.message = error.response ? error.response.data.message : error.message
+    //     })
+    // },
+    // getAllNonCompletedAchievements() {
+    //   Api.get(`/v1/users/${this.user._id}/userAchievements`)
+    //     .then((response) => {
+    //       this.userAchievements = response.data
+    //     })
+    //     .catch((error) => {
+    //       this.message = error.response ? error.response.data.message : error.message
+    //     })
+    // }
+
   }
 }
 
