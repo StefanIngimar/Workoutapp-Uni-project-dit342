@@ -8,6 +8,17 @@
     <!-- <user-fetched /> -->
     <!-- Handle the updateing of user profile -->
     <edit-profile :user="user" @profile-updated="handleProfileUpdated" />
+    <div class="completedAchievements">
+      <h2>Your Completed Achievements</h2>
+      <ul>
+        <li v-for="achievement in completedAchievements" :key="achievement._id">
+          <h3>{{ achievement.name }}</h3>
+          <p>{{ achievement.description }}</p>
+          <!-- <p>Completed on: {{ formatDate(achievement.dateCompleted) }}</p> -->
+        </li>
+      </ul>
+    </div>
+
     <!-- Diplsay numer of times attending the gym-->
      <!-- <gym-attendance :numOfTimesInGym="numOfTimesInGym" /> -->
     <!-- Display the user's achievements -->
@@ -21,11 +32,7 @@
 </template>
 
 <script>
-// import Authentication from '@/Authentication.vue'
-// import UserInfo from '@/components/UserInfo.vue'
 import EditProfile from '@/components/EditProfile.vue'
-// import GymAttendance from '@/components/GymAttendance.vue'
-// import AchievementList from '@/components/AchievementList.vue'
 import { Api } from '@/Api'
 
 export default {
@@ -38,8 +45,10 @@ export default {
   },
   data() {
     return {
-      user: {},
-      userAchievements: [],
+      user: '',
+      userId: '',
+      isAdmin: false,
+      completedAchievements: [],
       numOfTimesInGym: 0,
       message: '',
       nonCompletedAchievements: []
@@ -47,22 +56,22 @@ export default {
   },
   mounted() {
     this.getUserProfile()
-    // this.getAllCompletedAchievements()
+    this.getAllCompletedAchievements()
     // this.getAllNonCompletedAchievements()
   },
   methods: {
     getUserProfile() {
       this.user = JSON.parse(localStorage.getItem('user'))
-      if (!this.user) {
-        this.$router.push('/')
-      }
+      this.userId = this.user._id
+      this.isAdmin = this.user.isAdmin
     },
     handleProfileUpdated(updatedUser) {
       this.user = updatedUser
+      localStorage.setItem('user', JSON.stringify(updatedUser))
     },
     logout() {
       localStorage.removeItem('user')
-      localStorage.removeItem('token')
+      // localStorage.removeItem('token')
       this.$router.push('/')
     },
     deletAllUsers() {
@@ -73,35 +82,22 @@ export default {
         .catch(error => {
           this.message = error.response ? error.response.data.message : error.message
         })
+    },
+    getAllCompletedAchievements() {
+      Api.get(`/v1/achievements/completed?userID=${this.userId}&isAdmin=${this.isAdmin}`)
+        .then((response) => {
+          this.completedAchievements = response.data
+        })
+        .catch((error) => {
+          this.message = error
+        })
     }
-    // getAllCompletedAchievements() {
-    //   const userId = this.user._id
-    //   Api.get(`/v1/users/${userId}/userAchievements`)
-    //     .then((response) => {
-    //       this.userAchievements = response.data
-    //       this.filterAchievements()
-    //     })
-    //     .catch((error) => {
-    //       this.message = error.response ? error.response.data.message : error.message
-    //     })
-    // },
-    // getAllNonCompletedAchievements() {
-    //   Api.get(`/v1/users/${this.user._id}/userAchievements`)
-    //     .then((response) => {
-    //       this.userAchievements = response.data
-    //     })
-    //     .catch((error) => {
-    //       this.message = error.response ? error.response.data.message : error.message
-    //     })
-    // }
 
   }
 }
 
 </script>
 
-<!--Add a way where the user can display
-the current goal their are working towards and in that way they can connect with other users-->
 <style>
 .user-creation {
   display: flex;
@@ -110,6 +106,15 @@ the current goal their are working towards and in that way they can connect with
   margin-top: 20px;
   background-color: black;
 }
+
+.completedAchievements {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  background-color: black;
+}
+
 .error {
   color: red;
 }

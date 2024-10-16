@@ -18,7 +18,6 @@
           </p>
         </div>
 
-
         <div v-if="isAddingExercise">
           <div class="sub-form">
             <p>Name:</p>
@@ -33,7 +32,6 @@
             <p>Sets:</p>
             <p><input class="input" type="number" v-model="sets" /></p>
           </div>
-
 
           <b-button class="btn_message" variant="success" v-on:click="addNewExercise">Submit</b-button>
           <b-button class="btn_message" variant="danger" v-on:click="toggleNewExercise">Cancel</b-button>
@@ -68,6 +66,7 @@
 <script>
 import { Api } from '@/Api'
 import ExerciseItem from './ExerciseItem.vue'
+import { EventBus } from '@/Eventbus'
 
 export default {
   name: 'session-item',
@@ -106,9 +105,13 @@ export default {
         .then((response) => {
           this.isEditing = false
           this.$emit('session-updated', response.data)
+          if (response.data.isCompleted) {
+            EventBus.emit('session-completed', response.data)
+            console.log('Session completed event emitted')
+          }
         })
         .catch((error) => {
-          this.$emit('error-detected', error);
+          this.$emit('error-detected', error)
           console.error('Error saving session:', error)
         })
     },
@@ -118,12 +121,12 @@ export default {
           this.$emit('session-deleted', response.data)
         })
         .catch((error) => {
-          this.$emit('error-detected', error);
+          this.$emit('error-detected', error)
           console.error('Error deleting session:', error)
         })
     },
     addNewExercise() {
-      var user = JSON.parse(localStorage.getItem('user'));
+      const user = JSON.parse(localStorage.getItem('user'))
 
       // POST request to add a new exercise to the daily session
       Api.post(`/v1/dailysessions/${this.session._id}/exercises`, {
@@ -137,16 +140,20 @@ export default {
         userID: user._id
       })
         .then((response) => {
-          console.log("Response data:", response.data);
-          Api.put(`/v1/workoutlogs/${response.data.session.workoutLogID}/dailysessions/${response.data.session._id}`);
-          this.isAddingExercise = false;
-          this.$emit('session-updated', response.data);
+          console.log('Response data:', response.data)
+          Api.put(`/v1/workoutlogs/${response.data.session.workoutLogID}/dailysessions/${response.data.session._id}`)
+          this.isAddingExercise = false
+          this.$emit('session-updated', response.data)
+          if (response.data.isCompleted) {
+            EventBus.emit('session-completed')
+            console.log('Session completed event emitted')
+          }
         })
 
         .catch((error) => {
-          this.$emit('error-detected', error);
-          console.error('Error adding exercise or updating workout log:', error);
-        });
+          this.$emit('error-detected', error)
+          console.error('Error adding exercise or updating workout log:', error)
+        })
     },
     toggleNewExercise() {
       this.isAddingExercise = !this.isAddingExercise

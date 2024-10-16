@@ -2,7 +2,6 @@
 <template>
   <div class="achievements">
     <h1>Achievements</h1>
-    <button @click="getUserAchievements">Fetch achievements</button>
     <!-- Button to create a new achievement -->
     <button @click="toggleCreateForm">Create New Achievement</button>
 
@@ -22,7 +21,6 @@
           <label>Type:</label>
           <select v-model="newAchievement.typeOfAchievement">
             <option value="weightLiftedMilestone">Weight Lifted Milestone</option>
-            <option value="attendanceMilestone">Attendance Milestone</option>
             <option value="repetitionMilestone">Repetition Milestone</option>
           </select>
         </p>
@@ -30,23 +28,17 @@
         <div v-if="newAchievement.typeOfAchievement === 'weightLiftedMilestone'">
           <p>
             <label>Exercise:</label>
-            <input v-model="newAchievement.milestones.exercise" required />
+            <input v-model="newAchievement.exerciseName" required />
           </p>
           <p>
             <label>Weight:</label>
             <input type="number" v-model="newAchievement.milestones.weight" required />
           </p>
         </div>
-        <div v-else-if="newAchievement.typeOfAchievement === 'attendanceMilestone'">
-          <p>
-            <label>Number of Times in Gym:</label>
-            <input type="number" v-model="newAchievement.milestones.numOfTimesInGym" required />
-          </p>
-        </div>
         <div v-else-if="newAchievement.typeOfAchievement === 'repetitionMilestone'">
           <p>
             <label>Exercise:</label>
-            <input v-model="newAchievement.milestones.exercise" required />
+            <input v-model="newAchievement.exerciseName" required />
           </p>
           <p>
             <label>Reps:</label>
@@ -57,34 +49,57 @@
         <button type="button" @click="toggleCreateForm">Cancel</button>
       </form>
     </div>
-
     <!-- Display achievements -->
-    <achievement-list
-      :achievements="achievements"
-      :userAchievements="userAchievements"
-    />
+    <div v-if="achievements.length > 0">
+      <h2>Your Achievements</h2>
+      <ul>
+        <li
+          v-for="achievement in achievements" :key="achievement._id" :class="{ completed: achievement.isCompleted }">
+          <h3>{{ achievement.name }}</h3>
+          <p>{{ achievement.description }}</p>
+          <p>Status:
+            <span v-if="achievement.isCompleted">Completed</span>
+            <span v-else>In Progress</span>
+          </p>
+          <div>
+            <button @click="deleteAchievement(achievement._id)">Delete</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>No achievements found.</p>
+    </div>
+    <!-- <div v-if="isAdmin">
+        <button @click="deleteAllAchievement(achievement._id)">Delete All achievements</button>
+    </div> -->
+    <sessions @session-completed="handleSessionCompleted"></sessions>
     <div v-if="message" class="error">{{ message }}</div>
   </div>
 </template>
 
 <script>
-import AchievementList from '@/components/AchievementList.vue'
+// import AchievementList from '@/components/AchievementList.vue'
 import { Api } from '@/Api'
+import { EventBus } from '@/Eventbus'
 
 export default {
   name: 'Achievements',
   components: {
-    AchievementList
+    // AchievementList
   },
   data() {
     return {
+      user: '',
       userId: '',
+      isAdmin: false,
       achievements: [],
-      userAchievements: [],
+      achievementID: '',
       message: '',
       showCreateForm: false,
       newAchievement: {
         name: '',
+        exerciseName: '',
         description: '',
         typeOfAchievement: 'weightLiftedMilestone',
         milestones: {}
@@ -92,24 +107,6 @@ export default {
     }
   },
   methods: {
-    getAllAchievements() {
-      Api.get('/v1/achievements')
-        .then((response) => {
-          this.achievements = response.data
-        })
-        .catch((error) => {
-          this.message = error.response ? error.response.data.message : error.message
-        })
-    },
-    getUserAchievements() {
-      Api.get(`/v1/users/${this.userId}/userAchievements`)
-        .then((response) => {
-          this.userAchievements = response.data
-        })
-        .catch((error) => {
-          this.message = error.response ? error.response.data.message : error.message
-        })
-    },
     toggleCreateForm() {
       this.showCreateForm = !this.showCreateForm
       if (!this.showCreateForm) {
@@ -124,10 +121,15 @@ export default {
     },
     createAchievement() {
       const achievementData = {
+        userID: this.userId,
         name: this.newAchievement.name,
+        exercisename: this.newAchievement.exerciseName,
         description: this.newAchievement.description,
         typeOfAchievement: this.newAchievement.typeOfAchievement,
-        milestones: this.newAchievement.milestones
+        milestones: this.newAchievement.milestones,
+        isCompleted: false,
+        dateCompleted: null
+
       }
 
       Api.post('/v1/achievements', achievementData)
@@ -137,45 +139,74 @@ export default {
           this.achievements.push(newAchievement)
           this.message = 'Achievement created successfully!'
           this.toggleCreateForm()
-
-          if (!this.userId) {
-            this.message = 'No user in local storage'
-            return
-          }
-
-          // Create a user achievement for the current user
-          const userAchievementData = {
-            userID: this.userId,
-            achievementID: newAchievement._id,
-            achievementName: newAchievement.name,
-            isCompleted: false,
-            dateCompleted: null
-          }
-
-          return Api.post('/v1/userAchievements', userAchievementData)
-        })
-        .then((response) => {
-          this.userAchievements.push(response.data)
         })
         .catch((error) => {
           this.message = error.response ? error.response.data.message : error.message
         })
+    },
+    handleAchievementCompleted(achievementID) {
+      Api.patch(`/v1/achievements/${achievementID}`)
+        .then((response) => {
+          Api.get(`/v1/achievements?userID=${this.userId}&isAdmin=${this.isAdmin}`)
+            .then((response) => {
+              this.achievements = response.data
+            })
+            .catch((error) => {
+              this.message = error
+            })
+
+          // this.achievements = this.achievements.filter((achievement) => achievement._id !== achievementID)
+          // this.message = 'Achievement completed!'
+        })
+        .catch((error) => {
+          this.message = error
+        })
+    },
+    handleSessionCompleted() {
+      console.log('event received')
+      this.updateAllAchievements()
+    },
+    updateAllAchievements() {
+      console.log('updating all achievements')
+      this.achievements.forEach((achievement) => {
+        this.handleAchievementCompleted(achievement._id)
+      })
+    },
+    deleteAchievement(achievementID) {
+      Api.delete(`/v1/achievements/${achievementID}`)
+        .then(() => {
+          this.achievements = this.achievements.filter((achievement) => achievement._id !== achievementID)
+          this.message = 'Achievement deleted!'
+        })
+        .catch((error) => {
+          this.message = error
+        })
+    },
+    getUserInfo() {
+      this.user = JSON.parse(localStorage.getItem('user'))
+      this.userId = this.user._id
+      this.isAdmin = this.user.isAdmin
+    },
+
+    getAllAchievements() {
+      Api.get(`/v1/achievements?userID=${this.userId}&isAdmin=${this.isAdmin}`)
+        .then((response) => {
+          this.achievements = response.data
+        })
+        .catch((error) => {
+          this.message = error
+        })
     }
 
   },
-  created() {
-    const user = JSON.parse(localStorage.getItem('user'))
-    if (user) {
-      this.userId = user._id
-    } else {
-      this.message = 'User not logged in'
-      return
-    }
-
+  mounted() {
+    this.getUserInfo()
     this.getAllAchievements()
-    // this.getUserAchievements()
+    EventBus.on('session-completed', this.handleSessionCompleted)
   }
-
+  // beforeDestroy() {
+  //   EventBus.off('session-completed', this.handleSessionCompleted)
+  // }
 }
 </script>
 

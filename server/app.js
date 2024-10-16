@@ -11,7 +11,6 @@ var DSController = require('./controllers/v1/DSController');
 var userControllerV1 = require('./controllers/v1/userController');
 var achievementControllerV1 = require('./controllers/v1/achievementController');
 var leaderboardController = require('./controllers/v1/leaderboardController');
-var userAchievementController = require('./controllers/v1/userAchiController');
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/animalDevelopmentDB';
@@ -49,7 +48,6 @@ app.use(userControllerV1);
 app.use(achievementControllerV1);
 app.use(DSController);
 app.use(leaderboardController);
-app.use(userAchievementController);
 
 app.use('./uploads', express.static('uploads'));
 
