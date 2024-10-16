@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="this.user">
     <label>
       <h1>Exercises</h1>
     </label>
@@ -47,7 +47,9 @@
           @error-detected="handleError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
       </div>
     </div>
-
+  </div>
+  <div v-else>
+    User not signed in.
   </div>
 </template>
 
@@ -185,13 +187,16 @@ export default {
 
   mounted() { // Runs when page is loaded.
     this.getUserInfo()
-    Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
-      .then((response) => {
-        this.exercises = response.data
-      })
-      .catch((error) => {
-        this.exerciseMessage = error
-      })
+    if (this.user) {
+      Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
+        .then((response) => {
+          this.exercises = response.data
+        })
+        .catch((error) => {
+          this.exerciseMessage = error
+        })
+    }
+
   },
   data() {
     return {

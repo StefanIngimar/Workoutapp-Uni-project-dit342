@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="this.user">
     <h1> Sessions </h1>
 
     <div class="form">
@@ -33,7 +33,9 @@
           @session-updated="handleSessionUpdated(session._id)" />
       </div>
     </div>
-
+  </div>
+  <div v-else>
+    User not signed in.
   </div>
 
 </template>
@@ -49,13 +51,16 @@ export default {
   },
   mounted() {
     this.getUserInfo()
-    Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
-      .then((response) => {
-        this.sessions = response.data
-      })
-      .catch((error) => {
-        this.errorMessage = error
-      })
+    if (this.user) {
+      Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
+        .then((response) => {
+          this.sessions = response.data
+        })
+        .catch((error) => {
+          this.errorMessage = error
+        })
+    }
+
   },
   methods: {
     getUserInfo() {
