@@ -69,41 +69,59 @@ router.get('/api/v1/searchLeaderboard', async function(req, res) {
         if (!exercise) {
             return res.status(400).json({ error: 'Exercise name is required' });
         }
-        // find leaderboard entries by exercise name (case-insensitive ofc)
-        const leaderboard = await WorkoutLog.find({ 'session.exercises.name': { $regex: exercise, $options: 'i' } });
-        if (leaderboard.length === 0) {
-            return res.status(200).json([]); // return empty if no results are found
-        }
-        // create a new leaderboard array from the filtered workout logs
-        const leaderboardArray = [];
-        for (const log of leaderboard) {
+        const workoutLogs = await WorkoutLog.find({});
+        // create a new leaderboard obj from the filtered workout logs
+        const leaderboard = {};
+        for (const log of workoutLogs) {
             for (const session of log.session) {
-                const user = await User.findById(session.userID).select('userName');
                 for (const exerciseEntry of session.exercises) {
                     if (!exerciseEntry.name || !exerciseEntry.weight) {
                         console.warn(`Skipping invalid exercise entry in log ${log._id}`);
                         continue;
                     }
-                    if (exerciseEntry.name.toLowerCase().includes(exercise.toLowerCase())) {
-                        leaderboardArray.push({
-                            userName: user ? user.userName : 'Unknown User',
-                            weight: exerciseEntry.weight,
-                            exercise: exerciseEntry.name
-                        });
+                    const userId = session.userID;
+                    const exerciseName = exerciseEntry.name;
+                    const weight = exerciseEntry.weight;
+
+                    let user = await User.findById(userId).select('userName');
+                    if (!leaderboard[userId] || leaderboard[userId].weight < weight) {
+                        leaderboard[userId] = {
+                            user: user ? user.userName : "Unknown User",
+                            weight: weight,
+                            exercise: exerciseName
+                        };
                     }
                 }
             }
         }
-        // sort the list again by weight
+
+        // convert leaderboard from ibject to array
+        let leaderboardArray = Object.values(leaderboard)
+            .map(entry => ({
+                user: entry.user,
+                weight: entry.weight,
+                exercise: entry.exercise
+            }));
+
+        // filter by the exercise name (case-insensitive ofc)
+        leaderboardArray = leaderboardArray.filter(entry =>
+            entry.exercise.toLowerCase().includes(exercise.toLowerCase())
+        );
+
+        // sort by weight (heaviest first)
         leaderboardArray.sort((a, b) => b.weight - a.weight);
+
+        if (leaderboardArray.length === 0) {
+            return res.status(200).json({ message: 'No valid entries found for the exercise' });
+        }
+
         res.status(200).json(leaderboardArray);
-        console.log('filtered leaderboard:', leaderboardArray);
+        console.log('Filtered leaderboard by exercise:', leaderboardArray);
     } catch (err) {
         console.error('Error fetching leaderboard:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
-
 router.get('/api/v1/leaderboard/:id', async function(req, res){
     var id = req.params.id;
     try {
