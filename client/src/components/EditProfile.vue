@@ -157,7 +157,7 @@ export default {
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: #130f0f;
+  background-color: #130f0f61;
 }
 
 .form h2 {

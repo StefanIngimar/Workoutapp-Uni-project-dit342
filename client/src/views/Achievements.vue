@@ -1,80 +1,154 @@
 <!-- Achievements.vue -->
 <template>
-  <div class="achievements">
-    <h1>Achievements</h1>
-    <!-- Button to create a new achievement -->
-    <button @click="toggleCreateForm">Create New Achievement</button>
+  <div v-if="user" class="achievements-container container">
+    <div class="row">
+      <!-- Left Column: Achievements List -->
+      <div class="col-md-7 achievements-list-section">
+        <h1>Achievements</h1>
+        <!-- Button to create a new achievement -->
+        <b-button id="create-achievement-button" variant="primary" @click="toggleCreateForm">
+          Create New Achievement
+        </b-button>
 
-    <!-- Form to create a new achievement -->
-    <div v-if="showCreateForm">
-      <h3>Create Achievement</h3>
-      <form @submit.prevent="createAchievement">
-        <p>
-          <label>Name:</label>
-          <input v-model="newAchievement.name" required />
-        </p>
-        <p>
-          <label>Description:</label>
-          <input v-model="newAchievement.description" required />
-        </p>
-        <p>
-          <label>Type:</label>
-          <select v-model="newAchievement.typeOfAchievement">
-            <option value="weightLiftedMilestone">Weight Lifted Milestone</option>
-            <option value="repetitionMilestone">Repetition Milestone</option>
-          </select>
-        </p>
-        <!-- Milestones based on type -->
-        <div v-if="newAchievement.typeOfAchievement === 'weightLiftedMilestone'">
-          <p>
-            <label>Exercise:</label>
-            <input v-model="newAchievement.exerciseName" required />
-          </p>
-          <p>
-            <label>Weight:</label>
-            <input type="number" v-model="newAchievement.milestones.weight" required />
-          </p>
+        <!-- Display achievements -->
+        <div v-if="achievements.length > 0" class="mt-4">
+          <h2>Your Achievements</h2>
+          <ul class="list-group">
+            <li
+              v-for="achievement in achievements"
+              :key="achievement._id"
+              :class="['list-group-item', 'achievement-item', { completed: achievement.isCompleted }]"
+            >
+              <h3>{{ achievement.name }}</h3>
+              <p>{{ achievement.description }}</p>
+              <p>
+                Status:
+                <span v-if="achievement.isCompleted" class="text-success">Completed</span>
+                <span v-else class="text-warning">In Progress</span>
+              </p>
+              <div>
+                <b-button
+                  variant="danger"
+                  size="sm"
+                  @click="deleteAchievement(achievement._id)"
+                  class="delete-achievement-button"
+                >
+                  Delete
+                </b-button>
+              </div>
+            </li>
+          </ul>
         </div>
-        <div v-else-if="newAchievement.typeOfAchievement === 'repetitionMilestone'">
-          <p>
-            <label>Exercise:</label>
-            <input v-model="newAchievement.exerciseName" required />
-          </p>
-          <p>
-            <label>Reps:</label>
-            <input type="number" v-model="newAchievement.milestones.reps" required />
-          </p>
+        <div v-else class="mt-4">
+          <p>No achievements found.</p>
         </div>
-        <button type="submit">Create Achievement</button>
-        <button type="button" @click="toggleCreateForm">Cancel</button>
-      </form>
-    </div>
-    <!-- Display achievements -->
-    <div v-if="achievements.length > 0">
-      <h2>Your Achievements</h2>
-      <ul>
-        <li
-          v-for="achievement in achievements" :key="achievement._id" :class="{ completed: achievement.isCompleted }">
-          <h3>{{ achievement.name }}</h3>
-          <p>{{ achievement.description }}</p>
-          <p>Status:
-            <span v-if="achievement.isCompleted">Completed</span>
-            <span v-else>In Progress</span>
-          </p>
-          <div>
-            <button @click="deleteAchievement(achievement._id)">Delete</button>
+      </div>
+
+      <!-- Right Column: Create Achievement Form -->
+      <div
+        class="col-md-5 create-achievement-section"
+        v-if="showCreateForm"
+      >
+        <h3>Create Achievement</h3>
+        <form @submit.prevent="createAchievement">
+          <div class="form-group">
+            <label for="achievement-name">Name:</label>
+            <input
+              id="achievement-name"
+              v-model="newAchievement.name"
+              required
+              class="form-control"
+            />
           </div>
-        </li>
-      </ul>
+          <div class="form-group">
+            <label for="achievement-description">Description:</label>
+            <input
+              id="achievement-description"
+              v-model="newAchievement.description"
+              required
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="achievement-type">Type:</label>
+            <select
+              id="achievement-type"
+              v-model="newAchievement.typeOfAchievement"
+              class="form-control"
+            >
+              <option value="weightLiftedMilestone">Weight Lifted Milestone</option>
+              <option value="repetitionMilestone">Repetition Milestone</option>
+            </select>
+          </div>
+          <!-- Milestones based on type -->
+          <div v-if="newAchievement.typeOfAchievement === 'weightLiftedMilestone'">
+            <div class="form-group">
+              <label for="achievement-exercise">Exercise:</label>
+              <input
+                id="achievement-exercise"
+                v-model="newAchievement.exerciseName"
+                required
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label for="achievement-weight">Weight:</label>
+              <input
+                id="achievement-weight"
+                type="number"
+                v-model="newAchievement.milestones.weight"
+                required
+                class="form-control"
+              />
+            </div>
+          </div>
+          <div v-else-if="newAchievement.typeOfAchievement === 'repetitionMilestone'">
+            <div class="form-group">
+              <label for="achievement-exercise">Exercise:</label>
+              <input
+                id="achievement-exercise"
+                v-model="newAchievement.exerciseName"
+                required
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label for="achievement-reps">Reps:</label>
+              <input
+                id="achievement-reps"
+                type="number"
+                v-model="newAchievement.milestones.reps"
+                required
+                class="form-control"
+              />
+            </div>
+          </div>
+          <b-button type="submit" variant="success" class="mt-2" id="submit-achievement-button">
+            Create Achievement
+          </b-button>
+          <b-button
+            type="button"
+            variant="secondary"
+            class="mt-2 ml-2"
+            @click="toggleCreateForm"
+            id="cancel-achievement-button"
+          >
+            Cancel
+          </b-button>
+        </form>
+      </div>
     </div>
-    <div v-else>
-      <p>No achievements found.</p>
+
+    <!-- Error Message -->
+    <div v-if="message" class="error-message">
+      {{ message }}
     </div>
-    <!-- <div v-if="isAdmin">
-        <button @click="deleteAllAchievement(achievement._id)">Delete All achievements</button>
-    </div> -->
+
+    <!-- Sessions Component -->
     <sessions @session-completed="handleSessionCompleted"></sessions>
-    <div v-if="message" class="error">{{ message }}</div>
+  </div>
+  <div v-else class="no-user-message">
+    <p>Please log in to view achievements</p>
   </div>
 </template>
 
@@ -201,8 +275,10 @@ export default {
   },
   mounted() {
     this.getUserInfo()
-    this.getAllAchievements()
-    EventBus.on('session-completed', this.handleSessionCompleted)
+    if (this.user) {
+      this.getAllAchievements()
+      EventBus.on('session-completed', this.handleSessionCompleted)
+    }
   }
   // beforeDestroy() {
   //   EventBus.off('session-completed', this.handleSessionCompleted)
@@ -211,19 +287,81 @@ export default {
 </script>
 
 <style scoped>
-h1 {
-  color: blueviolet;
+.achievements-container {
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
-.error {
-  color: red;
-}
-.achievements {
+
+.achievements-list-section {
+  background-color: rgb(63, 66, 62);
   padding: 20px;
+  border-radius: 8px;
 }
-form {
+
+.create-achievement-section {
+  background-color: rgb(63, 66, 62);
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+.achievement-item {
+  margin-bottom: 15px;
+  border-left: 5px solid #ff001e;
+}
+
+.completed {
+  background-color: #d4edda;
+  border-left-color: #28a745;
+}
+
+.error-message {
+  color: red;
   margin-top: 20px;
+  text-align: center;
 }
-form p {
+
+.no-user-message {
+  text-align: center;
+  margin-top: 50px;
+}
+
+h1,
+h2,
+h3 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+p {
   margin-bottom: 10px;
+}
+
+#create-achievement-button {
+  width: 100%;
+  margin-top: 15px;
+}
+
+#submit-achievement-button,
+#cancel-achievement-button {
+  width: 48%;
+}
+
+#submit-achievement-button {
+  margin-right: 4%;
+}
+
+@media (max-width: 767px) {
+  .row {
+    flex-direction: column-reverse;
+  }
+
+  .create-achievement-section {
+    margin-top: 20px;
+  }
+
+  #create-achievement-button {
+    width: 100%;
+  }
 }
 </style>

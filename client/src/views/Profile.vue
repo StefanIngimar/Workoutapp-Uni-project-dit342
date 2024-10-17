@@ -1,33 +1,52 @@
 <template>
-  <div>
-    <!-- Display the user's name and email -->
-    <!-- <user-info v-if="user" :user="user" /> -->
-    <h1> User Profile </h1>
-        <p><strong>Username:</strong>{{ this.user.userName }}</p>
-        <p><strong>Email:</strong>{{ this.user.email }}</p>
-    <!-- <user-fetched /> -->
-    <!-- Handle the updateing of user profile -->
-    <edit-profile :user="user" @profile-updated="handleProfileUpdated" />
-    <div class="completedAchievements">
-      <h2>Your Completed Achievements</h2>
-      <ul>
-        <li v-for="achievement in completedAchievements" :key="achievement._id">
-          <h3>{{ achievement.name }}</h3>
-          <p>{{ achievement.description }}</p>
-          <!-- <p>Completed on: {{ formatDate(achievement.dateCompleted) }}</p> -->
-        </li>
-      </ul>
+  <div v-if="this.user" class="profile-container container">
+    <div class="row">
+      <!-- User Info and Edit Profile -->
+      <div class="col-md-6 user-section">
+        <h1>User Profile</h1>
+        <p><strong>Username:</strong> {{ user.userName }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <!-- Edit Profile Component -->
+        <edit-profile :user="user" @profile-updated="handleProfileUpdated" />
+        <!-- Logout Button -->
+        <b-button id="logout-button" class="logout-btn" variant="primary" @click="logout">
+          Logout
+        </b-button>
+        <!-- Delete All Users Button (Visible to Admins Only) -->
+        <button
+          v-if="isAdmin"
+          type="button"
+          id="delete-users-button"
+          class="btn btn-danger mt-3"
+          @click="deleteAllUsers"
+        >
+          Delete All Users
+        </button>
+      </div>
+
+      <!-- Completed Achievements -->
+      <div class="col-md-6 achievements-section">
+        <h2>Your Completed Achievements</h2>
+        <ul class="achievement-list">
+          <li
+            v-for="achievement in completedAchievements"
+            :key="achievement._id"
+            class="achievement-item"
+          >
+            <h3>{{ achievement.name }}</h3>
+            <p>{{ achievement.description }}</p>
+          </li>
+        </ul>
+      </div>
     </div>
 
-    <!-- Diplsay numer of times attending the gym-->
-     <!-- <gym-attendance :numOfTimesInGym="numOfTimesInGym" /> -->
-    <!-- Display the user's achievements -->
-    <!-- <achievement-list :userAchievements="userId" /> -->
-     <b-button class="logout_btn" variant="primary" @click="logout">Logout</b-button>
-     <button type="button" @click="deletAllUsers">Deleta all users</button>
-    <div v-if="message" class="error">
+    <!-- Error Message -->
+    <div v-if="message" class="error-message">
       {{ message }}
     </div>
+  </div>
+  <div v-else>
+    <p>Please log in to view profile</p>
   </div>
 </template>
 
@@ -38,10 +57,7 @@ import { Api } from '@/Api'
 export default {
   name: 'Profile',
   components: {
-    // UserInfo,
     EditProfile
-    // GymAttendance,
-    // AchievementList
   },
   data() {
     return {
@@ -56,8 +72,9 @@ export default {
   },
   mounted() {
     this.getUserProfile()
-    this.getAllCompletedAchievements()
-    // this.getAllNonCompletedAchievements()
+    if (this.user) {
+      this.getAllCompletedAchievements()
+    }
   },
   methods: {
     getUserProfile() {
@@ -74,15 +91,6 @@ export default {
       // localStorage.removeItem('token')
       this.$router.push('/')
     },
-    deletAllUsers() {
-      Api.delete('/v1/users')
-        .then(() => {
-          this.message = 'All users deleted'
-        })
-        .catch(error => {
-          this.message = error.response ? error.response.data.message : error.message
-        })
-    },
     getAllCompletedAchievements() {
       Api.get(`/v1/achievements/completed?userID=${this.userId}&isAdmin=${this.isAdmin}`)
         .then((response) => {
@@ -98,24 +106,71 @@ export default {
 
 </script>
 
-<style>
-.user-creation {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-  background-color: black;
+<style scoped>
+.profile-container {
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 
-.completedAchievements {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-  background-color: black;
+.user-section,
+.achievements-section {
+  background-color: rgb(63, 66, 62);
+  padding: 30px;
+  border-radius: 8px;
+  margin-bottom: 20px;
 }
 
-.error {
+.achievement-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.achievement-item {
+  background-color: rgb(59, 116, 41);
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border-left: 4px solid #28a745;
+}
+
+.logout-btn {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.error-message {
   color: red;
+  margin-top: 15px;
+  text-align: center;
+}
+
+h1,
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+p {
+  margin-bottom: 10px;
+}
+
+#logout-button {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+#delete-users-button {
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .row {
+    flex-direction: column;
+  }
+
+  .user-section,
+  .achievements-section {
+    margin-bottom: 20px;
+  }
 }
 </style>

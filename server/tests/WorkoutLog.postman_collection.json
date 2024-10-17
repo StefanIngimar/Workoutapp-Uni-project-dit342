@@ -18,6 +18,7 @@
 							"});\r",
 							"var jsonData = pm.response.json();\r",
 							"pm.globals.set(\"logId\", jsonData._id);\r",
+							"pm.globals.set(\"userId\", jsonData.user);\r",
 							""
 						],
 						"type": "text/javascript",
@@ -40,7 +41,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"title\": \"Back Day\",\r\n  \"date\": \"2024-10-10\",\r\n  \"session\": [\r\n    {\r\n      \"user\": \"66ffe37a3297a22098fd7e48\",  // ID of the user performing the session\r\n      \"exercises\": [\r\n        {\r\n        \"name\": \"rows\",\r\n          \"exercise\": \"670533153456aec36445fde4\",  // ID of the exercise (assume it's an ObjectId reference)\r\n          \"sets\": 5,\r\n          \"reps\": 10,\r\n          \"weight\": 100\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+					"raw": "{\r\n    \"title\": \"Leg Day\",\r\n    \"date\": \"2024-10-14\",\r\n    \"session\": [\r\n        {\r\n            \"user\": \"670a86b68405eed7ccf874a5\",\r\n            \"exercises\": [{\r\n                \"title\":\"Leg Day\",\r\n                \"date\": \"2024-10-15\",\r\n                \"session\":[{\r\n                    \"user\": \"66e3107d334983ff003dc045\",\r\n                    \"exercises\":[{\r\n                        \"exerciseName\": \"Barbell curls\",\r\n                        \"exercise\": \"670d083d90192c364eafbee8\",\r\n                        \"sets\": 5,\r\n                        \"reps\": 5,\r\n                        \"weight\": 50\r\n                    }]\r\n                }]\r\n            }]\r\n        }\r\n    ]\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -56,6 +57,118 @@
 						"api",
 						"v1",
 						"workoutlogs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST SESS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var sentData = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"pm.globals.set(\"sessionId\", jsonData._id);\r",
+							"\r",
+							"pm.test(\"Correct exercise response data\", function() {\r",
+							"    Object.keys(sentData).forEach(key => {\r",
+							"        pm.test(`Correct response data: ${key}`, function() {\r",
+							"            pm.expect(jsonData[key]).to.eql(sentData[key]);\r",
+							"        });\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sessionName\" : \"Legs\",\r\n    \"duration\": 31,\r\n    \"isCompleted\": true,\r\n    \"notes\": \"Exercise light!\",\r\n    \"exercises\" : []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/dailysessions",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"dailysessions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST SESS/EX",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"// var jsonData = pm.response.json();\r",
+							"// pm.globals.set(\"sessId\", jsonData.session._id);\r",
+							"// pm.globals.set(\"logId2\", jsonData.session.workoutLogID)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Squats\",\r\n    \"hasWeights\": true,\r\n    \"weight\" : 100,\r\n    \"bodyPart\": \"Legs\",\r\n    \"isCustom\": true,\r\n    \"reps\": 1,\r\n    \"sets\": 33\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/dailysessions/{{sessionId}}/exercises",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"dailysessions",
+						"{{sessionId}}",
+						"exercises"
 					]
 				}
 			},
@@ -125,7 +238,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}/api/v1/workoutlogs/{{logId}}",
+					"raw": "{{host}}/api/v1/workoutlogs/{{userId}}/{{logId}}",
 					"host": [
 						"{{host}}"
 					],
@@ -133,7 +246,43 @@
 						"api",
 						"v1",
 						"workoutlogs",
+						"{{userId}}",
 						"{{logId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET USER_ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/workoutlogs/{{userId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"workoutlogs",
+						"{{userId}}"
 					]
 				}
 			},
@@ -197,6 +346,51 @@
 						"v1",
 						"workoutlogs",
 						"{{logId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT LOG/SESS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Correct status code\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"session\": {\r\n        \"sessionName\": \"Push\",\r\n        \"duration\": 31,\r\n        \"isCompleted\": true,\r\n        \"notes\": \"Exercise light!\",\r\n        \"exercises\": [\r\n            {\r\n                \"name\": \"Barbell curl\",\r\n                \"hasWeights\": true,\r\n                \"weight\": 35,\r\n                \"bodyPart\": \"Biceps\",\r\n                \"isCustom\": true,\r\n                \"reps\": 1,\r\n                \"sets\": 33,\r\n                \"_id\": \"6710e50bce8b9acc1cbe2b2a\",\r\n                \"__v\": 0\r\n            }]\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/v1/workoutLogs/{{logId}}/dailysessions/{{sessionId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"workoutLogs",
+						"{{logId}}",
+						"dailysessions",
+						"{{sessionId}}"
 					]
 				}
 			},
