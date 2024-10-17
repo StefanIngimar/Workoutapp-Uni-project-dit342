@@ -76,6 +76,9 @@ export default {
       } else {
         axios.get(`/api/v1/searchLeaderboard?exercise=${this.searchText}`)
           .then((response) => {
+            console.log('response', response);
+            console.log('API response:', response.data);
+            console.log('api response message:', response.data.message);
             if (response.data.message) {
               // handle cases where no entries are found
               this.leaderboard = [];

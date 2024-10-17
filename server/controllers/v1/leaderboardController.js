@@ -85,12 +85,19 @@ router.get('/api/v1/searchLeaderboard', async function(req, res) {
                         continue;
                     }
                     if (exerciseEntry.name.toLowerCase().includes(exercise.toLowerCase())) {
+                        const sameWeight = leaderboardArray.find(entry => entry.userName === user.userName && entry.exercise === exerciseEntry.name);
+                        if (sameWeight) {
+                            // check if this is the heaviest weight for the user
+                            if (sameWeight.weight < exerciseEntry.weight) {
+                                sameWeight.weight = exerciseEntry.weight;
+                            }
+                        } else {
                         leaderboardArray.push({
                             userName: user ? user.userName : 'Unknown User',
                             weight: exerciseEntry.weight,
                             exercise: exerciseEntry.name
                         });
-                    }
+                    }}
                 }
             }
         }
@@ -103,7 +110,6 @@ router.get('/api/v1/searchLeaderboard', async function(req, res) {
         res.status(500).json({ error: 'Server error' });
     }
 });
-
 router.get('/api/v1/leaderboard/:id', async function(req, res){
     var id = req.params.id;
     try {
