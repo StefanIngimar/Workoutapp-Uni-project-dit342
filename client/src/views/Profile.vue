@@ -62,7 +62,6 @@ export default {
   data() {
     return {
       user: '',
-      userId: '',
       isAdmin: false,
       completedAchievements: [],
       numOfTimesInGym: 0,
@@ -79,8 +78,6 @@ export default {
   methods: {
     getUserProfile() {
       this.user = JSON.parse(localStorage.getItem('user'))
-      this.userId = this.user._id
-      this.isAdmin = this.user.isAdmin
     },
     handleProfileUpdated(updatedUser) {
       this.user = updatedUser
@@ -92,7 +89,7 @@ export default {
       this.$router.push('/')
     },
     getAllCompletedAchievements() {
-      Api.get(`/v1/achievements/completed?userID=${this.userId}&isAdmin=${this.isAdmin}`)
+      Api.get(`/v1/achievements/completed?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           this.completedAchievements = response.data
         })
