@@ -1,5 +1,5 @@
 <template>
-    <div class="form">
+    <div v-if="this.user" class="form">
         <h2>Edit Profile</h2>
         <p>
           Username: <input v-model="userName" placeholder="Enter new username (optional)"/>
@@ -10,7 +10,7 @@
           Email: <input v-model="email" placeholder="Enter new email (optional)"/>
           <span class="error" v-if="validationErrors.email">{{ validationErrors.email }}</span>
         </p>
-        <p>
+        <p>""
           Password: <input type="password" v-model="password" placeholder="Enter new password (optional)"/>
           <span class="error" v-if="validationErrors.password">{{ validationErrors.password }}</span>
         </p>
@@ -22,6 +22,9 @@
         </div>
         <b-button class="btn_message" variant="primary" @click="updateProfile()">Update profile</b-button>
         <div v-if="message" :class="{ error: isError, success: !isError }">{{ message }}</div>
+    </div>
+    <div v-else>
+      <p>Please login to be able to edit profile</p>
     </div>
 </template>
 

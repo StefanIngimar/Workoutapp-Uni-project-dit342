@@ -1,12 +1,21 @@
 <!-- Achievements.vue -->
 <template>
   <div v-if="user" class="achievements-container container">
-    <div class="row">
-      <!-- Left Column: Achievements List -->
-      <div class="col-md-7 achievements-list-section">
+    <div class="row justify-content-center">
+      <!-- Achievements List Section -->
+      <div
+        :class="[
+          showCreateForm ? 'col-md-7' : 'col-md-8',
+          'achievements-list-section'
+        ]"
+      >
         <h1>Achievements</h1>
         <!-- Button to create a new achievement -->
-        <b-button id="create-achievement-button" variant="primary" @click="toggleCreateForm">
+        <b-button
+          id="create-achievement-button"
+          variant="primary"
+          @click="toggleCreateForm"
+        >
           Create New Achievement
         </b-button>
 
@@ -17,13 +26,22 @@
             <li
               v-for="achievement in achievements"
               :key="achievement._id"
-              :class="['list-group-item', 'achievement-item', { completed: achievement.isCompleted }]"
+              :class="[
+                'list-group-item',
+                'achievement-item',
+                { completed: achievement.isCompleted }
+              ]"
             >
               <h3>{{ achievement.name }}</h3>
               <p>{{ achievement.description }}</p>
               <p>
                 Status:
-                <span v-if="achievement.isCompleted" class="text-success">Completed</span>
+                <span
+                  v-if="achievement.isCompleted"
+                  class="text-success"
+                >
+                  Completed
+                </span>
                 <span v-else class="text-warning">In Progress</span>
               </p>
               <div>
@@ -44,7 +62,7 @@
         </div>
       </div>
 
-      <!-- Right Column: Create Achievement Form -->
+      <!-- Create Achievement Form -->
       <div
         class="col-md-5 create-achievement-section"
         v-if="showCreateForm"
@@ -76,12 +94,21 @@
               v-model="newAchievement.typeOfAchievement"
               class="form-control"
             >
-              <option value="weightLiftedMilestone">Weight Lifted Milestone</option>
-              <option value="repetitionMilestone">Repetition Milestone</option>
+              <option value="weightLiftedMilestone">
+                Weight Lifted Milestone
+              </option>
+              <option value="repetitionMilestone">
+                Repetition Milestone
+              </option>
             </select>
           </div>
           <!-- Milestones based on type -->
-          <div v-if="newAchievement.typeOfAchievement === 'weightLiftedMilestone'">
+          <div
+            v-if="
+              newAchievement.typeOfAchievement ===
+              'weightLiftedMilestone'
+            "
+          >
             <div class="form-group">
               <label for="achievement-exercise">Exercise:</label>
               <input
@@ -102,7 +129,12 @@
               />
             </div>
           </div>
-          <div v-else-if="newAchievement.typeOfAchievement === 'repetitionMilestone'">
+          <div
+            v-else-if="
+              newAchievement.typeOfAchievement ===
+              'repetitionMilestone'
+            "
+          >
             <div class="form-group">
               <label for="achievement-exercise">Exercise:</label>
               <input
@@ -123,7 +155,12 @@
               />
             </div>
           </div>
-          <b-button type="submit" variant="success" class="mt-2" id="submit-achievement-button">
+          <b-button
+            type="submit"
+            variant="success"
+            class="mt-2"
+            id="submit-achievement-button"
+          >
             Create Achievement
           </b-button>
           <b-button
@@ -153,14 +190,12 @@
 </template>
 
 <script>
-// import AchievementList from '@/components/AchievementList.vue'
 import { Api } from '@/Api'
 import { EventBus } from '@/Eventbus'
 
 export default {
   name: 'Achievements',
   components: {
-    // AchievementList
   },
   data() {
     return {
@@ -184,7 +219,6 @@ export default {
     toggleCreateForm() {
       this.showCreateForm = !this.showCreateForm
       if (!this.showCreateForm) {
-        // Reset the form when closing
         this.newAchievement = {
           name: '',
           description: '',
@@ -195,7 +229,7 @@ export default {
     },
     createAchievement() {
       const achievementData = {
-        userID: this.userId,
+        userID: this.user._id,
         name: this.newAchievement.name,
         exercisename: this.newAchievement.exerciseName,
         description: this.newAchievement.description,
@@ -209,7 +243,6 @@ export default {
       Api.post('/v1/achievements', achievementData)
         .then((response) => {
           const newAchievement = response.data
-          // Add the new achievement to the list
           this.achievements.push(newAchievement)
           this.message = 'Achievement created successfully!'
           this.toggleCreateForm()
@@ -221,7 +254,7 @@ export default {
     handleAchievementCompleted(achievementID) {
       Api.patch(`/v1/achievements/${achievementID}`)
         .then((response) => {
-          Api.get(`/v1/achievements?userID=${this.userId}&isAdmin=${this.isAdmin}`)
+          Api.get(`/v1/achievements?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
             .then((response) => {
               this.achievements = response.data
             })
@@ -258,12 +291,10 @@ export default {
     },
     getUserInfo() {
       this.user = JSON.parse(localStorage.getItem('user'))
-      this.userId = this.user._id
-      this.isAdmin = this.user.isAdmin
     },
 
     getAllAchievements() {
-      Api.get(`/v1/achievements?userID=${this.userId}&isAdmin=${this.isAdmin}`)
+      Api.get(`/v1/achievements?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           this.achievements = response.data
         })
@@ -296,6 +327,7 @@ export default {
   background-color: rgb(63, 66, 62);
   padding: 20px;
   border-radius: 8px;
+  margin: 0 auto;
 }
 
 .create-achievement-section {

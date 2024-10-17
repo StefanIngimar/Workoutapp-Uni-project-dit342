@@ -114,7 +114,7 @@ router.get('/api/v1/users/:userId/achievements', async function(req, res){
     }
 });
 
-// // Get specific user achievement for a specific user
+// // Get specific achievement for a specific user
 // router.get('/api/v1/users/:userId/achievements/:achievementId', async function(req, res){
 //     try{
 //         const achievement = await Achievement.findOne({userID: req.params.userId, achievementID: req.params.achievementId});

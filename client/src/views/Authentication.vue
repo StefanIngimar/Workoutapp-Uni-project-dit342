@@ -1,5 +1,5 @@
 <template>
-  <div class="authentication-container container">
+  <div v-if="!this.user" class="authentication-container container">
     <div class="row justify-content-center">
       <div v-if="isLoginMode" class="login-form col-12 col-md-8 col-lg-6">
         <h1>Log in</h1>
@@ -93,6 +93,9 @@
       </div>
     </div>
     <div v-if="message" class="error">{{ message }}</div>
+  </div>
+  <div v-else>
+      router.push('profile')
   </div>
 </template>
 
