@@ -56,7 +56,7 @@
         </div>
         </p>
         <p> {{ exerciseMessage }}</p>
-        <b-button class="btn_message" variant="danger" v-on:click="deleteSession(this.session._id)">X</b-button>
+        <b-button class="btn_message" variant="danger" v-on:click="deleteSession(this.session._id, this.session.workoutLogID)">X</b-button>
         <b-button class="btn_message" variant="primary" v-on:click="toggleEdit">Edit</b-button>
       </div>
     </div>
@@ -115,10 +115,15 @@ export default {
           console.error('Error saving session:', error)
         })
     },
-    deleteSession(sessionID) {
+    deleteSession(sessionID, workoutLogID) {
       Api.delete(`/v1/dailysessions/${sessionID}`)
         .then((response) => {
-          this.$emit('session-deleted', response.data)
+          console.log('Response data:', response.data)
+          console.log('Workout log ID:', workoutLogID)
+          Api.delete(`/v1/workoutlogs/${workoutLogID}`)//delete workoutlog when session is deleted
+          .then(() => {
+            this.$emit('session-deleted')
+          })
         })
         .catch((error) => {
           this.$emit('error-detected', error)

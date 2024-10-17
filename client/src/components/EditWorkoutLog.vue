@@ -105,14 +105,14 @@ const saveLog = () => {
     </div>
 
     <!-- Save, Delete, Cancel Buttons -->
-    <button class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg" @click="saveLog">
+    <button type="button" class="btn btn-primary" @click="saveLog">
       Save Changes
     </button>
-    <button class="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg" @click="emit('delete')">
+    <button type="button" class="btn btn-primary" @click="emit('delete')">
       Delete Workout Log
     </button>
-    <button class="mt-2 px-4 py-2 bg-gray-500 text-white rounded-lg" @click="emit('cancel')">
-      Cancel
+    <button type="button" class="btn btn-secondary" @click="emit('cancel')">
+      Close
     </button>
   </VueFinalModal>
 </template>

@@ -1,24 +1,31 @@
 <template>
-  <div>
-  <h1> Leaderboard </h1>
-  <table>
-      <thead>
-      <tr>
-          <th>Rank</th>
-          <th>Name</th>
-          <th>Weights</th>
-          <th>Exercise</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="(entry, index) in leaderboard" :key="entry.id">
-          <td>{{ index + 1 }}</td>
-          <td>{{ entry.userName }}</td>
-          <td>{{ entry.weight }}</td>
-          <td>{{ entry.exercise }}</td>
-      </tr>
-      </tbody>
-  </table>
+  <div v-if="user">
+    <h1 class="mb-4 text-center">Leaderboard</h1>
+    <div class="searchForm mb-4">
+        <!-- search bar to filter exercises -->
+      <b-form-input v-on:input="filterByExercise" v-model="searchText" placeholder="Filter by exercise"></b-form-input>
+    </div>
+    <div class="row">
+        <!-- for loop to loop through entries in the leaderboard -->
+      <div class="col-12 col-md-4" v-for="(entry, index) in leaderboard" :key="entry.id">
+        <!-- put entries in cards -->
+        <div class="card mb-3">
+          <div class="card-header text-center">
+            Rank #{{ index + 1 }}
+          </div>
+          <div class="card-body">
+            <h5 class="card-title text-center">{{ entry.userName }}</h5>
+            <p class="card-text">
+              <strong>Weights: </strong>{{ entry.weight }} kg<br>
+              <strong>Exercise: </strong>{{ entry.exercise }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div v-else>
+    User not signed in.
   </div>
 </template>
 
@@ -29,38 +36,67 @@ export default {
   name: 'leaderboard',
 
   data() {
-    return {
-      leaderboard: []
-    }
+      return {
+          leaderboard: [],
+          searchText: '',
+          filteredLeaderboard: [],
+          user: null
+      }
   },
 
   methods: {
-    async fetchLeaderboard() {
-      try {
-        const response = await axios.get('/api/v1/leaderboard')
-        const leaderboard = response.data
-        console.log('Fetched leaderboard: ', leaderboard)
+    getUserInfo() {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        this.user = JSON.parse(storedUser);
+      } else {
+        console.log('no user signed in')
+      }
+    },
+    fetchLeaderboard() {
+      axios.get('/api/v1/leaderboard')
+        .then((response) => {
+            console.log('API response:', response.data);
+          const leaderboard = response.data;
+          this.leaderboard = leaderboard.map(entry => ({
+            userName: entry.user,
+            weight: entry.weight,
+            exercise: entry.exercise
+          }));
+          this.filteredLeaderboard = this.leaderboard;
+        })
+        .catch((error) => {
+          console.error('Error fetching leaderboard:', error);
+        });
+    },
 
-        if (Array.isArray(leaderboard) && leaderboard.length > 0) {
-          // parse the comma separated strings into structured data
-          this.leaderboard = leaderboard.map(entry => {
-            const [userName, weight, exercise] = entry.split(', ') // Split the string into parts
-            return {
-              userName,
-              weight,
-              exercise
+  filterByExercise(){
+    if (this.searchText.trim() === '') {
+        this.fetchLeaderboard(); // reset to full leaderboard if search is empty or user wants to clear search
+      } else {
+        axios.get(`/api/v1/searchLeaderboard?exercise=${this.searchText}`)
+          .then((response) => {
+            console.log('response', response);
+            console.log('API response:', response.data);
+            console.log('api response message:', response.data.message);
+            if (response.data.message) {
+              // handle cases where no entries are found
+              this.leaderboard = [];
+            } else {
+              this.leaderboard = response.data;
             }
           })
-        } else {
-          console.error('Invalid data format')
-        }
-      } catch (error) {
-        console.error('Error fetching leaderboard', error)
+          .catch((error) => {
+            console.error('Error searching leaderboard:', error);
+          });
       }
     }
-  },
+},
   mounted() {
-    this.fetchLeaderboard()
+    this.getUserInfo()
+    if(this.user) {
+      this.fetchLeaderboard();
+    }
   }
 }
 </script>
@@ -68,13 +104,5 @@ export default {
 <style scoped>
 h1 {
   color: blueviolet;
-}
-
-table {
-  font-family: Arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-  content: center;
-  border: 2px solid rgb(140 140 140);
 }
 </style>
