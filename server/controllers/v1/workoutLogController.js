@@ -52,30 +52,31 @@ router.put('/api/v1/workoutlogs/:id', async function(req, res){
     catch(err){
         res.status(500).send(err);}});
 
-router.put('/api/v1/workoutLogs/:workoutLogID/dailysessions/:sessionID', async function (req, res) {
-    var workoutLogID = req.params.workoutLogID;
-    var sessionID = req.params.sessionID;
-    try {
-        const session = await Dailysession.findById(sessionID);
-        if (!session) {
-            return res.status(404).send({ message: "Session not found!" });
-        }
+ router.put('/api/v1/workoutLogs/:workoutLogID/dailysessions/:sessionID', async function (req, res) {
+     var workoutLogID = req.params.workoutLogID;
+     var sessionID = req.params.sessionID;
+     try {
+         const session = await Dailysession.findById(sessionID);
+         if (!session) {
+             return res.status(404).send({ message: "Session not found!" });
+         }
 
-        const workoutLog = await WorkoutLog.findById(
-            workoutLogID
-        );
+         const workoutLog = await WorkoutLog.findById(
+             workoutLogID
+         );
 
-        if (!workoutLog) {
-            return res.status(404).send({ message: "Workoutlog not found!" });
-        }
+         if (!workoutLog) {
+             return res.status(404).send({ message: "Workoutlog not found!" });
+         }
             workoutLog.session = session;
             await workoutLog.save();
-        // console.log('WorkoutLog ID:', session);
-        // console.log('Session ID:', workoutLog);
-    } catch (err) {
-        res.status(500).send(err);
-    }
-})
+            res.status(200).send(workoutLog);
+         // console.log('WorkoutLog ID:', session);
+         // console.log('Session ID:', workoutLog);
+     } catch (err) {
+         res.status(500).send(err);
+     }
+ })
 
 router.post('/api/v1/workoutlogs', async function(req, res){
     try {
