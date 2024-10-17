@@ -17,7 +17,8 @@ export default {
   },
   data() {
     return {
-      workoutLogIdd: '',
+      workoutLogIdd : '',
+      user: '',
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
@@ -28,9 +29,12 @@ export default {
     }
   },
   methods: {
+    getUserInfo() {
+      this.user = JSON.parse(localStorage.getItem('user'))
+    },
     async fetchWorkoutLogs() {
       try {
-        const response = await axios.get('/api/v1/workoutlogs')
+        const response = await axios.get(`/api/v1/workoutlogs/${this.user._id}`);
         const events = response.data.map(log => ({
           id: log._id, // Use the MongoDB _id as the event ID
           title: log.title,
@@ -54,10 +58,11 @@ export default {
       this.workoutLogIdd = workoutLogId
       console.log('Event clicked, ID:', workoutLogId)
 
-      try {
-        const response = await axios.get(`/api/v1/workoutlogs/${workoutLogId}`)
-        this.selectedWorkoutLog = response.data
-        console.log('Selected workout log: ', this.selectedWorkoutLog)
+
+    try {
+        const response = await axios.get(`/api/v1/workoutlogs/${this.user}/${workoutLogId}`);
+        this.selectedWorkoutLog = response.data;
+        console.log('Selected workout log: ', this.selectedWorkoutLog);
         // First, open the ModalConfirm modal
         const openModal = useModal({
           component: ModalConfirm,
@@ -120,14 +125,18 @@ export default {
   },
 
   mounted() {
-    this.fetchWorkoutLogs()
+    this.getUserInfo();
+    this.fetchWorkoutLogs();
   }
 }
 </script>
 
 <template>
-  <div>
+  <div v-if="this.user">
     <FullCalendar :options="calendarOptions" />
     <ModalsContainer />
+  </div>
+  <div v-else>
+    User not signed in.
   </div>
 </template>

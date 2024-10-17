@@ -28,6 +28,7 @@
 							"});\r",
 							"\r",
 							"var jsonData = pm.response.json();\r",
+							"pm.globals.set(\"boardId\", jsonData._id);\r",
 							"pm.globals.set(\"userId\", jsonData.user);\r",
 							"\r",
 							"const response = { ...jsonData };\r",
@@ -126,8 +127,11 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"packages": {},
-						"type": "text/javascript"
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -147,7 +151,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/api/v1/leaderboard/{{userId}}",
+					"raw": "{{host}}/api/v1/leaderboard/{{boardId}}",
 					"host": [
 						"{{host}}"
 					],
@@ -155,7 +159,47 @@
 						"api",
 						"v1",
 						"leaderboard",
-						"{{userId}}"
+						"{{boardId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET SEARCH",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Success\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/v1/searchLeaderboard?exercise=squats",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"searchLeaderboard"
+					],
+					"query": [
+						{
+							"key": "exercise",
+							"value": "squats"
+						}
 					]
 				}
 			},

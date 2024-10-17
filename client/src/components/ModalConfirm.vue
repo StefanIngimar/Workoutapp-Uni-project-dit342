@@ -115,12 +115,13 @@ console.log('PLAIN:', plainLog)
     </div>
 
     <!-- Modal Buttons -->
-    <button class="mt-1 ml-auto px-2 border rounded-lg" @click="emit('close')">
-      Close
+
+    <button type="button" class="btn btn-primary" @click="emit('edit')">
+      Edit Workout Log
     </button>
 
-    <button class="mt-1 ml-auto px-2 border rounded-lg" @click="emit('edit')">
-      Edit Workout Log
+    <button type="button" class="btn btn-secondary" @click="emit('close')">
+      Close
     </button>
   </VueFinalModal>
 </template>

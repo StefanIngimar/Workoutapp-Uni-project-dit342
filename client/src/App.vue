@@ -1,26 +1,77 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link>
-      |
-      <router-link to="profile">Profile</router-link>
-      |
-      <router-link to="exercises">Exercises</router-link>
-      |
-      <router-link to="sessions">Sessions</router-link>
-      |
-      <router-link to="workoutlogs">Workoutlogs</router-link>
-      |
-      <router-link to="achievements">Achievements</router-link>
-      |
-      <router-link to="leaderboard">Leaderboard</router-link>
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Workout tracker</a>
+        <button 
+          class="navbar-toggler" 
+          type="button" 
+          @click="toggleDropdown"
+          aria-controls="navbarNav" 
+          aria-expanded="false" 
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" :class="{ show: isOpen }" id="navbarNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <router-link class="nav-link" to="/">Home</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/profile">Profile</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/exercises">Exercises</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/sessions">Sessions</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/workoutlogs">Workout Logs</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/achievements">Achievements</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/leaderboard">Leaderboard</router-link>
+            </li>
+      </ul>
+      </div>
     </div>
+    </nav>
     <!-- Render the content of the current page view -->
     <router-view />
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      isOpen: false,
+    };
+  },
+  methods: {
+    toggleDropdown() {
+      this.isOpen = !this.isOpen;
+    },
+  },
+};
+</script>
+
 <style>
+
+/* some of the navbar styling is from the bootstrap documentation
+https://getbootstrap.com/docs/5.3/components/navbar/ */
+/*colour for the website overall*/
+html, body {
+  background-color: rgb(44, 46, 43);
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -28,6 +79,9 @@
   text-align: center;
   color: #ebffe7;
   background-color: rgb(44, 46, 43);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .input {
@@ -39,18 +93,44 @@
 ::placeholder {
   color: rgba(242, 255, 237, 0.291);
 }
+/*navbar styling */
+.navbar-brand{
+  color: #ffffff;
+  padding: 10px 10px;
+  background-color: #7b46c2;
+  border-radius: 5px;
+  text-decoration: none;
+}
 
+.navbar {
+  background-color: rgb(60, 62, 59);
+  padding: 10px 0;
+}
+
+.nav-item {
+  margin: 0 25px;
+  text-decoration: none;
+  color: #ffffff;
+  padding: 5px 15px;
+  background-color: #7b46c2;
+  border-radius: 5px;
+}
+
+.nav-item:hover {
+  background-color: #7f57b3;
+}
+
+.nav-item:active {
+  background-color: #5f16be;
+}
 .form {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   margin: 0 auto;
-
   width: 80%;
   max-width: 350px;
-
   padding: 2vw;
   background-color: rgb(63, 66, 62);
   border: 3px solid;
@@ -84,8 +164,6 @@
   max-width: 350px;
   width: 80%;
 }
-
-.sub-form {}
 
 #nav a {
   color: rgb(65, 165, 65);
