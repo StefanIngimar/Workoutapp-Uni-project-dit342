@@ -14,7 +14,7 @@
             Rank #{{ index + 1 }}
           </div>
           <div class="card-body">
-            <h5 class="card-title text-center">{{ entry.userName }}</h5>
+            <h5 class="card-title text-center">{{ entry.userName || entry.user }}</h5>
             <p class="card-text">
               <strong>Weights: </strong>{{ entry.weight }} kg<br>
               <strong>Exercise: </strong>{{ entry.exercise }}
