@@ -31,9 +31,6 @@ var User = require('../../models/userModel');
 const { error } = require('console');
 
 
-
-//TODO: Add password hashing for POST and PATCH perhaps through a good library(bcrypt?)
-
 // Multer configuration to store profile pictures in uploads folder
 // const storage = multer.diskStorage({
 //     destination: function(req, file, cb){
@@ -48,7 +45,7 @@ const { error } = require('console');
 
 
 
-// Return all Users from database
+// Return all Users
 router.get('/api/v1/users', async function(req, res){
     try {
         const allUsers = await User.find({}).select('-password');
@@ -59,7 +56,7 @@ router.get('/api/v1/users', async function(req, res){
 });
 
 
-// Return single User from database
+// Return single User
 router.get('/api/v1/users/:id', async function(req, res, next){
     var id = req.params.id;
     try{
@@ -75,11 +72,9 @@ router.get('/api/v1/users/:id', async function(req, res, next){
 
 // Return user in database by Username
 router.get('/api/v1/users/:userName', async function(req, res){
-    var userName = req.params.userName; //extract userName from URL parameter
+    var userName = req.params.userName;
     try{
-        // Queries database for user that matches URL
         const aUser = await User.find({userName: userName}).select('-password');
-        // If query is succesful respond to client with status code 200 and send back requested user as JSON
         res.status(200).json(aUser);
     }catch(err){
         res.status(404).json({error: err.message});
@@ -223,10 +218,8 @@ router.patch('/api/v1/users/:id', //upload.single('profilePic'),
             if (req.body.password) updateFields.password = req.body.password;
             if (req.body.email) updateFields.email = req.body.email;
             // if (req.file) updateFields.profilePic = req.file.filename;
-            // if (req.body.isAdmin !== undefined){
-            //     return res.status(400).json({error: "Cannot change isAdmin field"});
-            // }
 
+            // Find user by id and update fields with $set
             const user = await User.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
             if (user){
                 res.status(200).json(user);

@@ -14,7 +14,7 @@
             Rank #{{ index + 1 }}
           </div>
           <div class="card-body">
-            <h5 class="card-title text-center">{{ entry.userName }}</h5>
+            <h5 class="card-title text-center">{{ entry.userName || entry.user }}</h5>
             <p class="card-text">
               <strong>Weights: </strong>{{ entry.weight }} kg<br>
               <strong>Exercise: </strong>{{ entry.exercise }}
@@ -36,19 +36,19 @@ export default {
   name: 'leaderboard',
 
   data() {
-      return {
-          leaderboard: [],
-          searchText: '',
-          filteredLeaderboard: [],
-          user: null
-      }
+    return {
+      leaderboard: [],
+      searchText: '',
+      filteredLeaderboard: [],
+      user: null
+    }
   },
 
   methods: {
     getUserInfo() {
-      const storedUser = localStorage.getItem('user');
+      const storedUser = localStorage.getItem('user')
       if (storedUser) {
-        this.user = JSON.parse(storedUser);
+        this.user = JSON.parse(storedUser)
       } else {
         console.log('no user signed in')
       }
@@ -56,46 +56,46 @@ export default {
     fetchLeaderboard() {
       axios.get('/api/v1/leaderboard')
         .then((response) => {
-            console.log('API response:', response.data);
-          const leaderboard = response.data;
+          console.log('API response:', response.data)
+          const leaderboard = response.data
           this.leaderboard = leaderboard.map(entry => ({
             userName: entry.user,
             weight: entry.weight,
             exercise: entry.exercise
-          }));
-          this.filteredLeaderboard = this.leaderboard;
+          }))
+          this.filteredLeaderboard = this.leaderboard
         })
         .catch((error) => {
-          console.error('Error fetching leaderboard:', error);
-        });
+          console.error('Error fetching leaderboard:', error)
+        })
     },
 
-  filterByExercise(){
-    if (this.searchText.trim() === '') {
-        this.fetchLeaderboard(); // reset to full leaderboard if search is empty or user wants to clear search
+    filterByExercise() {
+      if (this.searchText.trim() === '') {
+        this.fetchLeaderboard() // reset to full leaderboard if search is empty or user wants to clear search
       } else {
         axios.get(`/api/v1/searchLeaderboard?exercise=${this.searchText}`)
           .then((response) => {
-            console.log('response', response);
-            console.log('API response:', response.data);
-            console.log('api response message:', response.data.message);
+            console.log('response', response)
+            console.log('API response:', response.data)
+            console.log('api response message:', response.data.message)
             if (response.data.message) {
               // handle cases where no entries are found
-              this.leaderboard = [];
+              this.leaderboard = []
             } else {
-              this.leaderboard = response.data;
+              this.leaderboard = response.data
             }
           })
           .catch((error) => {
-            console.error('Error searching leaderboard:', error);
-          });
+            console.error('Error searching leaderboard:', error)
+          })
       }
     }
-},
+  },
   mounted() {
     this.getUserInfo()
-    if(this.user) {
-      this.fetchLeaderboard();
+    if (this.user) {
+      this.fetchLeaderboard()
     }
   }
 }

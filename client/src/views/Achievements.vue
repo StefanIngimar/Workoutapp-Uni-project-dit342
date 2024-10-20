@@ -1,5 +1,6 @@
 <!-- Achievements.vue -->
 <template>
+  <!-- Check if user is logged in -->
   <div v-if="user" class="achievements-container container">
     <div class="row justify-content-center">
       <!-- Achievements List Section -->

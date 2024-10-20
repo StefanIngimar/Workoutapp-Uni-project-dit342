@@ -74,7 +74,7 @@ export default {
             .then(() => {
               this.sessions = response.data
               const patchRequests = this.sessions.map((session) => {
-                return Api.put(`/v1/dailysessions/${session._id}/exercises/${exerciseID}`, this.updatedExercise)
+                return Api.patch(`/v1/dailysessions/${session._id}/exercises/${exerciseID}`, this.updatedExercise)
               })
               return Promise.all(patchRequests)
             })
