@@ -14,7 +14,7 @@
             Rank #{{ index + 1 }}
           </div>
           <div class="card-body">
-            <h5 class="card-title text-center">{{ entry.userName }}</h5>
+            <h5 class="card-title text-center">{{ entry.userName || entry.user }}</h5>
             <p class="card-text">
               <strong>Weights: </strong>{{ entry.weight }} kg<br>
               <strong>Exercise: </strong>{{ entry.exercise }}
@@ -22,6 +22,10 @@
           </div>
         </div>
       </div>
+      <!-- Error Message -->
+    <div v-if="errorMsg" class="error-message">
+      {{ errorMsg }}
+    </div>
     </div>
   </div>
     <div v-else>
@@ -38,6 +42,7 @@ export default {
   data() {
       return {
           leaderboard: [],
+          errorMsg: '',
           searchText: '',
           filteredLeaderboard: [],
           user: null
@@ -58,6 +63,7 @@ export default {
         .then((response) => {
             console.log('API response:', response.data);
           const leaderboard = response.data;
+          //assign leaderboard data to the new object through mapping
           this.leaderboard = leaderboard.map(entry => ({
             userName: entry.user,
             weight: entry.weight,
@@ -66,6 +72,7 @@ export default {
           this.filteredLeaderboard = this.leaderboard;
         })
         .catch((error) => {
+            this.errorMsg = error;
           console.error('Error fetching leaderboard:', error);
         });
     },
@@ -87,6 +94,7 @@ export default {
             }
           })
           .catch((error) => {
+            this.errorMsg = error;
             console.error('Error searching leaderboard:', error);
           });
       }
@@ -104,5 +112,11 @@ export default {
 <style scoped>
 h1 {
   color: blueviolet;
+}
+/* styling for error message */
+.error-message {
+  color: red;
+  margin-top: 15px;
+  text-align: center;
 }
 </style>

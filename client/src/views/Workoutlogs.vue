@@ -18,6 +18,7 @@ export default {
   data() {
     return {
       workoutLogIdd : '',
+      errorMsg: '',
       user: '',
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin],
@@ -44,11 +45,13 @@ export default {
 
         if (Array.isArray(events) && events.length > 0) {
           this.calendarOptions.events = events
+          //force vue to render the calendar so new events are displayed
           this.$forceUpdate()
         } else {
           console.error('Invalid data format')
         }
       } catch (error) {
+        this.errorMsg = error
         console.error('Error fetching events', error)
       }
     },
@@ -93,6 +96,7 @@ export default {
 
         openModal.open() // Open the confirm modal
       } catch (error) {
+        this.errorMsg = error
         console.error('Error fetching workout log', error)
       }
     },
@@ -105,6 +109,7 @@ export default {
         alert('Workout log updated successfully')
         this.fetchWorkoutLogs()
       } catch (error) {
+        this.errorMsg = error
         console.error('Error updating workout log:', error)
         alert('Failed to update workout log')
       }
@@ -135,8 +140,19 @@ export default {
   <div v-if="this.user">
     <FullCalendar :options="calendarOptions" />
     <ModalsContainer />
+    <!-- Error Message -->
+    <div v-if="errorMsg" class="error-message">
+      {{ errorMsg }}
+    </div>
   </div>
   <div v-else>
     User not signed in.
   </div>
 </template>
+<style>
+.error-message {
+  color: red;
+  margin-top: 15px;
+  text-align: center;
+}
+</style>

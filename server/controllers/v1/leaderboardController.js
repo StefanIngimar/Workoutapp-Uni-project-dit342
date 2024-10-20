@@ -26,7 +26,7 @@ router.get('/api/v1/leaderboard', async function(req, res) {
                     const exerciseName = exercise.name;
                     const weight = exercise.weight;
 
-                    // smart query solution to get the user name
+                    // the userNAME isnt actually a part of the leaderboard schema. so i fetched it from the user model via the user id
                     let user = await User.findById(userId).select('userName');
                     
                     // check if this is the heaviest weight for the user. cant have the same user to appear twice in the leaderboard
@@ -62,7 +62,7 @@ router.get('/api/v1/leaderboard', async function(req, res) {
         res.status(500).json({ error: 'Server error' });
     }
 });
-
+//coudlnt get the search to work so i just redid the get endpoint above but with a search functionality
 router.get('/api/v1/searchLeaderboard', async function(req, res) {
     try {
         const { exercise } = req.query;
@@ -75,6 +75,7 @@ router.get('/api/v1/searchLeaderboard', async function(req, res) {
         for (const log of workoutLogs) {
             for (const session of log.session) {
                 for (const exerciseEntry of session.exercises) {
+                    //skip invalid exercises
                     if (!exerciseEntry.name || !exerciseEntry.weight) {
                         console.warn(`Skipping invalid exercise entry in log ${log._id}`);
                         continue;
@@ -82,7 +83,7 @@ router.get('/api/v1/searchLeaderboard', async function(req, res) {
                     const userId = session.userID;
                     const exerciseName = exerciseEntry.name;
                     const weight = exerciseEntry.weight;
-
+                    //dont want the same user to appear twice. only the strongest weight for eachh user
                     let user = await User.findById(userId).select('userName');
                     if (!leaderboard[userId] || leaderboard[userId].weight < weight) {
                         leaderboard[userId] = {
@@ -137,7 +138,8 @@ router.get('/api/v1/leaderboard/:userid', async function(req, res){
         res.status(200).json(leaderboard);}
     catch(err){
         res.status(404).send(err);}});
-
+//this endpoint isnt used in the client, since the leaderboard is updated through the workoutlogs,
+//who in turn are created in the dailysessions
 router.post("/api/v1/leaderboard", async function (req, res) {
   try {
     const { user, userName, weight, exercise } = req.body;
@@ -166,19 +168,20 @@ router.post("/api/v1/leaderboard", async function (req, res) {
     res.status(500).json({ error: "Server error" });
   }
 });
-
+// the idea at first was to only display the top 10 strongest users,
+// but we decided to display all users instead
 router.put('/api/v1/leaderboard/:userid', async function(req, res){
     var userid = req.params.userid;
     try{
         let leaderboard = await Leaderboard.findOneAndUpdate({user: userid}, req.body, {new: true});
         if(!leaderboard){
             return res.status(404).send({message: "User not found"});
-        } const leaderboardSize = await Leaderboard.countDocuments();
-        if(leaderboardSize > 10){
-            const userWithLeastWeight = await Leaderboard.findOne().sort({weight: 1});
-            if(userWithLeastWeight._id.toString() !== leaderboard._id.toString()){
-                await Leaderboard.findOneAndDelete({_id: userWithLeastWeight._id});
-            }
+        // } const leaderboardSize = await Leaderboard.countDocuments();
+        // if(leaderboardSize > 10){
+        //     const userWithLeastWeight = await Leaderboard.findOne().sort({weight: 1});
+        //     if(userWithLeastWeight._id.toString() !== leaderboard._id.toString()){
+        //         await Leaderboard.findOneAndDelete({_id: userWithLeastWeight._id});
+        //     }
         }
         res.status(200).json(leaderboard);
     } catch(err){

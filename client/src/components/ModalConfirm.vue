@@ -3,6 +3,7 @@ import { VueFinalModal } from 'vue-final-modal';
 import { computed } from 'vue';
 
 const props = defineProps({
+  // the values we are trying to access are pretty nested, so we define a default value at first
   log: {
     type: Array,  
     default: () => ([

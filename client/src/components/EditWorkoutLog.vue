@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { VueFinalModal } from 'vue-final-modal';
 
-// Define props using JavaScript
+// the values we are trying to access are pretty nested, so we define a default value at first
 const props = defineProps({
   title: String,
   log: {
@@ -37,7 +37,7 @@ const props = defineProps({
   },
 });
 
-// Copy the log for editing
+// access the nested info and copy the log for editing
 const editedLog = ref({ ...props.log });
 
 // Define emit events

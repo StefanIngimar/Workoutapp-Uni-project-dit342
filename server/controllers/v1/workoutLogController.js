@@ -77,16 +77,16 @@ router.put('/api/v1/workoutlogs/:id', async function(req, res){
          res.status(500).send(err);
      }
  })
-
+//the workout logs are also created in the dailysessioncontroller
+//this one isnt really used in the client since we wanted to make it easier for the user
+//to log workouts.
 router.post('/api/v1/workoutlogs', async function(req, res){
     try {
         const { title, date, session } = req.body;
         const workoutLog = new WorkoutLog({
             title,
             date: new Date(),
-            session: [{ //https://stackoverflow.com/questions/19222520/populate-nested-array-in-mongoose
-                //wanted to link the user and exercise to the workout log
-                //for the frontend to be able to display the user and exercise name
+            session: [{
                 user: req.body.session[0].user,
                 exercises: session[0].exercises.map(exercise => ({
                     exerciseName: exercise.name,
@@ -104,7 +104,6 @@ router.post('/api/v1/workoutlogs', async function(req, res){
         res.status(500).send(err);}});
 
 router.delete('/api/v1/workoutlogs', async function(req, res){
-    //TODO add admin check after merge
     try{
         const workoutLogs = await WorkoutLog.deleteMany({});
         res.status(204).send({workoutLogs, message: "All workout logs successfully deleted"});}
