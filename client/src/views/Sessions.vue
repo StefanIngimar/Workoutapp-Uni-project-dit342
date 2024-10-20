@@ -66,7 +66,7 @@ export default {
     getUserInfo() {
       this.user = JSON.parse(localStorage.getItem('user'))
     },
-
+    // Updates session and displays. On changes with session data and exercises data within session.
     handleSessionUpdated(sessionID) {
       Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
@@ -86,6 +86,7 @@ export default {
         })
     },
 
+    // Updates displayed sessions upon deleted session.
     handleSessionDeleted() {
       Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
@@ -99,6 +100,7 @@ export default {
     handleError() {
       this.errorMessage = error
     },
+    //Posts a session and updates the view of sessions.
     postSession() {
       Api.post('/v1/dailysessions',
         {
@@ -124,6 +126,8 @@ export default {
           this.errorMessage = error
         })
     },
+
+    // Searches for session based on user + query parameters. Returns whole collection for user if searchtext is empty.
     searchSession() {
       Api.get(`/v1/dailysessions/search?sessionName=${this.searchText}&userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {

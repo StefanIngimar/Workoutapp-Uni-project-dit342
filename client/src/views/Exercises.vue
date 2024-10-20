@@ -88,7 +88,7 @@ export default {
           console.error('Error deleting exercise:', error)
           this.exerciseMessage = error
         })
-
+      // GET list of new exercises.
       Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           this.exercises = response.data
@@ -100,6 +100,7 @@ export default {
         })
     },
 
+    // Deletes an exercise also removes exercise from session.
     handleExerciseDeleted(exerciseID) {
       Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
@@ -129,6 +130,8 @@ export default {
     handleError() {
       this.exerciseMessage = error
     },
+
+    // Post new exercise and update the displayed collection.
     postExercise() {
       Api.post('/v1/exercises',
         {
@@ -156,6 +159,8 @@ export default {
           this.exerciseMessage = error
         })
     },
+
+    // Search by get request containing querys. If search text is empty diplay whole collection associated with that user. Whole collection if admin.
     searchExercise() {
       Api.get(`/v1/exercises/search?name=${this.searchText}&userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
@@ -174,6 +179,7 @@ export default {
           this.exerciseMessage = error
         })
     },
+    //Deletes whole exercises collection.
     deleteAllExercises() {
       Api.delete('/v1/exercises', { isAdmin: this.user.isAdmin })
         .then((response) => {
