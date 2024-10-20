@@ -64,31 +64,36 @@ export default {
   },
   methods: {
     handleExerciseUpdated(exerciseID) {
+      // GET request to daily session api with query parameters to display the appropirate data for that user.
       Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
+          this.sessions = response.data
           Api.get(`/v1/exercises/${exerciseID}`)
             .then((response) => {
               this.updatedExercise = response.data
+              // Update display card if any.
               if (this.postMessage) {
                 this.postMessage = response.data
               }
             })
             .then(() => {
-              this.sessions = response.data
+              // Iterate over all sessions to update the session containing the perticular exercise.
               const patchRequests = this.sessions.map((session) => {
                 return Api.patch(`/v1/dailysessions/${session._id}/exercises/${exerciseID}`, this.updatedExercise)
               })
               return Promise.all(patchRequests)
             })
-            .then(() => {
-              return Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
-            })
-            .then((response) => {
-              this.exercises = response.data
-              this.exerciseMessage = 'Exercise updated!'
-            })
+        })
+        .catch((error) => {
+          console.error('Error deleting exercise:', error)
+          this.exerciseMessage = error
         })
 
+      Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
+        .then((response) => {
+          this.exercises = response.data
+          this.exerciseMessage = 'Exercise updated!'
+        })
         .catch((error) => {
           console.error('Error deleting exercise:', error)
           this.exerciseMessage = error
@@ -96,7 +101,7 @@ export default {
     },
 
     handleExerciseDeleted(exerciseID) {
-      Api.get('/v1/dailysessions')
+      Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           this.sessions = response.data
           const patchRequests = this.sessions.map((session) => {
