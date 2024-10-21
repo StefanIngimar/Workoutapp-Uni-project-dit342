@@ -149,11 +149,14 @@ router.patch('/api/v1/achievements/:achievementID', async function(req, res){
         if (!achievement){
             return res.status(404).json({message: "Achievement not found"});
         }
+        // Check if the achievement is a weightLiftedMilestone or repetitionMilestone
         if (achievement.typeOfAchievement === 'weightLiftedMilestone' || achievement.typeOfAchievement === 'repetitionMilestone'){
+            // Get all daily sessions
             const dailySession = await DailySession.find({});
             if (!dailySession){
                 return res.status(404).json({message: "Daily session not found"});
             }
+            // Check if the user has completed the achievement
             dailySession.forEach(session => {
                 session.exercises.forEach(exercise => {
                     if (exercise.name === achievement.exercisename && session.isCompleted === true){

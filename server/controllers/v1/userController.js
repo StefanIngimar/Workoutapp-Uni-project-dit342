@@ -97,15 +97,6 @@ router.delete('/api/v1/users/:id', async function(req, res){
     }
 });
 
-router.delete('/api/v1/users', async function(req, res){
-    try{
-        const allUsers = await User.deleteMany({});
-        res.status(200).json({message: "All users deleted"});
-    } catch(err){
-        res.status(500).json({error: err.message});
-    }
-});
-
 
 // Creation of a new User
 router.post('/api/v1/users', //upload.single('profilePic'),
@@ -153,6 +144,9 @@ router.post('/api/v1/users', //upload.single('profilePic'),
     }
 });
 
+// User login route
+// Use post request to login instead of get request because we are sending a password
+// GET requests are not secure for sending passwords
 router.post('/api/v1/users/login', async function(req, res){
     const {userName, password} = req.body;
     try{
