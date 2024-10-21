@@ -12,16 +12,6 @@
         <b-button id="logout-button" class="logout-btn" variant="primary" @click="logout">
           Logout
         </b-button>
-        <!-- Delete All Users Button (Visible to Admins Only) -->
-        <button
-          v-if="isAdmin"
-          type="button"
-          id="delete-users-button"
-          class="btn btn-danger mt-3"
-          @click="deleteAllUsers"
-        >
-          Delete All Users
-        </button>
       </div>
 
       <!-- Completed Achievements -->
@@ -65,11 +55,11 @@ export default {
       isAdmin: false,
       completedAchievements: [],
       numOfTimesInGym: 0,
-      message: '',
-      nonCompletedAchievements: []
+      message: ''
     }
   },
   mounted() {
+    // Fetch user from local storage
     this.getUserProfile()
     if (this.user) {
       this.getAllCompletedAchievements()
@@ -77,18 +67,23 @@ export default {
   },
   methods: {
     getUserProfile() {
+      // Fetch user from local storage
       this.user = JSON.parse(localStorage.getItem('user'))
     },
     handleProfileUpdated(updatedUser) {
+      // Update user in local storage
       this.user = updatedUser
       localStorage.setItem('user', JSON.stringify(updatedUser))
     },
     logout() {
+      // Clear local storage
       localStorage.removeItem('user')
       // localStorage.removeItem('token')
+      // redirect to home page
       this.$router.push('/')
     },
     getAllCompletedAchievements() {
+      // Fetch all completed achievements for user, If user is admin, fetch all completed achievements
       Api.get(`/v1/achievements/completed?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           this.completedAchievements = response.data

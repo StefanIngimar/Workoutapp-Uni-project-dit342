@@ -1,6 +1,7 @@
 <template>
   <div v-if="!this.user" class="authentication-container container">
     <div class="row justify-content-center">
+      <!-- Display different forms depending on if a user wants to log in or sign up -->
       <div v-if="isLoginMode" class="login-form col-12 col-md-8 col-lg-6">
         <h1>Log in</h1>
         <div class="form-group">
@@ -134,9 +135,11 @@ export default {
         password: this.password,
         isAdmin: this.isAdmin
       }
+      // Call the API to create a new user with newUser as the request body
       Api.post('/v1/users', newUser)
         .then((response) => {
           const createdUser = response.data
+          // Store user in local storage
           localStorage.setItem('user', JSON.stringify(createdUser))
           this.$emit('user-created', createdUser)
           this.$router.push('profile')
@@ -169,6 +172,7 @@ export default {
         userName: this.userName,
         password: this.password
       }
+      // Call the API to log in the user with userInput as the request body
       Api.post('/v1/users/login', userInput)
         .then((response) => {
           const fetchedUser = response.data
@@ -252,7 +256,6 @@ p {
   border-color: #28a745;
 }
 
-/* Additional CSS Selector (Pseudo-class) */
 input:focus {
   border-color: red;
   outline: none;

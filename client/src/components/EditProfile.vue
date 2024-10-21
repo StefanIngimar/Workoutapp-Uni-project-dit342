@@ -10,7 +10,7 @@
           Email: <input v-model="email" placeholder="Enter new email (optional)"/>
           <span class="error" v-if="validationErrors.email">{{ validationErrors.email }}</span>
         </p>
-        <p>""
+        <p>
           Password: <input type="password" v-model="password" placeholder="Enter new password (optional)"/>
           <span class="error" v-if="validationErrors.password">{{ validationErrors.password }}</span>
         </p>
@@ -53,12 +53,6 @@ export default {
   mounted() {
     this.resetUpdate()
   },
-  // watch: {
-  //   user(newUser) {
-  //     this.userName = newUser.userName || ''
-  //     this.email = newUser.email || ''
-  //   }
-  // },
   methods: {
     updateProfile() {
       // Reset messages and validation errors
@@ -66,14 +60,16 @@ export default {
 
       const updatedUser = {}
 
+      // Validate and update user name
       if (this.userName) {
         if (this.userName === this.user.userName) {
-          this.validationErrors.userName = 'Username already in user, enter a different uisername'
+          this.validationErrors.userName = 'Username already in use, enter a different username'
         } else {
           updatedUser.userName = this.userName
         }
       }
 
+      // Validate and update email
       if (this.email && this.email !== this.user.email) {
         if (!this.isValidEmail(this.email)) {
           this.validationErrors.email = 'Enter a valid email address'
@@ -82,6 +78,7 @@ export default {
         }
       }
 
+      // Validate and update password
       if (this.password) {
         if (this.password.length < 8) {
           this.validationErrors.password = 'Password must be at least 8 characters long'
@@ -92,25 +89,27 @@ export default {
         }
       }
 
+      // If there are validation errors, do not proceed with the update
       if (Object.keys(this.validationErrors).length > 0) {
         return
       }
 
+      // If there are no changes to update, do not proceed with the update
       if (Object.keys(updatedUser).length === 0) {
         this.message = 'No changes to update'
         this.isError = true
         return
       }
 
+      // Call backend patch API with updated user data
       Api.patch(`/v1/users/${this.user._id}`, updatedUser)
         .then((response) => {
           const updatedUserData = response.data
           this.$emit('profile-updated', updatedUserData)
-          // localStorage.setItem('user', JSON.stringify(updatedUserData)); // Moved to parent component
+          // localStorage.setItem('user', JSON.stringify(updatedUserData));
           this.message = 'Profile updated successfully'
           this.isError = false
           this.resetUpdate()
-          // Do not modify the prop directly
         })
         .catch((error) => {
           if (error.response) {
@@ -144,6 +143,7 @@ export default {
       this.isError = false
       this.validationErrors = {}
     },
+    // Custom email validation
     isValidEmail(email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       return emailRegex.test(email)
