@@ -51,7 +51,7 @@ export default {
   },
 
   methods: {
-    getUserInfo() {
+    getUserInfo() { //for the user state. if a user is not logged in they should not be able to see this screen
       const storedUser = localStorage.getItem('user')
       if (storedUser) {
         this.user = JSON.parse(storedUser)
@@ -84,9 +84,9 @@ export default {
       } else {
         axios.get(`/api/v1/searchLeaderboard?exercise=${this.searchText}`)
           .then((response) => {
-            console.log('response', response)
-            console.log('API response:', response.data)
-            console.log('api response message:', response.data.message)
+            // console.log('response', response)
+            // console.log('API response:', response.data)
+            // console.log('api response message:', response.data.message)
             if (response.data.message) {
               // handle cases where no entries are found
               this.leaderboard = []

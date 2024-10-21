@@ -3,14 +3,16 @@ const router = express.Router();
 const Leaderboard = require('../../models/leaderboardModel.js');
 const WorkoutLog = require('../../models/workoutLogModel.js');
 const User = require('../../models/userModel.js');
-
+// Get the leaderboard. this goes through the workout log entries and displays the strongest lifts from users.
+// We only display one user per entry. and if the user later beats their old personal record, the leaderboard is updated
+// with the new entry
 router.get('/api/v1/leaderboard', async function(req, res) {
     try {
         console.log("Fetching all workout logs...");
         const workoutLogs = await WorkoutLog.find({});
         const leaderboard = {};
 
-        // Iterate through all workout logs and sessions to find the heaviest weight for each user
+        // Iterate through all workout logs and sessions within the logs to find the heaviest weight for each user
         for (const log of workoutLogs) {
             for (const session of log.session) {
                 for (const exercise of session.exercises) {
@@ -63,6 +65,7 @@ router.get('/api/v1/leaderboard', async function(req, res) {
     }
 });
 //coudlnt get the search to work so i just redid the get endpoint above but with a search functionality
+//this is the filter in the leaderboard component, where the user can search for a specific exercise
 router.get('/api/v1/searchLeaderboard', async function(req, res) {
     try {
         const { exercise } = req.query;
@@ -123,6 +126,7 @@ router.get('/api/v1/searchLeaderboard', async function(req, res) {
         res.status(500).json({ error: 'Server error' });
     }
 });
+//get leaderboard by specific leaderboard id
 router.get('/api/v1/leaderboard/:id', async function(req, res){
     var id = req.params.id;
     try {
@@ -130,7 +134,7 @@ router.get('/api/v1/leaderboard/:id', async function(req, res){
         res.status(200).json(leaderboard);}
     catch(err) {
         res.status(404).send(err)};});
-
+//get a user in the leaderboard
 router.get('/api/v1/leaderboard/:userid', async function(req, res){
     var userid = req.params.userid;
     try{
@@ -170,25 +174,20 @@ router.post("/api/v1/leaderboard", async function (req, res) {
 });
 // the idea at first was to only display the top 10 strongest users,
 // but we decided to display all users instead
+// however, this endpoint updates the leaderboard users
 router.put('/api/v1/leaderboard/:userid', async function(req, res){
     var userid = req.params.userid;
     try{
         let leaderboard = await Leaderboard.findOneAndUpdate({user: userid}, req.body, {new: true});
         if(!leaderboard){
             return res.status(404).send({message: "User not found"});
-        // } const leaderboardSize = await Leaderboard.countDocuments();
-        // if(leaderboardSize > 10){
-        //     const userWithLeastWeight = await Leaderboard.findOne().sort({weight: 1});
-        //     if(userWithLeastWeight._id.toString() !== leaderboard._id.toString()){
-        //         await Leaderboard.findOneAndDelete({_id: userWithLeastWeight._id});
-        //     }
         }
         res.status(200).json(leaderboard);
     } catch(err){
         res.status(500).send(err);
     }
 });
-
+//delete a user entry in the leaderboard
 router.delete('/api/v1/leaderboard/:userid', async function(req, res) {
     var userid = req.params.userid;
     try{
@@ -200,7 +199,7 @@ router.delete('/api/v1/leaderboard/:userid', async function(req, res) {
         }
     }catch(err){
             res.status(500).send(err);}});
-
+//deletes the entire leaderboard
 router.delete('/api/v1/leaderboard', async function(req, res){
     try{
         const leaderboard = await Leaderboard.deleteMany({});

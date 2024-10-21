@@ -7,7 +7,7 @@ import { ModalsContainer, useModal } from 'vue-final-modal'
 import ModalConfirm from '../components/ModalConfirm.vue'
 import EditWorkoutLog from '../components/EditWorkoutLog.vue'
 
-// https://fullcalendar.io/docs/events-json-feed
+// Used a 3rd party library for the calendar https://fullcalendar.io/docs/events-array
 export default {
   components: {
     FullCalendar,
@@ -30,12 +30,13 @@ export default {
     }
   },
   methods: {
-    getUserInfo() {
+    getUserInfo() { //for the user state. if a user is not logged in they should not be able to see this screen
       this.user = JSON.parse(localStorage.getItem('user'))
     },
     async fetchWorkoutLogs() {
-      try {
+      try { // fetch the workoutlogs for the user who is logged in
         const response = await axios.get(`/api/v1/workoutlogs/${this.user._id}`);
+        // Map the response data to the FullCalendar event format
         const events = response.data.map(log => ({
           id: log._id, // Use the MongoDB _id as the event ID
           title: log.title,
@@ -44,6 +45,7 @@ export default {
         console.log('Fetched events: ', events)
 
         if (Array.isArray(events) && events.length > 0) {
+          // assign the event data from the api to the calendar events
           this.calendarOptions.events = events
           //force vue to render the calendar so new events are displayed
           this.$forceUpdate()
@@ -55,6 +57,8 @@ export default {
         console.error('Error fetching events', error)
       }
     },
+    //Here's where the modals come in. We first fetch the workout log by ID, then open the ModalConfirm modal
+    //The user can then edit the workout log, and then edit it or delete it.
     async handleEventClick(info) {
       info.jsEvent.preventDefault()
       const workoutLogId = info.event.id
@@ -100,7 +104,7 @@ export default {
         console.error('Error fetching workout log', error)
       }
     },
-
+    // update the workoutlog within the edit modal
     async updateWorkoutLog(updatedLog) {
       try {
         console.log('putworkoutlogid', this.workoutLogIdd)
@@ -114,7 +118,7 @@ export default {
         alert('Failed to update workout log')
       }
     },
-
+    //delete the log entierly in the edit modal
     async deleteWorkoutLog() {
       const workoutLogId = this.selectedWorkoutLog._id
       try {

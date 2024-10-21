@@ -1,7 +1,7 @@
 <script setup lang="js">
 import { ref } from 'vue';
 import { VueFinalModal } from 'vue-final-modal';
-
+//used a 3rd party library for the modal https://vue-final-modal.org/use-cases/confirm-modal
 // the values we are trying to access are pretty nested, so we define a default value at first
 const props = defineProps({
   title: String,
