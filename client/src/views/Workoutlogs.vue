@@ -7,7 +7,7 @@ import { ModalsContainer, useModal } from 'vue-final-modal'
 import ModalConfirm from '../components/ModalConfirm.vue'
 import EditWorkoutLog from '../components/EditWorkoutLog.vue'
 
-// Used a 3rd party library for the calendar https://fullcalendar.io/docs/events-array
+// Used a 3rd party library for the calendar https://fullcalendar.io/docs/vue
 export default {
   components: {
     FullCalendar,
