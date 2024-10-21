@@ -1,5 +1,6 @@
 <!-- Achievements.vue -->
 <template>
+  <!-- Check if user is logged in -->
   <div v-if="user" class="achievements-container container">
     <div class="row justify-content-center">
       <!-- Achievements List Section -->
@@ -10,7 +11,6 @@
         ]"
       >
         <h1>Achievements</h1>
-        <!-- Button to create a new achievement -->
         <b-button
           id="create-achievement-button"
           variant="primary"
@@ -200,8 +200,6 @@ export default {
   data() {
     return {
       user: '',
-      userId: '',
-      isAdmin: false,
       achievements: [],
       achievementID: '',
       message: '',
@@ -216,6 +214,7 @@ export default {
     }
   },
   methods: {
+    // Toggle the form to create a new achievement
     toggleCreateForm() {
       this.showCreateForm = !this.showCreateForm
       if (!this.showCreateForm) {
@@ -239,10 +238,11 @@ export default {
         dateCompleted: null
 
       }
-
+      // Call the API to create a new achievement with achievementData as the request body
       Api.post('/v1/achievements', achievementData)
         .then((response) => {
           const newAchievement = response.data
+          // Add the new achievement to the list of achievements
           this.achievements.push(newAchievement)
           this.message = 'Achievement created successfully!'
           this.toggleCreateForm()
@@ -251,9 +251,12 @@ export default {
           this.message = error.response ? error.response.data.message : error.message
         })
     },
+    // Update the achievement as completed
     handleAchievementCompleted(achievementID) {
+      // Call the API to update the achievement as completed
       Api.patch(`/v1/achievements/${achievementID}`)
         .then((response) => {
+          // Update the achievement in the list of achievements
           Api.get(`/v1/achievements?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
             .then((response) => {
               this.achievements = response.data
@@ -269,10 +272,12 @@ export default {
           this.message = error
         })
     },
+    // Handle the session completed event
     handleSessionCompleted() {
       console.log('event received')
       this.updateAllAchievements()
     },
+    // Update all achievements
     updateAllAchievements() {
       console.log('updating all achievements')
       this.achievements.forEach((achievement) => {
@@ -282,6 +287,7 @@ export default {
     deleteAchievement(achievementID) {
       Api.delete(`/v1/achievements/${achievementID}`)
         .then(() => {
+          // Remove the achievement from the list of achievements
           this.achievements = this.achievements.filter((achievement) => achievement._id !== achievementID)
           this.message = 'Achievement deleted!'
         })
@@ -308,6 +314,7 @@ export default {
     this.getUserInfo()
     if (this.user) {
       this.getAllAchievements()
+      // Listen for session completed event
       EventBus.on('session-completed', this.handleSessionCompleted)
     }
   }

@@ -43,6 +43,7 @@ export default {
   data() {
     return {
       isEditing: false,
+      // Copy of this exercise item for editing.
       editExercise: { ...this.exercise }
     };
   },
@@ -56,26 +57,19 @@ export default {
       this.editExercise = { ...this.exercise };
     },
     saveExercise() {
+      // Send patch to exercises api with the edited copy.
       Api.patch(`/v1/exercises/${this.exercise._id}`, this.editExercise)
         .then((response) => {
           this.isEditing = false;
+          // Notify other views of update.
           this.$emit('exercise-updated', response.data);
         })
         .catch((error) => {
+          // Notify other views of error with saving exercise.
           this.$emit('error-detected', error);
           console.error('Error saving exercise:', error);
         });
     },
-    deleteExercise(exerciseID) {
-      Api.delete(`/v1/exercises/${exerciseID}`)
-        .then((response) => {
-          this.$emit('exercise-deleted', response.data);
-        })
-        .catch((error) => {
-          this.$emit('error-detected', error);
-          console.error('Error deleting exercise:', error);
-        });
-    }
   }
 };
 </script>

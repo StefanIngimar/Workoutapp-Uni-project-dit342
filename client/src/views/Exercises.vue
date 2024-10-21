@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="this.user">
     <label>
       <h1>Exercises</h1>
     </label>
@@ -47,7 +47,9 @@
           @error-detected="handleError" @exercise-updated="handleExerciseUpdated(exercise._id)" />
       </div>
     </div>
-
+  </div>
+  <div v-else>
+    User not signed in.
   </div>
 </template>
 
@@ -62,39 +64,45 @@ export default {
   },
   methods: {
     handleExerciseUpdated(exerciseID) {
+      // GET request to daily session api with query parameters to display the appropirate data for that user.
       Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
+          this.sessions = response.data
           Api.get(`/v1/exercises/${exerciseID}`)
             .then((response) => {
               this.updatedExercise = response.data
+              // Update display card if any.
               if (this.postMessage) {
                 this.postMessage = response.data
               }
             })
             .then(() => {
-              this.sessions = response.data
+              // Iterate over all sessions to update the session containing the perticular exercise.
               const patchRequests = this.sessions.map((session) => {
-                return Api.put(`/v1/dailysessions/${session._id}/exercises/${exerciseID}`, this.updatedExercise)
+                return Api.patch(`/v1/dailysessions/${session._id}/exercises/${exerciseID}`, this.updatedExercise)
               })
               return Promise.all(patchRequests)
             })
-            .then(() => {
-              return Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
-            })
-            .then((response) => {
-              this.exercises = response.data
-              this.exerciseMessage = 'Exercise updated!'
-            })
         })
-
+        .catch((error) => {
+          console.error('Error deleting exercise:', error)
+          this.exerciseMessage = error
+        })
+      // GET list of new exercises.
+      Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
+        .then((response) => {
+          this.exercises = response.data
+          this.exerciseMessage = 'Exercise updated!'
+        })
         .catch((error) => {
           console.error('Error deleting exercise:', error)
           this.exerciseMessage = error
         })
     },
 
+    // Deletes an exercise also removes exercise from session.
     handleExerciseDeleted(exerciseID) {
-      Api.get('/v1/dailysessions')
+      Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
           this.sessions = response.data
           const patchRequests = this.sessions.map((session) => {
@@ -122,6 +130,8 @@ export default {
     handleError() {
       this.exerciseMessage = error
     },
+
+    // Post new exercise and update the displayed collection.
     postExercise() {
       Api.post('/v1/exercises',
         {
@@ -149,6 +159,8 @@ export default {
           this.exerciseMessage = error
         })
     },
+
+    // Search by get request containing querys. If search text is empty diplay whole collection associated with that user. Whole collection if admin.
     searchExercise() {
       Api.get(`/v1/exercises/search?name=${this.searchText}&userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
@@ -167,6 +179,7 @@ export default {
           this.exerciseMessage = error
         })
     },
+    //Deletes whole exercises collection.
     deleteAllExercises() {
       Api.delete('/v1/exercises', { isAdmin: this.user.isAdmin })
         .then((response) => {
@@ -185,13 +198,16 @@ export default {
 
   mounted() { // Runs when page is loaded.
     this.getUserInfo()
-    Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
-      .then((response) => {
-        this.exercises = response.data
-      })
-      .catch((error) => {
-        this.exerciseMessage = error
-      })
+    if (this.user) {
+      Api.get(`/v1/exercises?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
+        .then((response) => {
+          this.exercises = response.data
+        })
+        .catch((error) => {
+          this.exerciseMessage = error
+        })
+    }
+
   },
   data() {
     return {

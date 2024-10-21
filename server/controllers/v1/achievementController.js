@@ -52,10 +52,12 @@ router.get('/api/v1/achievements', async function(req, res){
     const userId = req.query.userID;
     const isAdmin = req.query.isAdmin === 'true';
     try{
+        // Admin can see all achievements
         if (isAdmin) { 
             const allAchievements = await Achievement.find({});
             res.status(200).json(allAchievements);
         } else {
+            // User can only see their own achievements
             const userSpecificAchievements = await Achievement.find({userID: userId});
             res.status(200).json(userSpecificAchievements);
         }
@@ -114,7 +116,7 @@ router.get('/api/v1/users/:userId/achievements', async function(req, res){
     }
 });
 
-// // Get specific achievement for a specific user
+// Get specific achievement for a specific user
 // router.get('/api/v1/users/:userId/achievements/:achievementId', async function(req, res){
 //     try{
 //         const achievement = await Achievement.findOne({userID: req.params.userId, achievementID: req.params.achievementId});
@@ -147,20 +149,21 @@ router.patch('/api/v1/achievements/:achievementID', async function(req, res){
         if (!achievement){
             return res.status(404).json({message: "Achievement not found"});
         }
+        // Check if the achievement is a weightLiftedMilestone or repetitionMilestone
         if (achievement.typeOfAchievement === 'weightLiftedMilestone' || achievement.typeOfAchievement === 'repetitionMilestone'){
+            // Get all daily sessions
             const dailySession = await DailySession.find({});
             if (!dailySession){
                 return res.status(404).json({message: "Daily session not found"});
             }
+            // Check if the user has completed the achievement
             dailySession.forEach(session => {
                 session.exercises.forEach(exercise => {
                     if (exercise.name === achievement.exercisename && session.isCompleted === true){
                         if(achievement.typeOfAchievement === 'weightLiftedMilestone' && exercise.weight >= achievement.milestones.weight){
-                            // achievementCopy = await Achievement.findByIdAndUpdate(req.params.achievementID, {$set: {isCompleted: true}}, {new: true});
                             achievement.isCompleted = true;
                         }
                         if (achievement.typeOfAchievement === 'repetitionMilestone' && exercise.reps >= achievement.milestones.reps){
-                            // achievementCopy = await Achievement.findByIdAndUpdate(req.params.achievementID, {$set: {isCompleted: true}}, {new: true});
                             achievement.isCompleted = true;
                         }
                     }
