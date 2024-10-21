@@ -48,6 +48,7 @@ router.put('/api/v1/workoutlogs/:id', async function(req, res){
         const workoutLog = await WorkoutLog.findByIdAndUpdate(id, req.body)
         if(!req.body.date){res.status(400).send({message: "Date is required"});}
         if(!req.body.title){res.status(400).send({message: "Title is required"});}
+        if(!req.body.session){res.status(400).send({message: "Session is required"});}
         res.status(200).send({workoutLog, message: "Workout log successfully updated"});}
     catch(err){
         res.status(500).send(err);}});

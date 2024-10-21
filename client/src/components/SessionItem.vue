@@ -101,36 +101,45 @@ export default {
       this.editSession = { ...this.session }
     },
     saveSession() {
+      // PATCH request to api with the edited copy. 
       Api.patch(`/v1/dailysessions/${this.session._id}`, this.editSession)
         .then((response) => {
           this.isEditing = false
+          // Emit to other views of session updated.
           this.$emit('session-updated', response.data)
+  
           if (response.data.isCompleted) {
+            // If the return data for session keeps a true isCompleted boolean then emit to listnener that session is completed. 
             EventBus.emit('session-completed', response.data)
             console.log('Session completed event emitted')
           }
         })
         .catch((error) => {
+          // Emit to other views of session struck an error.
           this.$emit('error-detected', error)
           console.error('Error saving session:', error)
         })
     },
     deleteSession(sessionID, workoutLogID) {
+      // DELETE request to api with session id.
       Api.delete(`/v1/dailysessions/${sessionID}`)
         .then((response) => {
           console.log('Response data:', response.data)
           console.log('Workout log ID:', workoutLogID)
-          Api.delete(`/v1/workoutlogs/${workoutLogID}`)//delete workoutlog when session is deleted
+          Api.delete(`/v1/workoutlogs/${workoutLogID}`) //delete workoutlog when session is deleted
           .then(() => {
+            // Emit session deleted to other views.
             this.$emit('session-deleted')
           })
         })
         .catch((error) => {
+          // Emit to other views of session struck an error.
           this.$emit('error-detected', error)
           console.error('Error deleting session:', error)
         })
     },
     addNewExercise() {
+      // Retrive userdata from local storage. 
       const user = JSON.parse(localStorage.getItem('user'))
 
       // POST request to add a new exercise to the daily session
@@ -146,16 +155,19 @@ export default {
       })
         .then((response) => {
           console.log('Response data:', response.data)
+          // Add the new session to the workout log. 
           Api.put(`/v1/workoutlogs/${response.data.session.workoutLogID}/dailysessions/${response.data.session._id}`)
           this.isAddingExercise = false
+          // Emit session updated to other views
           this.$emit('session-updated', response.data)
           if (response.data.isCompleted) {
+            // If the return data for session keeps a true isCompleted boolean then emit to listnener that session is completed. 
             EventBus.emit('session-completed')
             console.log('Session completed event emitted')
           }
         })
-
         .catch((error) => {
+          // Emit to other views of session struck an error.
           this.$emit('error-detected', error)
           console.error('Error adding exercise or updating workout log:', error)
         })
@@ -164,13 +176,16 @@ export default {
       this.isAddingExercise = !this.isAddingExercise
     },
     handleExerciseUpdated(exID) {
+      // GET request to exercise/:id to update the exercise within the session item. 
       Api.get(`/v1/exercises/${exID}`)
         .then((response) => {
           this.updatedExercise = response.data
         })
         .then(() => {
+          // Update the exercise within the session item.
           Api.patch(`/v1/dailysessions/${this.session._id}/exercises/${exID}`, this.updatedExercise)
             .then(() => {
+              // GET request with newly updated list of exercises within session item. 
               Api.get(`/v1/dailysessions/${this.session._id}/exercises`)
                 .then((response) => {
                   this.session.exercises = response.data
@@ -183,20 +198,25 @@ export default {
     },
 
     handleExerciseDeleted(exerciseId) {
+      // Removes an exercise within session item.
       Api.patch(`/v1/dailysessions/${this.session._id}`,
         {
           exerciseID: exerciseId
         }
       )
         .then((response) => {
+          this.$emit('session-updated', response.data)
+          // GET updated the exercises list within the session item.
           Api.get(`/v1/dailysessions/${this.session._id}/exercises`)
             .then((response) => {
               this.session.exercises = response.data
             })
+    
             .catch((error) => {
               this.exerciseMessage = error
             })
           this.exerciseMessage = 'Exercise deleted!'
+          
         })
         .catch((error) => {
           this.exerciseMessage = error

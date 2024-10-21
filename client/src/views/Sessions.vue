@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="this.user">
     <h1> Sessions </h1>
 
     <div class="form">
@@ -33,7 +33,9 @@
           @session-updated="handleSessionUpdated(session._id)" />
       </div>
     </div>
-
+  </div>
+  <div v-else>
+    User not signed in.
   </div>
 
 </template>
@@ -49,19 +51,22 @@ export default {
   },
   mounted() {
     this.getUserInfo()
-    Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
-      .then((response) => {
-        this.sessions = response.data
-      })
-      .catch((error) => {
-        this.errorMessage = error
-      })
+    if (this.user) {
+      Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
+        .then((response) => {
+          this.sessions = response.data
+        })
+        .catch((error) => {
+          this.errorMessage = error
+        })
+    }
+
   },
   methods: {
     getUserInfo() {
       this.user = JSON.parse(localStorage.getItem('user'))
     },
-
+    // Updates session and displays. On changes with session data and exercises data within session.
     handleSessionUpdated(sessionID) {
       Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
@@ -81,6 +86,7 @@ export default {
         })
     },
 
+    // Updates displayed sessions upon deleted session.
     handleSessionDeleted() {
       Api.get(`/v1/dailysessions?userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
@@ -94,6 +100,7 @@ export default {
     handleError() {
       this.errorMessage = error
     },
+    //Posts a session and updates the view of sessions.
     postSession() {
       Api.post('/v1/dailysessions',
         {
@@ -119,6 +126,8 @@ export default {
           this.errorMessage = error
         })
     },
+
+    // Searches for session based on user + query parameters. Returns whole collection for user if searchtext is empty.
     searchSession() {
       Api.get(`/v1/dailysessions/search?sessionName=${this.searchText}&userID=${this.user._id}&isAdmin=${this.user.isAdmin}`)
         .then((response) => {
